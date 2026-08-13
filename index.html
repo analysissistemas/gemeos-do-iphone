@@ -11,8 +11,12 @@
    Cores validadas por contraste (validar_cores.py)
    ============================================================ */
 
+/* ---------- TEMA ESCURO (padrão) ----------
+   Cada tema tem a SUA paleta, validada contra a SUA superfície. O tema claro
+   não é o escuro invertido no olho — os valores foram medidos um a um em
+   validar_cores.py (escuro) e _tema_claro.py (claro). */
 :root{
-  --preto:        #000000;
+  --preto:        #000000;   /* plano de fundo mais profundo do tema */
   --plano:        #0a0a0a;
   --superficie:   #141414;
   --elevado:      #1c1c1e;
@@ -22,19 +26,66 @@
   --ink:          #f5f5f7;
   --ink-2:        #a1a1a6;
   --ink-3:        #6e6e73;
+  --contra-ink:   #000000;   /* texto sobre um bloco pintado de --ink */
 
   --good:         #0ca30c;
   --warning:      #fab219;
   --serious:      #ec835a;
   --critical:     #d03b3b;
 
-  /* rampa ordinal monocromática (funil) — todas ≥2:1 */
+  /* rampa ordinal monocromática (funil, rosca) — todas ≥2:1 sobre a superfície */
   --f1:#f5f5f7; --f2:#d2d2d7; --f3:#aeaeb2; --f4:#8e8e93; --f5:#6e6e73; --f6:#48484a;
+
+  /* vidro fosco */
+  --vidro:        rgba(255,255,255,0.055);
+  --vidro-forte:  rgba(255,255,255,0.085);
+  --vidro-borda:  rgba(255,255,255,0.10);
+  --vidro-topo:   rgba(255,255,255,0.34);
+  --sombra:       0 10px 40px rgba(0,0,0,.55);
+  --sombra-alta:  0 18px 56px rgba(0,0,0,.65);
+  --brilho:       inset 0 1px 0 rgba(255,255,255,.10);
+  --grade:        #2c2c2a;
+  --trilho:       rgba(255,255,255,0.04);
 
   --sidebar: 248px;
   --nav-h: 52px;
   --raio: 20px;
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ---------- TEMA CLARO ----------
+   Contrastes medidos sobre #ffffff: ink 16.8:1, ink-2 7.9:1, ink-3 5.1:1,
+   e os quatro status entre 4.7:1 e 5.9:1. A rampa perdeu o degrau mais claro
+   (#c7c7cc dava só 1.68:1 no branco) e ganhou um mais escuro no lugar. */
+:root[data-theme="light"]{
+  --preto:        #f5f5f7;
+  --plano:        #ffffff;
+  --superficie:   #ffffff;
+  --elevado:      #ffffff;
+  --linha:        rgba(0,0,0,0.10);
+  --linha-forte:  rgba(0,0,0,0.20);
+
+  --ink:          #1d1d1f;
+  --ink-2:        #515154;
+  --ink-3:        #6e6e73;
+  --contra-ink:   #ffffff;
+
+  --good:         #0a7d0a;
+  --warning:      #a06800;
+  --serious:      #b8531f;
+  --critical:     #c02626;
+
+  --f1:#1d1d1f; --f2:#333335; --f3:#48484a; --f4:#6e6e73; --f5:#8e8e93; --f6:#aeaeb2;
+
+  --vidro:        rgba(255,255,255,0.72);
+  --vidro-forte:  rgba(255,255,255,0.92);
+  --vidro-borda:  rgba(0,0,0,0.09);
+  --vidro-topo:   rgba(255,255,255,0.9);
+  --sombra:       0 8px 30px rgba(0,0,0,.10);
+  --sombra-alta:  0 16px 44px rgba(0,0,0,.16);
+  --brilho:       inset 0 1px 0 rgba(255,255,255,.9);
+  --grade:        #e1e1e4;
+  --trilho:       rgba(0,0,0,0.055);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -365,6 +416,82 @@ tbody tr:last-child td{border-bottom:none}
 .campo input:focus,.campo select:focus{border-color:var(--ink);background:#0f0f0f}
 .modal-pe{display:flex;gap:10px;justify-content:flex-end;margin-top:26px}
 
+/* ---------- ASSISTENTE DE ENTRADA / VENDA ---------- */
+.passo{margin-top:22px}
+.passo-n{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.passo-n i{width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--contra-ink);
+  display:grid;place-items:center;font-size:11px;font-weight:700;font-style:normal;flex:none}
+.passo-n b{font-size:13.5px;font-weight:600;letter-spacing:-.01em}
+.passo-n small{color:var(--ink-3);font-size:11.5px;margin-left:auto}
+
+/* busca com sugestão */
+.autoc{position:relative}
+/* A lista fica NO FLUXO (não absolute) de propósito: o modal tem rolagem
+   própria (overflow-y:auto), e um elemento posicionado por cima seria cortado
+   na borda dele. Empurrando o conteúdo para baixo, a lista nunca some. */
+.autoc-lista{
+  margin-top:6px;max-height:230px;overflow-y:auto;
+  background:var(--elevado);border:1px solid var(--linha-forte);border-radius:12px;
+  box-shadow:0 18px 48px rgba(0,0,0,.5);display:none;
+}
+.autoc-lista.on{display:block}
+.autoc-i{padding:10px 13px;cursor:pointer;font-size:13.5px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--linha)}
+.autoc-i:last-child{border-bottom:none}
+.autoc-i:hover,.autoc-i.sel{background:var(--vidro-forte)}
+.autoc-i .mini{width:22px;height:29px;border-radius:4px}
+.autoc-i .det{margin-left:auto;color:var(--ink-3);font-size:11.5px;font-variant-numeric:tabular-nums}
+.autoc-vazio{padding:14px;color:var(--ink-3);font-size:12.5px;text-align:center}
+
+/* chips de escolha */
+.escolhas{display:flex;gap:7px;flex-wrap:wrap}
+.esc{
+  padding:8px 14px;border-radius:10px;border:1px solid var(--linha);background:transparent;
+  color:var(--ink-2);font-size:12.5px;cursor:pointer;font-family:inherit;transition:.18s;letter-spacing:-.01em;
+}
+.esc:hover{border-color:var(--linha-forte);color:var(--ink)}
+.esc.on{background:var(--ink);color:var(--contra-ink);border-color:var(--ink);font-weight:600}
+
+/* bateria */
+.bat{display:flex;align-items:center;gap:14px}
+.bat input[type=range]{flex:1;accent-color:var(--ink);height:4px}
+.bat-v{font-size:26px;font-weight:650;letter-spacing:-.03em;font-variant-numeric:tabular-nums;min-width:74px;text-align:right}
+.bat-sel{font-size:11.5px;padding:3px 9px;border-radius:980px;border:1px solid var(--linha);white-space:nowrap}
+
+/* avarias */
+.avarias{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.av{
+  display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;
+  border:1px solid var(--linha);cursor:pointer;font-size:12.5px;transition:.18s;user-select:none;
+}
+.av:hover{border-color:var(--linha-forte)}
+.av.on{border-color:var(--ink);background:var(--vidro-forte)}
+.av i{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--linha-forte);flex:none;
+  display:grid;place-items:center;font-size:9px;font-style:normal;color:var(--contra-ink)}
+.av.on i{background:var(--ink);border-color:var(--ink)}
+.av.on i::after{content:"✓"}
+
+/* resumo do preço */
+.resumo{
+  background:var(--vidro-forte);border:1px solid var(--linha);border-radius:14px;padding:16px 18px;margin-top:22px;
+}
+.res-l{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;font-size:13px}
+.res-l span:first-child{color:var(--ink-2)}
+.res-l span:last-child{font-variant-numeric:tabular-nums}
+.res-l.total{border-top:1px solid var(--linha);margin-top:9px;padding-top:12px}
+.res-l.total span:first-child{color:var(--ink);font-weight:600;font-size:14px}
+.res-l.total span:last-child{font-size:23px;font-weight:650;letter-spacing:-.03em}
+.res-nota{font-size:11.5px;color:var(--ink-3);margin-top:9px;line-height:1.5}
+.desconto{color:var(--critical)}
+.lucro{color:var(--good);font-weight:600}
+
+/* etiqueta de avaria na tabela */
+.tag-av{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:5px;
+  border:1px solid var(--linha);color:var(--ink-2);margin:2px 3px 0 0;white-space:nowrap}
+.bat-cel{display:flex;align-items:center;gap:8px}
+.bat-barra{width:42px;height:5px;background:var(--trilho);border-radius:3px;overflow:hidden;flex:none}
+.bat-barra i{display:block;height:100%;border-radius:3px}
+
 /* ---------- IMPRESSÃO DA NOTA ---------- */
 @media print{
   body{background:#fff}
@@ -565,16 +692,37 @@ tbody tr:last-child td{border-bottom:none}
       </div>
     </div>
 
-    <div class="filtros rev" id="filtroEst"></div>
-    <div class="tab-wrap rev">
-      <div class="tab-scroll">
-        <table>
-          <thead><tr>
-            <th>Produto</th><th>Condição</th><th class="num">Em estoque</th><th>Nível</th>
-            <th class="num">Custo médio</th><th class="num">Venda</th><th class="num">Margem</th><th>Situação</th>
-          </tr></thead>
-          <tbody id="tbEstoque"></tbody>
-        </table>
+    <div class="filtros rev" id="abaEst"></div>
+
+    <!-- APARELHOS: um por um, com IMEI, bateria e avaria -->
+    <div id="blocoAparelhos">
+      <div class="filtros rev" id="filtroApar"></div>
+      <div class="tab-wrap rev">
+        <div class="tab-scroll">
+          <table>
+            <thead><tr>
+              <th>Aparelho</th><th>Condição</th><th>Bateria</th><th>Avarias</th><th>IMEI</th>
+              <th class="num">Custo</th><th class="num">Venda</th><th class="num">Lucro</th><th></th>
+            </tr></thead>
+            <tbody id="tbAparelhos"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACESSÓRIOS E MOTINHAS: por quantidade -->
+    <div id="blocoAcessorios" style="display:none">
+      <div class="filtros rev" id="filtroEst"></div>
+      <div class="tab-wrap rev">
+        <div class="tab-scroll">
+          <table>
+            <thead><tr>
+              <th>Produto</th><th>Condição</th><th class="num">Em estoque</th><th>Nível</th>
+              <th class="num">Custo médio</th><th class="num">Venda</th><th class="num">Margem</th><th>Situação</th>
+            </tr></thead>
+            <tbody id="tbEstoque"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -720,17 +868,118 @@ const VEND  = ["Você","Gêmeo 1","Gêmeo 2","Balcão"];
 /* a loja anuncia "parcelamento até 18x" — as opções seguem isso */
 const FORMA = ["Pix","Cartão 18x","Cartão 12x","Cartão 6x","Carnê da loja","Dinheiro","Entrada + Pix"];
 
-/* ---- ESTOQUE ---- */
-const estoque = [];
-MODELOS.forEach(m=>{
-  const nv = MODELOS.indexOf(m);                      // mais novo = mais caro
-  const base = 700 + nv*260 + ent(-120,180);
-  const qtd = nv > 27 ? ent(0,7) : ent(0,12);
-  estoque.push({
-    cat:"iPhone", nome:m, sub:`${pick(ARMAZ)} · ${pick(CORES)}`,
-    cond:pick(COND), qtd, custo:base, venda:Math.round(base*(1.22+rnd()*0.2))
-  });
+/* ============================================================
+   CATÁLOGO DOS MODELOS
+   Armazenamentos e cores que cada geração realmente teve. É isso que faz o
+   cadastro "já dar as opções": escolheu o modelo, aparecem só as combinações
+   que existem — não dá pra cadastrar um iPhone 7 de 1TB por engano.
+   `base` = preço de referência de um aparelho em boas condições, em reais.
+   ============================================================ */
+const CATALOGO = {
+  "iPhone 7":         {arm:["32GB","128GB","256GB"],            cor:["Preto","Prata","Dourado","Rosé","Vermelho"],                 base:  480},
+  "iPhone 7 Plus":    {arm:["32GB","128GB","256GB"],            cor:["Preto","Prata","Dourado","Rosé","Vermelho"],                 base:  620},
+  "iPhone 8":         {arm:["64GB","128GB","256GB"],            cor:["Cinza-espacial","Prata","Dourado","Vermelho"],               base:  680},
+  "iPhone 8 Plus":    {arm:["64GB","128GB","256GB"],            cor:["Cinza-espacial","Prata","Dourado","Vermelho"],               base:  850},
+  "iPhone X":         {arm:["64GB","256GB"],                    cor:["Cinza-espacial","Prata"],                                    base:  900},
+  "iPhone XR":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Coral","Amarelo","Vermelho"],        base: 1050},
+  "iPhone XS":        {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado"],                          base: 1150},
+  "iPhone XS Max":    {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado"],                          base: 1350},
+  "iPhone 11":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Verde","Amarelo","Roxo","Vermelho"],        base: 1500},
+  "iPhone 11 Pro":    {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"],       base: 1750},
+  "iPhone 11 Pro Max":{arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"],       base: 2050},
+  "iPhone 12 mini":   {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"],           base: 1650},
+  "iPhone 12":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"],           base: 1950},
+  "iPhone 12 Pro":    {arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"],                 base: 2300},
+  "iPhone 12 Pro Max":{arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"],                 base: 2700},
+  "iPhone 13 mini":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"],     base: 2050},
+  "iPhone 13":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"],     base: 2400},
+  "iPhone 13 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Grafite","Prata","Dourado","Azul-sierra","Verde-alpino"],    base: 2900},
+  "iPhone 13 Pro Max":{arm:["128GB","256GB","512GB","1TB"],     cor:["Grafite","Prata","Dourado","Azul-sierra","Verde-alpino"],    base: 3400},
+  "iPhone 14":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Roxo","Amarelo","Vermelho"],   base: 2850},
+  "iPhone 14 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Roxo","Amarelo","Vermelho"],   base: 3200},
+  "iPhone 14 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Preto-espacial","Prata","Dourado","Roxo-profundo"],          base: 3800},
+  "iPhone 14 Pro Max":{arm:["128GB","256GB","512GB","1TB"],     cor:["Preto-espacial","Prata","Dourado","Roxo-profundo"],          base: 4400},
+  "iPhone 15":        {arm:["128GB","256GB","512GB"],           cor:["Preto","Azul","Verde","Amarelo","Rosa"],                     base: 3600},
+  "iPhone 15 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Preto","Azul","Verde","Amarelo","Rosa"],                     base: 4100},
+  "iPhone 15 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Natural","Titânio Azul","Titânio Branco","Titânio Preto"], base: 4900},
+  "iPhone 15 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Azul","Titânio Branco","Titânio Preto"], base: 5700},
+  "iPhone 16":        {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],   base: 4400},
+  "iPhone 16 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],   base: 4900},
+  "iPhone 16 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 5800},
+  "iPhone 16 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 6800},
+  "iPhone 17":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Lavanda"],                           base: 5400},
+  "iPhone 17 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 6900},
+  "iPhone 17 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 7900},
+  "iPhone 18":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Verde"],                             base: 6200},
+  "iPhone 18 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 7800},
+  "iPhone 18 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 8900}
+};
+
+/* Avarias e o quanto cada uma tira do preço. Valores em reais, editáveis —
+   é a régua da loja, não uma tabela oficial de ninguém. */
+const AVARIAS = [
+  {k:"Tela riscada",            d: 120},
+  {k:"Tela trincada",           d: 450},
+  {k:"Vidro traseiro trincado", d: 280},
+  {k:"Marcas de uso na lateral",d:  80},
+  {k:"Câmera com risco",        d: 200},
+  {k:"Face ID não funciona",    d: 400},
+  {k:"Botão com defeito",       d: 150},
+  {k:"Bateria trocada",         d: 180},
+  {k:"Tela trocada (paralela)", d: 350},
+  {k:"Sinal de oxidação",       d: 500}
+];
+
+/* Condição muda o preço proporcionalmente ao de referência */
+const FATOR_COND = {"Novo (lacrado)":1.00,"Vitrine":0.90,"Seminovo":0.80,"Usado":0.66};
+
+/* Saúde da bateria: abaixo de 80% a Apple já considera desgastada */
+function fatorBateria(b){
+  if(b>=95) return 1.00;
+  if(b>=90) return 0.97;
+  if(b>=85) return 0.93;
+  if(b>=80) return 0.88;
+  return 0.80;
+}
+
+/* O preço sugerido, com cada desconto explicado — nada de número que cai do céu */
+function precificar({modelo,cond,bateria,avarias}){
+  const base = CATALOGO[modelo]?.base || 1000;
+  const fc = FATOR_COND[cond] ?? 0.8;
+  const fb = cond==="Novo (lacrado)" ? 1 : fatorBateria(bateria);
+  const descAv = avarias.reduce((s,k)=>s+(AVARIAS.find(a=>a.k===k)?.d||0),0);
+  const bruto = base*fc*fb;
+  const linhas = [
+    {r:`Referência do ${modelo}`, v:base},
+    {r:`Condição: ${cond}`,       v:Math.round(base*fc-base), neg:fc<1}
+  ];
+  if(cond!=="Novo (lacrado)") linhas.push({r:`Bateria ${bateria}%`, v:Math.round(base*fc*fb-base*fc), neg:fb<1});
+  avarias.forEach(k=>linhas.push({r:k, v:-(AVARIAS.find(a=>a.k===k)?.d||0), neg:true}));
+  return {sugerido:Math.max(100,Math.round((bruto-descAv)/10)*10), linhas};
+}
+
+/* ---- APARELHOS: cada iPhone é uma peça única (IMEI, bateria, avarias) ---- */
+let proximoId = 1;
+const aparelhos = [];
+Object.keys(CATALOGO).forEach(m=>{
+  const qtd = ent(0,3);
+  for(let i=0;i<qtd;i++){
+    const info=CATALOGO[m];
+    const cond=pick(COND);
+    const bat = cond==="Novo (lacrado)" ? 100 : ent(76,100);
+    const avs = cond==="Novo (lacrado)" ? [] : (rnd()>0.55 ? [pick(AVARIAS).k] : []);
+    const {sugerido}=precificar({modelo:m,cond,bateria:bat,avarias:avs});
+    aparelhos.push({
+      id:proximoId++, modelo:m, arm:pick(info.arm), cor:pick(info.cor), cond,
+      bateria:bat, avarias:avs, imei:`35${ent(100000,999999)}${ent(100000,999999)}`,
+      custo:Math.round(sugerido*(0.68+rnd()*0.12)), venda:sugerido,
+      entrada:`${String(ent(1,12)).padStart(2,"0")}/08/2026`, vendido:false
+    });
+  }
 });
+
+/* ---- ESTOQUE por quantidade: acessórios e motinhas ---- */
+const estoque = [];
 MOTOS.forEach(m=>{
   const base = ent(700,2600);
   estoque.push({cat:"Motinha elétrica", nome:m, sub:pick(["Vermelha","Preta","Rosa","Azul"]),
@@ -965,16 +1214,70 @@ $("#filtroCli").onclick = e => {
 };
 
 /* --- ESTOQUE --- */
-const totalUn = estoque.reduce((s,i)=>s+i.qtd,0);
-const valorEst = estoque.reduce((s,i)=>s+i.qtd*i.custo,0);
-$("#kpiEstoque").innerHTML =
-  kpi("Itens cadastrados", estoque.length,"iPhones, motinhas e acessórios","") +
-  kpi("Unidades em estoque", totalUn,"contando tudo","") +
-  kpi("Dinheiro parado", brl(valorEst),"a preço de custo","") +
-  kpi("Acabaram", estoque.filter(i=>i.qtd===0).length,"precisa repor","");
+const emEstoque = () => aparelhos.filter(a=>!a.vendido);
+function pintaKpiEstoque(){
+  const ap = emEstoque();
+  const valorAp = ap.reduce((s,a)=>s+a.custo,0);
+  const valorAc = estoque.reduce((s,i)=>s+i.qtd*i.custo,0);
+  $("#kpiEstoque").innerHTML =
+    kpi("iPhones em estoque", ap.length,"cada um cadastrado individualmente","") +
+    kpi("Acessórios e motinhas", estoque.reduce((s,i)=>s+i.qtd,0),`${estoque.length} tipos diferentes`,"") +
+    kpi("Dinheiro parado", brl(valorAp+valorAc),"a preço de custo","") +
+    kpi("Lucro se vender tudo", brl(ap.reduce((s,a)=>s+(a.venda-a.custo),0)),"só nos aparelhos","");
+}
+pintaKpiEstoque();
+
+/* abas: aparelho individual x produto por quantidade */
+let abaEstAtual="Aparelhos";
+function pintaAbaEst(){
+  $("#abaEst").innerHTML=["Aparelhos","Acessórios e motinhas"].map(a=>
+    `<button class="chip ${a===abaEstAtual?"on":""}" data-aba="${a}">${a}</button>`).join("");
+  $("#blocoAparelhos").style.display  = abaEstAtual==="Aparelhos" ? "" : "none";
+  $("#blocoAcessorios").style.display = abaEstAtual==="Aparelhos" ? "none" : "";
+}
+pintaAbaEst();
+$("#abaEst").onclick = e => {
+  const b=e.target.closest("[data-aba]"); if(!b) return;
+  abaEstAtual=b.dataset.aba; pintaAbaEst();
+};
+
+/* --- TABELA DE APARELHOS --- */
+let filtroAparAtual="Todos";
+function pintaFiltroApar(){
+  $("#filtroApar").innerHTML=["Todos",...COND,"Com avaria","Bateria baixa"].map(f=>
+    `<button class="chip ${f===filtroAparAtual?"on":""}" data-ap="${f}">${f}</button>`).join("");
+}
+function corBateria(b){ return b>=90?"var(--good)":b>=80?"var(--warning)":"var(--critical)"; }
+function pintaAparelhos(){
+  let l=emEstoque();
+  if(filtroAparAtual==="Com avaria")        l=l.filter(a=>a.avarias.length);
+  else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria<85);
+  else if(filtroAparAtual!=="Todos")         l=l.filter(a=>a.cond===filtroAparAtual);
+  $("#tbAparelhos").innerHTML = l.map(a=>`<tr>
+    <td><div class="prod-cel"><div class="mini"></div><div>
+      <div class="nm">${a.modelo}</div><div class="meta">${a.arm} · ${a.cor}</div></div></div></td>
+    <td style="color:var(--ink-2)">${a.cond}</td>
+    <td>${a.cond==="Novo (lacrado)"
+      ? `<span style="color:var(--ink-3)">lacrado</span>`
+      : `<div class="bat-cel"><div class="bat-barra"><i style="width:${a.bateria}%;background:${corBateria(a.bateria)}"></i></div>
+         <span style="font-variant-numeric:tabular-nums">${a.bateria}%</span></div>`}</td>
+    <td>${a.avarias.length ? a.avarias.map(v=>`<span class="tag-av">${v}</span>`).join("")
+                           : `<span style="color:var(--ink-3);font-size:12px">sem avaria</span>`}</td>
+    <td style="color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:12px">${a.imei}</td>
+    <td class="num" style="color:var(--ink-2)">${brl(a.custo)}</td>
+    <td class="num forte">${brl(a.venda)}</td>
+    <td class="num lucro">${brl(a.venda-a.custo)}</td>
+    <td><button class="btn btn-p btn-sm" data-vender="${a.id}">Vender</button></td></tr>`).join("")
+    || `<tr><td colspan="9" style="text-align:center;color:var(--ink-3);padding:36px">nenhum aparelho nesse filtro</td></tr>`;
+}
+pintaFiltroApar(); pintaAparelhos();
+$("#filtroApar").onclick = e => {
+  const b=e.target.closest("[data-ap]"); if(!b) return;
+  filtroAparAtual=b.dataset.ap; pintaFiltroApar(); pintaAparelhos();
+};
 
 let filtroEstAtual="Todos";
-const cats=["Todos","iPhone","Motinha elétrica","Acessório","Acabou"];
+const cats=["Todos","Motinha elétrica","Acessório","Acabou"];
 function pintaFiltroEst(){
   $("#filtroEst").innerHTML=cats.map(c=>
     `<button class="chip ${c===filtroEstAtual?"on":""}" data-e="${c}">${c}</button>`).join("");
@@ -1033,17 +1336,22 @@ function rosca(dados, sufixo){
     <div style="display:flex;flex-direction:column;gap:11px">${leg}</div>
   </div><div class="dica"></div>`;
 }
-const porCat=["iPhone","Motinha elétrica","Acessório"].map((c,i)=>{
-  const v=estoque.filter(e=>e.cat===c).reduce((s,e)=>s+e.qtd*e.custo,0);
-  return {n:c, v, rot:brl(v), c:["#f5f5f7","#8e8e93","#48484a"][i]};
-});
-$("#vizRosca").innerHTML=rosca(porCat,"EM CUSTO");
+function pintaRoscas(){
+  const custoAp = emEstoque().reduce((s,a)=>s+a.custo,0);
+  const porCat=[
+    {n:"iPhone",           v:custoAp,                                                                    c:"var(--f1)"},
+    {n:"Motinha elétrica", v:estoque.filter(e=>e.cat==="Motinha elétrica").reduce((s,e)=>s+e.qtd*e.custo,0), c:"var(--f4)"},
+    {n:"Acessório",        v:estoque.filter(e=>e.cat==="Acessório").reduce((s,e)=>s+e.qtd*e.custo,0),        c:"var(--f6)"}
+  ].map(d=>({...d, rot:brl(d.v)})).filter(d=>d.v>0);
+  $("#vizRosca").innerHTML=rosca(porCat,"EM CUSTO");
 
-const porCond=COND.map((c,i)=>{
-  const v=estoque.filter(e=>e.cat==="iPhone"&&e.cond===c).reduce((s,e)=>s+e.qtd,0);
-  return {n:c, v, rot:`${v} unidades`, c:["#f5f5f7","#aeaeb2","#6e6e73","#48484a"][i]};
-}).filter(d=>d.v>0);
-$("#vizCondicao").innerHTML=rosca(porCond,"APARELHOS");
+  const porCond=COND.map((c,i)=>{
+    const v=emEstoque().filter(a=>a.cond===c).length;
+    return {n:c, v, rot:`${v} ${v===1?"aparelho":"aparelhos"}`, c:["var(--f1)","var(--f3)","var(--f4)","var(--f6)"][i]};
+  }).filter(d=>d.v>0);
+  $("#vizCondicao").innerHTML=rosca(porCond,"APARELHOS");
+}
+pintaRoscas();
 
 pintaFiltroEst(); pintaEstoque();
 $("#filtroEst").onclick = e => {
@@ -1052,12 +1360,13 @@ $("#filtroEst").onclick = e => {
 };
 
 /* --- MOVIMENTAÇÕES --- */
-const ents=movs.filter(m=>m.tipo==="Entrada"), sais=movs.filter(m=>m.tipo==="Saída");
+function pintaMovs(){
+const ents2=movs.filter(m=>m.tipo==="Entrada"), sais2=movs.filter(m=>m.tipo==="Saída");
 $("#kpiMov").innerHTML =
-  kpi("Saídas do mês", sais.length,"aparelhos vendidos","") +
-  kpi("Entradas do mês", ents.length,"comprados ou trocados","") +
-  kpi("Saiu em valor", brl(sais.reduce((s,m)=>s+m.valor,0)),"","") +
-  kpi("Entrou em valor", brl(ents.reduce((s,m)=>s+m.valor,0)),"","");
+  kpi("Saídas do mês", sais2.length,"aparelhos vendidos","") +
+  kpi("Entradas do mês", ents2.length,"comprados ou trocados","") +
+  kpi("Saiu em valor", brl(sais2.reduce((s,m)=>s+m.valor,0)),"","") +
+  kpi("Entrou em valor", brl(ents2.reduce((s,m)=>s+m.valor,0)),"","");
 $("#tbMov").innerHTML = movs.map((m,i)=>`<tr>
   <td style="color:var(--ink-2)">${m.data}</td>
   <td><span class="mov ${m.tipo==="Entrada"?"ent":"sai"}"><span class="sg">${m.tipo==="Entrada"?"↓":"↑"}</span>${m.tipo}</span></td>
@@ -1069,6 +1378,8 @@ $("#tbMov").innerHTML = movs.map((m,i)=>`<tr>
   <td style="color:var(--ink-2)">${m.vend}</td>
   <td>${m.tipo==="Saída"?`<button class="btn btn-s btn-sm" data-nota="venda" data-id="${i}">Nota</button>`:""}</td>
   </tr>`).join("");
+}
+pintaMovs();
 
 /* --- FINANCEIRO --- */
 const aReceber = parcelas.reduce((s,p)=>s+p.valor,0)*7;
@@ -1294,6 +1605,36 @@ document.addEventListener("click",e=>{
   }
 });
 
+/* --- REVELAÇÃO NO SCROLL ---
+   Fica ANTES da navegação de propósito: `ir()` chama `revelar()`, e `ir()` roda
+   já no carregamento quando a página abre direto num endereço com # (ex.:
+   .../index.html#estoque). Se o observador fosse criado depois, essa primeira
+   chamada estouraria e a tela abriria em branco. */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("vis");obs.unobserve(e.target)}}),
+  {threshold:0.12,rootMargin:"0px 0px -40px 0px"});
+
+/* O que já está na tela aparece na hora; só o que está abaixo da dobra espera
+   o scroll. Confiar só no observador dava tela em branco quando a página abria
+   direto num endereço com # — ele não disparava para o que já estava visível,
+   e o conteúdo ficava preso em opacidade zero até alguém rolar.
+   O requestAnimationFrame é obrigatório: sem esperar o primeiro desenho, todas
+   as medidas voltam zero e tudo seria tratado como "já visível". */
+function revelar(){
+  requestAnimationFrame(()=>{
+    $$(".tela.on .rev").forEach((r,i)=>{
+      if(r.classList.contains("vis")) return;
+      if(r.getBoundingClientRect().top < window.innerHeight - 40){
+        r.style.transitionDelay=`${Math.min(i*70,350)}ms`;
+        r.classList.add("vis");
+      } else {
+        r.style.transitionDelay="0ms";
+        obs.observe(r);
+      }
+    });
+  });
+}
+revelar();
+
 /* ============================================================
    NAVEGAÇÃO
    ============================================================ */
@@ -1333,12 +1674,6 @@ window.addEventListener("scroll",()=>{
 },{passive:true});
 parallax();
 
-/* --- REVELAÇÃO --- */
-const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("vis");obs.unobserve(e.target)}}),
-  {threshold:0.12,rootMargin:"0px 0px -40px 0px"});
-function revelar(){$$(".tela.on .rev").forEach((r,i)=>{r.style.transitionDelay=`${Math.min(i*70,350)}ms`;obs.observe(r)})}
-revelar();
-
 /* --- ANIMAÇÃO DO FUNIL --- */
 function animarFunil(){
   setTimeout(()=>$$(".et-fill").forEach(f=>f.style.width=f.dataset.w+"%"),140);
@@ -1357,6 +1692,319 @@ document.addEventListener("mouseover",e=>{
 document.addEventListener("mouseout",e=>{
   const h=e.target.closest(".hit"); if(!h) return;
   h.closest(".viz").querySelector(".dica").style.opacity="0";
+});
+
+/* ============================================================
+   ASSISTENTE DE ENTRADA DE APARELHO
+   Um formulário só, que vai se abrindo conforme você responde. A ideia é
+   nunca fazer você digitar o que o sistema já sabe: escolhido o modelo, as
+   opções de memória e cor são as daquele modelo, e o preço de venda já vem
+   calculado — com cada desconto escrito, pra você poder discordar.
+   ============================================================ */
+function fecharModal(){ $("#fundo").classList.remove("on"); }
+
+function autocomplete(inputEl, listaEl, fonte, aoEscolher){
+  let sel = -1;
+  function itens(){ return [...listaEl.querySelectorAll(".autoc-i")]; }
+  function abrir(){
+    const q = inputEl.value.trim().toLowerCase();
+    const achados = fonte(q).slice(0,40);
+    listaEl.innerHTML = achados.length
+      ? achados.map((o,i)=>`<div class="autoc-i" data-i="${i}">
+          <div class="mini"></div><div><div style="font-weight:600">${o.titulo}</div>
+          ${o.sub?`<div style="font-size:11px;color:var(--ink-3);margin-top:2px">${o.sub}</div>`:""}</div>
+          ${o.det?`<span class="det">${o.det}</span>`:""}</div>`).join("")
+      : `<div class="autoc-vazio">nada encontrado — confira a escrita</div>`;
+    listaEl.classList.add("on"); sel=-1;
+    listaEl.querySelectorAll(".autoc-i").forEach((el,i)=>{
+      el.onclick = ev => {
+        /* trava aqui: sem isso o clique sobe até o handler global que fecha o
+           modal ao clicar fora, e o assistente sumia no meio do preenchimento */
+        ev.stopPropagation();
+        listaEl.classList.remove("on");
+        aoEscolher(achados[i]);
+      };
+    });
+  }
+  inputEl.addEventListener("input", abrir);
+  inputEl.addEventListener("focus", abrir);
+  inputEl.addEventListener("keydown", e=>{
+    const its = itens(); if(!its.length) return;
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+      e.preventDefault();
+      sel = e.key==="ArrowDown" ? Math.min(sel+1,its.length-1) : Math.max(sel-1,0);
+      its.forEach(x=>x.classList.remove("sel")); its[sel].classList.add("sel");
+      its[sel].scrollIntoView({block:"nearest"});
+    } else if(e.key==="Enter" && sel>=0){ e.preventDefault(); its[sel].click(); }
+  });
+  document.addEventListener("click", e=>{
+    if(!listaEl.contains(e.target) && e.target!==inputEl) listaEl.classList.remove("on");
+  });
+}
+
+function wizEntrada(){
+  /* vendaManual: enquanto você não digitar um preço próprio, o campo acompanha o
+     cálculo. Assim que digitar, o sistema para de sobrescrever o seu número. */
+  const st = {modelo:null, arm:null, cor:null, cond:"Seminovo", bateria:92, avarias:[],
+              imei:"", custo:"", venda:null, vendaManual:false};
+
+  $("#modal").innerHTML = `
+    <h3>Dar entrada em aparelho</h3>
+    <div class="dsc">Comece digitando o modelo. O resto o sistema já sugere.</div>
+    <div class="passo">
+      <div class="passo-n"><i>1</i><b>Qual aparelho?</b><small>digite "15 pro", "xr", "13"…</small></div>
+      <div class="autoc">
+        <input id="wModelo" placeholder="Buscar modelo do iPhone…" autocomplete="off">
+        <div class="autoc-lista" id="wLista"></div>
+      </div>
+    </div>
+    <div id="wResto"></div>
+    <div class="modal-pe">
+      <button class="btn btn-s" data-fechar>Cancelar</button>
+      <button class="btn btn-p" id="wSalvar" disabled style="opacity:.4">Salvar no estoque</button>
+    </div>`;
+  $("#fundo").classList.add("on");
+  setTimeout(()=>$("#wModelo").focus(),60);
+
+  autocomplete($("#wModelo"), $("#wLista"),
+    q => Object.keys(CATALOGO)
+          .filter(m => m.toLowerCase().includes(q))
+          .map(m => ({titulo:m, sub:`${CATALOGO[m].arm.join(" · ")}`, det:brl(CATALOGO[m].base), valor:m})),
+    o => { st.modelo=o.valor; st.arm=CATALOGO[o.valor].arm[0]; st.cor=CATALOGO[o.valor].cor[0];
+           $("#wModelo").value=o.valor; montarResto(); });
+
+  function montarResto(){
+    const info=CATALOGO[st.modelo];
+    $("#wResto").innerHTML = `
+      <div class="passo">
+        <div class="passo-n"><i>2</i><b>Memória e cor</b><small>só o que esse modelo teve</small></div>
+        <div class="escolhas" id="wArm">${info.arm.map(a=>`<button class="esc ${a===st.arm?"on":""}" data-arm="${a}">${a}</button>`).join("")}</div>
+        <div class="escolhas" style="margin-top:9px" id="wCor">${info.cor.map(c=>`<button class="esc ${c===st.cor?"on":""}" data-cor="${c}">${c}</button>`).join("")}</div>
+      </div>
+      <div class="passo">
+        <div class="passo-n"><i>3</i><b>Condição</b></div>
+        <div class="escolhas" id="wCond">${COND.map(c=>`<button class="esc ${c===st.cond?"on":""}" data-cond="${c}">${c}</button>`).join("")}</div>
+      </div>
+      <div class="passo">
+        <div id="wUsado">
+          <div class="passo-n"><i>4</i><b>Saúde da bateria</b><small>aparece no iPhone em Ajustes › Bateria</small></div>
+          <div class="bat">
+            <input type="range" id="wBat" min="60" max="100" value="${st.bateria}">
+            <div class="bat-v" id="wBatV">${st.bateria}%</div>
+            <span class="bat-sel" id="wBatSel"></span>
+          </div>
+          <div class="passo-n" style="margin-top:22px"><i>5</i><b>Tem alguma avaria?</b><small>cada uma abate do preço</small></div>
+          <div class="avarias" id="wAv">${AVARIAS.map(a=>
+            `<div class="av ${st.avarias.includes(a.k)?"on":""}" data-av="${a.k}"><i></i>${a.k}
+             <span style="margin-left:auto;color:var(--ink-3);font-size:11px">−${brl(a.d)}</span></div>`).join("")}</div>
+        </div>
+      </div>
+      <div class="passo">
+        <div class="passo-n"><i>6</i><b>IMEI e o que você pagou</b></div>
+        <div class="campo"><label>IMEI</label><input id="wImei" placeholder="digite ou bipe o código" autocomplete="off"></div>
+        <div class="campo"><label>Quanto você pagou nesse aparelho</label><input id="wCusto" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"></div>
+      </div>
+      <div class="resumo" id="wResumo"></div>`;
+    aplicarCond(); atualizarResumo();
+
+    $("#wArm").onclick  = e=>{const b=e.target.closest("[data-arm]"); if(!b)return; st.arm=b.dataset.arm;
+      $$("#wArm .esc").forEach(x=>x.classList.toggle("on",x===b)); atualizarResumo();};
+    $("#wCor").onclick  = e=>{const b=e.target.closest("[data-cor]"); if(!b)return; st.cor=b.dataset.cor;
+      $$("#wCor .esc").forEach(x=>x.classList.toggle("on",x===b));};
+    $("#wCond").onclick = e=>{const b=e.target.closest("[data-cond]"); if(!b)return; st.cond=b.dataset.cond;
+      $$("#wCond .esc").forEach(x=>x.classList.toggle("on",x===b)); aplicarCond(); atualizarResumo();};
+    $("#wBat").oninput  = e=>{st.bateria=+e.target.value; $("#wBatV").textContent=st.bateria+"%"; atualizarResumo();};
+    $("#wAv").onclick   = e=>{const b=e.target.closest("[data-av]"); if(!b)return;
+      const k=b.dataset.av;
+      st.avarias = st.avarias.includes(k) ? st.avarias.filter(x=>x!==k) : [...st.avarias,k];
+      b.classList.toggle("on"); atualizarResumo();};
+    $("#wImei").oninput = e=>{st.imei=e.target.value; travarSalvar();};
+    $("#wCusto").oninput= e=>{st.custo=e.target.value.replace(/\D/g,""); atualizarResumo(); travarSalvar();};
+  }
+
+  function aplicarCond(){
+    const lacrado = st.cond==="Novo (lacrado)";
+    $("#wUsado").style.display = lacrado ? "none" : "";
+    if(lacrado) { st.bateria=100; st.avarias=[]; }
+  }
+
+  function atualizarResumo(){
+    if(!st.modelo) return;
+    const {sugerido,linhas} = precificar(st);
+    if(!st.vendaManual) st.venda = sugerido;
+    const custo = +st.custo || 0;
+    const lucro = st.venda - custo;
+    const sel = $("#wBatSel");
+    if(sel){
+      const b=st.bateria;
+      sel.textContent = b>=90?"ótima":b>=85?"boa":b>=80?"aceitável":"desgastada — Apple recomenda troca";
+      sel.style.color = corBateria(b); sel.style.borderColor="currentColor";
+    }
+    $("#wResumo").innerHTML =
+      linhas.map(l=>`<div class="res-l"><span>${l.r}</span>
+        <span class="${l.neg?"desconto":""}">${l.v<0?"−":""}${brl(Math.abs(l.v))}</span></div>`).join("") +
+      `<div class="res-l total"><span>Preço de venda sugerido</span><span>${brl(sugerido)}</span></div>
+       <div class="campo" style="margin-top:14px"><label>Quer vender por outro valor?</label>
+         <input id="wVenda" value="${st.venda}" inputmode="numeric" autocomplete="off"></div>
+       ${custo?`<div class="res-l" style="margin-top:10px"><span>Seu lucro nesse aparelho</span>
+         <span class="${lucro>0?"lucro":"desconto"}">${brl(lucro)}</span></div>`:""}
+       <div class="res-nota">O valor é uma sugestão calculada a partir da referência do modelo, da condição,
+       da bateria e das avarias marcadas. Você manda — pode trocar acima.</div>`;
+    $("#wVenda").oninput = e=>{
+      const v = +e.target.value.replace(/\D/g,"");
+      st.vendaManual = e.target.value.trim() !== "";
+      st.venda = v || sugerido;
+    };
+    travarSalvar();
+  }
+
+  function travarSalvar(){
+    const ok = st.modelo && st.imei.replace(/\D/g,"").length>=6 && (+st.custo||0)>0;
+    const b=$("#wSalvar"); b.disabled=!ok; b.style.opacity = ok?"1":".4";
+    b.onclick = ok ? salvar : null;
+  }
+
+  function salvar(){
+    const {sugerido}=precificar(st);
+    aparelhos.push({
+      id:proximoId++, modelo:st.modelo, arm:st.arm, cor:st.cor, cond:st.cond,
+      bateria:st.cond==="Novo (lacrado)"?100:st.bateria, avarias:[...st.avarias],
+      imei:st.imei, custo:+st.custo||0, venda:st.venda||sugerido,
+      entrada:"12/08/2026", vendido:false
+    });
+    movs.unshift({data:"12/08/2026",tipo:"Entrada",apar:`${st.modelo} · ${st.arm}`,imei:st.imei,
+      quem:"Entrada manual",valor:+st.custo||0,forma:"—",vend:"Você"});
+    fecharModal(); atualizarTudo();
+    aviso(`${st.modelo} ${st.arm} entrou no estoque.`);
+  }
+}
+
+/* ============================================================
+   ASSISTENTE DE VENDA
+   ============================================================ */
+function wizVenda(idPre){
+  const st = {ap:null, cliente:"", preco:0, forma:"Pix", parcelas:1, trocaTexto:""};
+  $("#modal").innerHTML = `
+    <h3>Vender aparelho</h3>
+    <div class="dsc">Ache o aparelho pelo modelo ou pelo IMEI. O preço já vem do cadastro.</div>
+    <div class="passo">
+      <div class="passo-n"><i>1</i><b>Qual aparelho está saindo?</b><small>só o que está em estoque</small></div>
+      <div class="autoc">
+        <input id="vBusca" placeholder="Buscar por modelo ou IMEI…" autocomplete="off">
+        <div class="autoc-lista" id="vLista"></div>
+      </div>
+    </div>
+    <div id="vResto"></div>
+    <div class="modal-pe">
+      <button class="btn btn-s" data-fechar>Cancelar</button>
+      <button class="btn btn-p" id="vSalvar" disabled style="opacity:.4">Confirmar venda</button>
+    </div>`;
+  $("#fundo").classList.add("on");
+
+  autocomplete($("#vBusca"), $("#vLista"),
+    q => emEstoque().filter(a=>(`${a.modelo} ${a.arm} ${a.cor} ${a.imei}`).toLowerCase().includes(q))
+          .map(a=>({titulo:`${a.modelo} · ${a.arm}`,
+                    sub:`${a.cor} · ${a.cond}${a.cond!=="Novo (lacrado)"?` · bateria ${a.bateria}%`:""}${a.avarias.length?` · ${a.avarias.length} avaria(s)`:""}`,
+                    det:brl(a.venda), valor:a})),
+    o => { st.ap=o.valor; st.preco=o.valor.venda; $("#vBusca").value=`${o.valor.modelo} · ${o.valor.arm} · ${o.valor.imei}`; montar(); });
+
+  if(idPre){
+    const a=aparelhos.find(x=>x.id===+idPre);
+    if(a){ st.ap=a; st.preco=a.venda; $("#vBusca").value=`${a.modelo} · ${a.arm} · ${a.imei}`; montar(); }
+  }
+
+  function montar(){
+    const a=st.ap;
+    $("#vResto").innerHTML=`
+      <div class="passo">
+        <div class="passo-n"><i>2</i><b>Para quem?</b></div>
+        <div class="autoc">
+          <input id="vCli" placeholder="Buscar cliente ou digitar um nome novo…" autocomplete="off">
+          <div class="autoc-lista" id="vCliLista"></div>
+        </div>
+      </div>
+      <div class="passo">
+        <div class="passo-n"><i>3</i><b>Por quanto?</b><small>cadastrado: ${brl(a.venda)}</small></div>
+        <div class="campo"><input id="vPreco" value="${a.venda}" inputmode="numeric" autocomplete="off"></div>
+      </div>
+      <div class="passo">
+        <div class="passo-n"><i>4</i><b>Como vai pagar?</b></div>
+        <div class="escolhas" id="vForma">${["Pix","Dinheiro","Cartão","Carnê da loja"].map(f=>
+          `<button class="esc ${f===st.forma?"on":""}" data-forma="${f}">${f}</button>`).join("")}</div>
+        <div id="vParc" style="display:none;margin-top:11px">
+          <div class="escolhas">${[1,2,3,6,10,12,18].map(p=>
+            `<button class="esc ${p===st.parcelas?"on":""}" data-parc="${p}">${p}x</button>`).join("")}</div>
+        </div>
+      </div>
+      <div class="passo">
+        <div class="passo-n"><i>5</i><b>Entrou aparelho na troca?</b><small>opcional</small></div>
+        <div class="campo"><input id="vTroca" placeholder="Ex.: iPhone 11 64GB — cadastrar depois" autocomplete="off"></div>
+      </div>
+      <div class="resumo" id="vResumo"></div>`;
+    autocomplete($("#vCli"), $("#vCliLista"),
+      q => clientes.filter(c=>c.nome.toLowerCase().includes(q))
+            .map(c=>({titulo:c.nome, sub:c.fone, det:c.compras?`${c.compras} compras`:"primeira compra", valor:c.nome})),
+      o => { st.cliente=o.valor; $("#vCli").value=o.valor; resumo(); });
+    $("#vCli").addEventListener("input", e=>{st.cliente=e.target.value; resumo();});
+    $("#vPreco").oninput = e=>{st.preco=+e.target.value.replace(/\D/g,"")||0; resumo();};
+    $("#vForma").onclick = e=>{const b=e.target.closest("[data-forma]"); if(!b)return;
+      st.forma=b.dataset.forma; $$("#vForma .esc").forEach(x=>x.classList.toggle("on",x===b));
+      $("#vParc").style.display = (st.forma==="Cartão"||st.forma==="Carnê da loja") ? "" : "none";
+      if(st.forma==="Pix"||st.forma==="Dinheiro") st.parcelas=1;
+      resumo();};
+    $("#vParc").onclick = e=>{const b=e.target.closest("[data-parc]"); if(!b)return;
+      st.parcelas=+b.dataset.parc; $$("#vParc .esc").forEach(x=>x.classList.toggle("on",x===b)); resumo();};
+    $("#vTroca").oninput = e=>{st.trocaTexto=e.target.value;};
+    resumo();
+  }
+
+  function resumo(){
+    const a=st.ap, lucro=st.preco-a.custo;
+    const parc = st.parcelas>1 ? st.preco/st.parcelas : 0;
+    $("#vResumo").innerHTML=`
+      <div class="res-l"><span>${a.modelo} · ${a.arm} · ${a.cor}</span><span>${a.cond}</span></div>
+      <div class="res-l"><span>Você pagou nesse aparelho</span><span>${brl(a.custo)}</span></div>
+      <div class="res-l total"><span>Venda</span><span>${brl(st.preco)}</span></div>
+      ${parc?`<div class="res-l"><span>${st.parcelas}x de</span><span>${brlc(parc)}</span></div>`:""}
+      <div class="res-l"><span>Seu lucro nessa venda</span>
+        <span class="${lucro>0?"lucro":"desconto"}">${brl(lucro)}</span></div>
+      ${st.trocaTexto?`<div class="res-nota">Entra na troca: ${st.trocaTexto} — lembre de dar entrada nele depois.</div>`:""}`;
+    const ok = st.cliente.trim().length>1 && st.preco>0;
+    const b=$("#vSalvar"); b.disabled=!ok; b.style.opacity=ok?"1":".4";
+    b.onclick = ok ? confirmar : null;
+  }
+
+  function confirmar(){
+    const a=st.ap;
+    a.vendido=true;
+    const forma = st.parcelas>1 ? `${st.forma} ${st.parcelas}x` : st.forma;
+    const mov = {data:"12/08/2026",tipo:"Saída",apar:`${a.modelo} · ${a.arm}`,imei:a.imei,
+      quem:st.cliente,valor:st.preco,forma,vend:"Você",cli:st.cliente};
+    movs.unshift(mov);
+    fecharModal(); atualizarTudo();
+    aviso(`Venda registrada: ${a.modelo} para ${st.cliente}.`, ()=>abrirNota("venda",mov));
+  }
+}
+
+/* aviso curto no rodapé, com ação opcional */
+function aviso(txt, acao){
+  const d=el("div","", `<span>${txt}</span>${acao?`<button class="btn btn-p btn-sm" style="margin-left:14px">Ver nota</button>`:""}`);
+  d.style.cssText=`position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:300;
+    background:var(--elevado);border:1px solid var(--linha-forte);border-radius:14px;padding:13px 18px;
+    box-shadow:0 18px 48px rgba(0,0,0,.7);display:flex;align-items:center;font-size:13px;letter-spacing:-.01em`;
+  document.body.appendChild(d);
+  if(acao) d.querySelector("button").onclick=()=>{acao(); d.remove();};
+  setTimeout(()=>{d.style.transition="opacity .4s";d.style.opacity="0";setTimeout(()=>d.remove(),400)},acao?7000:3600);
+}
+
+/* redesenha tudo que depende do estoque */
+function atualizarTudo(){
+  pintaKpiEstoque(); pintaAparelhos(); pintaRoscas(); pintaMovs();
+}
+
+document.addEventListener("click",e=>{
+  const v=e.target.closest("[data-vender]");
+  if(v){ wizVenda(v.dataset.vender); return; }
 });
 
 /* ============================================================
@@ -1411,6 +2059,9 @@ const MODAIS={
 };
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-modal]"); if(!b) return;
+  /* entrada e saída têm assistente próprio — não caem no formulário genérico */
+  if(b.dataset.modal==="entrada"){ wizEntrada(); return; }
+  if(b.dataset.modal==="saida"){   wizVenda();   return; }
   const m=MODAIS[b.dataset.modal]; if(!m) return;
   $("#modal").innerHTML=`<h3>${m.t}</h3><div class="dsc">${m.dsc||m.d}</div>`+
     m.c.map(([rot,tipo,extra])=>`<div class="campo"><label>${rot}</label>`+
