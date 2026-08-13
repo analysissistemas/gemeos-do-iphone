@@ -49,6 +49,15 @@ comprovante pronto para imprimir ou salvar em PDF.
   sinal de estado (verde disponível, amarelo acabando, vermelho acabou) e
   sempre acompanhada de texto — nunca cor sozinha, para funcionar também para
   quem não distingue cores.
+- **Dois temas, claro e escuro**, com o botão ☀/☾ na barra de cima. A escolha
+  fica gravada no navegador. Cada tema tem a **sua** paleta, medida contra a
+  **sua** superfície (`validar_cores.py` para o escuro, `_tema_claro.py` para
+  o claro) — o claro não é o escuro invertido no olho. No claro a rampa perdeu
+  o degrau mais claro, que só dava 1,68:1 no branco.
+  - **Marcas de gráfico usam classe CSS, nunca cor escrita no SVG**
+    (`.mk-f`, `.mk-s`, `.mk-stop`…). Se alguém escrever `fill="#f5f5f7"` direto
+    numa barra, ela vira branca no branco e some. É a regra mais fácil de
+    quebrar sem perceber aqui.
 - **Referências:** o site da Apple (tipografia grande, respiro, preto absoluto,
   parallax) e dois painéis do Pinterest escolhidos pelo dono — um dashboard
   claro com mini-gráficos nos indicadores, e o visual de vidro fosco do

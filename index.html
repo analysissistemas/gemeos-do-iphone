@@ -46,6 +46,9 @@
   --brilho:       inset 0 1px 0 rgba(255,255,255,.10);
   --grade:        #2c2c2a;
   --trilho:       rgba(255,255,255,0.04);
+  --cabecalho:    rgba(12,12,12,0.82);
+  --nav-fundo:    rgba(10,10,10,0.72);
+  --side-fundo:   rgba(10,10,10,0.55);
 
   --sidebar: 248px;
   --nav-h: 52px;
@@ -86,6 +89,9 @@
   --brilho:       inset 0 1px 0 rgba(255,255,255,.9);
   --grade:        #e1e1e4;
   --trilho:       rgba(0,0,0,0.055);
+  --cabecalho:    rgba(250,250,252,0.88);
+  --nav-fundo:    rgba(255,255,255,0.72);
+  --side-fundo:   rgba(255,255,255,0.60);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -106,8 +112,30 @@ body::before{
     radial-gradient(42% 34% at 88% 22%, rgba(255,255,255,0.055), transparent 64%),
     radial-gradient(56% 44% at 62% 96%, rgba(255,255,255,0.045), transparent 66%);
 }
+/* No tema claro a luz precisa ser SOMBRA, não brilho: manchas brancas sobre
+   fundo branco não existem. Aqui o vidro pega tons de cinza levíssimos. */
+:root[data-theme="light"] body::before{
+  background:
+    radial-gradient(48% 38% at 14% 8%,  rgba(0,0,0,0.055), transparent 62%),
+    radial-gradient(42% 34% at 88% 22%, rgba(0,0,0,0.035), transparent 64%),
+    radial-gradient(56% 44% at 62% 96%, rgba(0,0,0,0.030), transparent 66%);
+}
 .wrap,.nav,.side{position:relative;z-index:1}
-::selection{background:var(--ink);color:var(--preto)}
+
+/* A logo é branca; no tema claro entra a versão preta. Trocar por CSS (e não
+   por JavaScript) faz a troca ser instantânea, sem piscar a imagem antiga. */
+.logo-claro{display:none}
+:root[data-theme="light"] .logo-escuro{display:none}
+:root[data-theme="light"] .logo-claro{display:block}
+
+/* botão de tema */
+.tema{
+  width:30px;height:30px;border-radius:9px;border:1px solid var(--linha);
+  background:transparent;color:var(--ink-2);cursor:pointer;font-size:13px;
+  display:grid;place-items:center;transition:.2s;font-family:inherit;flex:none;
+}
+.tema:hover{background:var(--vidro-forte);color:var(--ink);border-color:var(--linha-forte)}
+::selection{background:var(--ink);color:var(--contra-ink)}
 
 /* scrollbar discreta */
 ::-webkit-scrollbar{width:10px;height:10px}
@@ -118,7 +146,7 @@ body::before{
 /* ---------- NAV superior (vidro fosco, igual apple.com) ---------- */
 .nav{
   position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;
-  background:rgba(10,10,10,0.72);
+  background:var(--nav-fundo);
   backdrop-filter:saturate(180%) blur(20px);
   -webkit-backdrop-filter:saturate(180%) blur(20px);
   border-bottom:1px solid var(--linha);
@@ -140,14 +168,14 @@ body::before{
 .busca input{background:none;border:none;outline:none;color:var(--ink);font:inherit;font-size:12.5px;width:100%}
 .busca input::placeholder{color:var(--ink-3)}
 .avatar{
-  width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--preto);
+  width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--contra-ink);
   display:grid;place-items:center;font-size:11px;font-weight:700;letter-spacing:-.02em;
 }
 
 /* ---------- SIDEBAR ---------- */
 .side{
   position:fixed;top:var(--nav-h);bottom:0;left:0;width:var(--sidebar);z-index:90;
-  background:rgba(10,10,10,0.55);
+  background:var(--side-fundo);
   backdrop-filter:blur(30px) saturate(170%);-webkit-backdrop-filter:blur(30px) saturate(170%);
   border-right:1px solid var(--linha);
   padding:22px 12px;overflow-y:auto;
@@ -163,7 +191,7 @@ body::before{
 .item.on{background:rgba(255,255,255,0.10);color:var(--ink);font-weight:550}
 .item.on::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:16px;background:var(--ink);border-radius:0 3px 3px 0}
 .item .ic{width:17px;text-align:center;opacity:.9;flex:none}
-.item .tag{margin-left:auto;font-size:10.5px;background:var(--ink);color:var(--preto);border-radius:20px;padding:1px 7px;font-weight:700}
+.item .tag{margin-left:auto;font-size:10.5px;background:var(--ink);color:var(--contra-ink);border-radius:20px;padding:1px 7px;font-weight:700}
 
 /* ---------- LAYOUT ---------- */
 .wrap{margin-left:var(--sidebar);padding-top:var(--nav-h)}
@@ -222,7 +250,7 @@ body::before{
   font-family:inherit;transition:transform .2s,background .2s,opacity .2s;
 }
 .btn:active{transform:scale(.97)}
-.btn-p{background:var(--ink);color:var(--preto)}
+.btn-p{background:var(--ink);color:var(--contra-ink)}
 .btn-p:hover{opacity:.86}
 .btn-s{background:transparent;color:var(--ink);border-color:var(--linha-forte)}
 .btn-s:hover{background:rgba(255,255,255,0.08)}
@@ -286,7 +314,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 thead th{
   text-align:left;padding:13px 18px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--linha);white-space:nowrap;
-  background:rgba(12,12,12,0.82);backdrop-filter:blur(12px);position:sticky;top:0;
+  background:var(--cabecalho);backdrop-filter:blur(12px);position:sticky;top:0;
 }
 tbody td{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.05);letter-spacing:-.01em;white-space:nowrap}
 tbody tr{transition:background .18s}
@@ -313,7 +341,7 @@ tbody tr:last-child td{border-bottom:none}
 .et-bar{height:42px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;position:relative}
 .et-fill{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:14px;
   transition:width 1.1s cubic-bezier(.16,1,.3,1);width:0}
-.et-fill span{font-size:13px;font-weight:650;color:var(--preto);letter-spacing:-.01em}
+.et-fill span{font-size:13px;font-weight:650;color:var(--contra-ink);letter-spacing:-.01em}
 .et-conv{text-align:right;font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 
 /* ---------- KANBAN ---------- */
@@ -341,12 +369,25 @@ tbody tr:last-child td{border-bottom:none}
 .neg .vl{font-size:13.5px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .zap{margin-left:auto;width:24px;height:24px;border-radius:6px;border:1px solid var(--linha);
   background:rgba(255,255,255,0.05);display:grid;place-items:center;font-size:11px;cursor:pointer;transition:.2s}
-.zap:hover{background:var(--ink);color:var(--preto)}
+.zap:hover{background:var(--ink);color:var(--contra-ink)}
 
 /* ---------- GRÁFICO ---------- */
 .viz{position:relative}
 .viz svg{display:block;width:100%;overflow:visible}
-.gl{stroke:#2c2c2a;stroke-width:1}
+.gl{stroke:var(--grade);stroke-width:1}
+/* Marcas dos gráficos por CLASSE, nunca por cor escrita no atributo.
+   É o que faz o gráfico virar junto com o tema: no claro a marca precisa ser
+   escura, no escuro clara — se a cor ficasse fixa no SVG, o gráfico sumiria
+   ao trocar de tema. */
+.mk-f{fill:var(--ink)}
+.mk-f2{fill:var(--ink-3)}
+.mk-s{stroke:var(--ink)}
+.mk-stop{stop-color:var(--ink)}
+.mk-anel{stroke:var(--superficie)}
+.mk-trilho{fill:var(--trilho)}
+.mk-trilho-s{stroke:var(--trilho)}
+.mk-eixo{fill:var(--ink-3)}
+.mk-val{fill:var(--ink)}
 .eixo{fill:var(--ink-3);font-size:10.5px;font-variant-numeric:tabular-nums}
 .dica{
   position:absolute;pointer-events:none;opacity:0;transition:opacity .15s;
@@ -367,7 +408,7 @@ tbody tr:last-child td{border-bottom:none}
   color:var(--ink-2);font-size:12.5px;cursor:pointer;font-family:inherit;transition:.2s;letter-spacing:-.01em;
 }
 .chip:hover{border-color:var(--linha-forte);color:var(--ink)}
-.chip.on{background:var(--ink);color:var(--preto);border-color:var(--ink);font-weight:600}
+.chip.on{background:var(--ink);color:var(--contra-ink);border-color:var(--ink);font-weight:600}
 .mini{width:34px;height:44px;border-radius:6px;border:1px solid var(--linha-forte);
   background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.02));flex:none;position:relative}
 .mini::after{content:"";position:absolute;top:3px;left:50%;transform:translateX(-50%);width:12px;height:2.5px;background:#000;border-radius:3px}
@@ -384,8 +425,8 @@ tbody tr:last-child td{border-bottom:none}
 /* ---------- MOVIMENTAÇÃO ---------- */
 .mov{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600}
 .mov .sg{width:19px;height:19px;border-radius:5px;display:grid;place-items:center;font-size:11px;font-weight:800}
-.ent .sg{background:var(--good);color:#000}
-.sai .sg{background:var(--ink);color:#000}
+.ent .sg{background:var(--good);color:#fff}
+.sai .sg{background:var(--ink);color:var(--contra-ink)}
 
 /* ---------- VAZIO / AVISO ---------- */
 .aviso{
@@ -521,7 +562,8 @@ tbody tr:last-child td{border-bottom:none}
 <!-- ================= NAV ================= -->
 <nav class="nav">
   <div class="marca">
-    <img src="logo-gemeos.png" alt="Gêmeos do iPhone" class="logo-nav">
+    <img src="logo-gemeos.png"       alt="Gêmeos do iPhone" class="logo-nav logo-escuro">
+    <img src="logo-gemeos-preta.png" alt="Gêmeos do iPhone" class="logo-nav logo-claro">
   </div>
   <div class="nav-sep"></div>
   <span class="nav-ctx" id="navCtx">Visão Geral</span>
@@ -530,6 +572,7 @@ tbody tr:last-child td{border-bottom:none}
       <span style="color:var(--ink-3);font-size:12px">⌕</span>
       <input placeholder="Buscar cliente, IMEI, aparelho…" id="buscaGlobal">
     </div>
+    <button class="tema" id="btTema" title="Trocar entre tema claro e escuro" aria-label="Trocar tema"></button>
     <div class="avatar">GI</div>
   </div>
 </nav>
@@ -564,7 +607,8 @@ tbody tr:last-child td{border-bottom:none}
       <div class="fone dir" id="pxD"></div>
     </div>
     <div class="hero-txt" id="pxTxt">
-      <img src="logo-gemeos.png" alt="Gêmeos do iPhone" class="logo-hero">
+      <img src="logo-gemeos.png"       alt="Gêmeos do iPhone" class="logo-hero logo-escuro">
+      <img src="logo-gemeos-preta.png" alt="Gêmeos do iPhone" class="logo-hero logo-claro">
       <h1>Dois olhos<br>no seu negócio.</h1>
       <p>CRM, funil de vendas, estoque e caixa da loja — em um só lugar, em tempo real.
       Carpina e Goiana, Pernambuco.</p>
@@ -1065,6 +1109,37 @@ const $  = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const el = (t,c,h) => {const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
 
+/* ============================================================
+   TEMA CLARO / ESCURO
+   A escolha fica gravada no navegador — quem prefere claro abre sempre claro.
+   Sem escolha salva, segue o tema do próprio computador (Windows/Mac).
+   Os gráficos não precisam ser redesenhados: as marcas usam classe CSS, então
+   viram junto sozinhas.
+   ============================================================ */
+const TEMA_CHAVE = "gemeos-tema";
+function lerTema(){
+  try{ return localStorage.getItem(TEMA_CHAVE); }catch(e){ return null; }  // file:// pode bloquear
+}
+function aplicarTema(t){
+  document.documentElement.setAttribute("data-theme", t);
+  const b = $("#btTema");
+  if(b){
+    b.textContent = t==="light" ? "☾" : "☀";
+    b.title = t==="light" ? "Mudar para o tema escuro" : "Mudar para o tema claro";
+  }
+}
+function temaAtual(){
+  return lerTema()
+      || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+}
+aplicarTema(temaAtual());
+document.addEventListener("click", e=>{
+  if(!e.target.closest("#btTema")) return;
+  const novo = document.documentElement.getAttribute("data-theme")==="light" ? "dark" : "light";
+  aplicarTema(novo);
+  try{ localStorage.setItem(TEMA_CHAVE, novo); }catch(err){}
+});
+
 /* --- KPIs Visão Geral --- */
 /* série curta de tendência para o mini-gráfico do indicador */
 function serieCurta(n=14,sobe=true){
@@ -1082,11 +1157,11 @@ function sparkline(serie){
   const gid="sp"+Math.random().toString(36).slice(2,8);
   return `<div class="spark"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
     <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f5f5f7" stop-opacity=".30"/>
-      <stop offset="100%" stop-color="#f5f5f7" stop-opacity="0"/></linearGradient></defs>
+      <stop class="mk-stop" offset="0%" stop-opacity=".30"/>
+      <stop class="mk-stop" offset="100%" stop-opacity="0"/></linearGradient></defs>
     <path d="${area}" fill="url(#${gid})"/>
-    <path d="${d}" fill="none" stroke="#f5f5f7" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-    <circle cx="${W}" cy="${y(serie.at(-1))}" r="2.6" fill="#f5f5f7"/></svg></div>`;
+    <path class="mk-s" d="${d}" fill="none" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    <circle class="mk-f" cx="${W}" cy="${y(serie.at(-1))}" r="2.6"/></svg></div>`;
 }
 function kpi(rot,val,pe,dir,comSpark){
   return `<div class="card kpi hov">
@@ -1131,11 +1206,11 @@ function grafReceita(){
       data-t="${d.m}/26" data-v="${brl(d.v)}" data-x="${x(i)}" data-y="${y(d.v)}"/>`).join("");
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Receita por mês">
     <defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f5f5f7" stop-opacity=".26"/><stop offset="100%" stop-color="#f5f5f7" stop-opacity="0"/>
+      <stop class="mk-stop" offset="0%" stop-opacity=".26"/><stop class="mk-stop" offset="100%" stop-opacity="0"/>
     </linearGradient></defs>${g}
     <path d="${area}" fill="url(#gr)"/>
-    <path d="${linha}" fill="none" stroke="#f5f5f7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-    <circle cx="${x(receita.length-1)}" cy="${y(receita.at(-1).v)}" r="4.5" fill="#f5f5f7" stroke="#141414" stroke-width="2"/>
+    <path class="mk-s" d="${linha}" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle class="mk-f mk-anel" cx="${x(receita.length-1)}" cy="${y(receita.at(-1).v)}" r="4.5" stroke-width="2"/>
     ${rot}${pts}</svg><div class="dica" id="dicaR"></div>`;
 }
 $("#vizReceita").innerHTML=grafReceita();
@@ -1149,10 +1224,10 @@ function grafModelos(){
     topModelos.map((d,i)=>{
       const w=(d.v/max)*iw, yy=P.t+i*bh+2, h=bh-6;
       return `<text class="eixo" x="${P.l-11}" y="${yy+h/2+3.5}" text-anchor="end" style="font-size:11px;fill:var(--ink-2)">${d.n}</text>
-        <rect x="${P.l}" y="${yy}" width="${iw}" height="${h}" rx="4" fill="rgba(255,255,255,0.04)"/>
-        <rect x="${P.l}" y="${yy}" width="${w}" height="${h}" rx="4" fill="#f5f5f7" class="hit"
+        <rect class="mk-trilho" x="${P.l}" y="${yy}" width="${iw}" height="${h}" rx="4"/>
+        <rect class="hit mk-f" x="${P.l}" y="${yy}" width="${w}" height="${h}" rx="4"
           data-t="${d.n}" data-v="${d.v} unidades" data-x="${P.l+w}" data-y="${yy+h/2}"/>
-        <text class="eixo" x="${P.l+w+9}" y="${yy+h/2+3.5}" style="fill:var(--ink)">${d.v}</text>`;
+        <text class="eixo mk-val" x="${P.l+w+9}" y="${yy+h/2+3.5}">${d.v}</text>`;
     }).join("") + `</svg><div class="dica" id="dicaM"></div>`;
 }
 $("#vizModelos").innerHTML=grafModelos();
@@ -1328,7 +1403,7 @@ function rosca(dados, sufixo){
     ${d.n} <b style="color:var(--ink);margin-left:3px">${Math.round(d.v/total*100)}%</b></span>`).join("");
   return `<div style="display:flex;align-items:center;gap:26px;flex-wrap:wrap;margin-top:14px">
     <svg viewBox="0 0 ${S} ${S}" style="width:190px;height:190px;flex:none;overflow:visible" role="img" aria-label="Composição">
-      <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="${esp}"/>
+      <circle class="mk-trilho-s" cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke-width="${esp}"/>
       ${arcos}
       <text x="${cx}" y="${cy-4}" text-anchor="middle" style="fill:var(--ink);font-size:21px;font-weight:650;letter-spacing:-.02em">${total>9999?Math.round(total/1000)+"k":total}</text>
       <text x="${cx}" y="${cy+14}" text-anchor="middle" style="fill:var(--ink-3);font-size:10px;letter-spacing:.09em">${sufixo}</text>
@@ -1396,11 +1471,11 @@ function grafReceber(){
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="A receber por forma de pagamento">`+
     dados.map((d,i)=>{const w=(d.v/max)*iw,yy=P.t+i*bh+6,h=bh-14;
       return `<text class="eixo" x="${P.l-11}" y="${yy+h/2+3.5}" text-anchor="end" style="font-size:11.5px;fill:var(--ink-2)">${d.n}</text>
-        <rect x="${P.l}" y="${yy}" width="${iw}" height="${h}" rx="4" fill="rgba(255,255,255,0.04)"/>
-        <rect x="${P.l}" y="${yy}" width="${w}" height="${h}" rx="4" fill="#f5f5f7" class="hit"
+        <rect class="mk-trilho" x="${P.l}" y="${yy}" width="${iw}" height="${h}" rx="4"/>
+        <rect class="hit mk-f" x="${P.l}" y="${yy}" width="${w}" height="${h}" rx="4"
           data-t="${d.n}" data-v="${brl(d.v)}" data-x="${P.l+w}" data-y="${yy+h/2}"/>`;}).join("")+
     dados.map((d,i)=>{const w=(d.v/max)*iw,yy=P.t+i*bh+6,h=bh-14;
-      return `<text class="eixo" x="${P.l+w+9}" y="${yy+h/2+3.5}" style="fill:var(--ink);font-size:11.5px">${brl(d.v)}</text>`;}).join("")+
+      return `<text class="eixo mk-val" x="${P.l+w+9}" y="${yy+h/2+3.5}" style="font-size:11.5px">${brl(d.v)}</text>`;}).join("")+
     `</svg><div class="dica" id="dicaP"></div>`;
 }
 $("#vizReceber").innerHTML=grafReceber();
@@ -1418,16 +1493,16 @@ function grafFluxo(){
   const barras=dados.map((d,i)=>{
     const x0=P.l+i*gw+8;
     const he=(d.ent/max)*ih, hs=(d.sai/max)*ih;
-    return `<rect x="${x0}" y="${P.t+ih-he}" width="${bw}" height="${he}" rx="4" fill="#f5f5f7" class="hit"
+    return `<rect class="hit mk-f" x="${x0}" y="${P.t+ih-he}" width="${bw}" height="${he}" rx="4"
               data-t="${d.m} · entrou" data-v="${brl(d.ent)}" data-x="${x0+bw/2}" data-y="${P.t+ih-he}"/>
-            <rect x="${x0+bw+2}" y="${P.t+ih-hs}" width="${bw}" height="${hs}" rx="4" fill="#6e6e73" class="hit"
+            <rect class="hit mk-f2" x="${x0+bw+2}" y="${P.t+ih-hs}" width="${bw}" height="${hs}" rx="4"
               data-t="${d.m} · saiu" data-v="${brl(d.sai)}" data-x="${x0+bw*1.5+2}" data-y="${P.t+ih-hs}"/>
             <text class="eixo" x="${x0+bw+1}" y="${H-11}" text-anchor="middle">${d.m}</text>`;
   }).join("");
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Entrou versus saiu">${g}${barras}</svg>
     <div class="leg">
-      <span class="leg-i"><span class="sw" style="background:#f5f5f7"></span>Entrou</span>
-      <span class="leg-i"><span class="sw" style="background:#6e6e73"></span>Saiu</span>
+      <span class="leg-i"><span class="sw" style="background:var(--ink)"></span>Entrou</span>
+      <span class="leg-i"><span class="sw" style="background:var(--ink-3)"></span>Saiu</span>
     </div><div class="dica" id="dicaF"></div>`;
 }
 $("#vizFluxo").innerHTML=grafFluxo();
