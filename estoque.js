@@ -312,9 +312,17 @@ function semAcento(s){
    Para uma cor específica: fotos/iphone-15-pro-titanio-azul.jpg
    ============================================================ */
 const FOTOS = {
-  /* combinação exata modelo + cor */
+  /* iPhone 11 — as seis cores, recortadas uma a uma do anúncio da loja.
+     É o que faz o clique na bolinha trocar a foto de verdade. */
+  "iPhone 11|Preto":     "fotos/iphone-11-preto.jpg",
+  "iPhone 11|Branco":    "fotos/iphone-11-branco.jpg",
+  "iPhone 11|Verde":     "fotos/iphone-11-verde.jpg",
+  "iPhone 11|Amarelo":   "fotos/iphone-11-amarelo.jpg",
+  "iPhone 11|Roxo":      "fotos/iphone-11-roxo.jpg",
+  "iPhone 11|Vermelho":  "fotos/iphone-11-vermelho.jpg",
+
+  /* outras combinações exatas de modelo + cor */
   "iPhone 12 Pro Max|Azul-pacífico": "fotos/iphone-12-pro-max-azul-pacifico.jpg",
-  "iPhone 11|Preto":                 "fotos/iphone-11-preto.jpg",
   "iPhone 12|Roxo":                  "fotos/iphone-12-roxo.jpg",
 
   /* o modelo, em qualquer cor */
