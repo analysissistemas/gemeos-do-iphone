@@ -61,7 +61,11 @@ const CATALOGO = {
   /* Cores REAIS da linha 17 — ela não usa titânio como o 15 e o 16 Pro.
      O 17 Pro é Prata, Laranja-cósmico e Azul-profundo; o 17 tem Lavanda,
      Sálvia, Azul-névoa, Branco e Preto. */
+  "iPhone 16e":       {arm:["128GB","256GB","512GB"],           cor:["Preto","Branco"],                                                  base: 3400},
   "iPhone 17":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul-névoa","Lavanda","Sálvia"],                  base: 5400},
+  "iPhone 17e":       {arm:["128GB","256GB","512GB"],           cor:["Preto","Branco","Rosa-suave"],                                     base: 4200},
+  /* o Air e uma linha propria: o mais fino da Apple, entre o 17 e o 17 Pro */
+  "iPhone Air":       {arm:["256GB","512GB","1TB"],             cor:["Preto-espacial","Branco-nuvem","Dourado-claro","Azul-celeste"],    base: 6400},
   "iPhone 17 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Prata","Laranja-cósmico","Azul-profundo"],                         base: 6900},
   "iPhone 17 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Prata","Laranja-cósmico","Azul-profundo"],                         base: 7900},
   "iPhone 18":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Verde"],                                   base: 6200},
@@ -157,6 +161,14 @@ const CAT_MAC = {
   "MacBook Air 15\" M3":  {var:["256GB","512GB","1TB"], cor:["Cinza-espacial","Estelar","Meia-noite","Prata"], base:7200},
   "MacBook Pro 14\" M4":  {var:["512GB","1TB"],         cor:["Preto-espacial","Prata"],                        base:11500}
 };
+const CAT_IPAD = {
+  "iPad (11ª geração)": {var:["128GB","256GB","512GB"],      cor:["Prata","Azul","Rosa","Amarelo"],            base:2900},
+  "iPad mini (A17 Pro)":{var:["128GB","256GB","512GB"],      cor:["Cinza-espacial","Estelar","Roxo","Azul"],   base:4200},
+  "iPad Air 11\" M3":   {var:["128GB","256GB","512GB","1TB"],cor:["Cinza-espacial","Estelar","Roxo","Azul"],   base:5300},
+  "iPad Air 13\" M3":   {var:["128GB","256GB","512GB","1TB"],cor:["Cinza-espacial","Estelar","Roxo","Azul"],   base:7100},
+  "iPad Pro 11\" M4":   {var:["256GB","512GB","1TB","2TB"],  cor:["Preto-espacial","Prata"],                   base:9200},
+  "iPad Pro 13\" M4":   {var:["256GB","512GB","1TB","2TB"],  cor:["Preto-espacial","Prata"],                   base:12400}
+};
 const CAT_MOTO = {
   "Motinha Elétrica Kids 6V":   {var:["Única"], cor:["Vermelho","Preto","Rosa","Azul"],  base: 750},
   "Motinha Elétrica Kids 12V":  {var:["Única"], cor:["Vermelho","Preto","Rosa","Azul"],  base:1250},
@@ -215,6 +227,7 @@ function _gerarQuantidade(catalogo, categoria){
 }
 
 const WATCHES     = _gerarPecas(CAT_WATCH, "Apple Watch", COND);
+const IPADS       = _gerarPecas(CAT_IPAD,  "iPad",        ["Novo (lacrado)","Seminovo","Vitrine"]);
 const MACBOOKS    = _gerarPecas(CAT_MAC,   "MacBook",     ["Novo (lacrado)","Seminovo","Vitrine"]);
 const MOTOS       = _gerarQuantidade(CAT_MOTO, "Motos elétricas");
 const ACESSORIOS  = _gerarQuantidade(CAT_ACES, "Acessórios");
@@ -223,11 +236,12 @@ const ACESSORIOS  = _gerarQuantidade(CAT_ACES, "Acessórios");
 APARELHOS.forEach(a => a.categoria = "iPhone");
 
 /* tudo o que a loja vende, numa lista só */
-const PRODUTOS = [...APARELHOS, ...WATCHES, ...MACBOOKS, ...MOTOS, ...ACESSORIOS];
+const PRODUTOS = [...APARELHOS, ...IPADS, ...WATCHES, ...MACBOOKS, ...MOTOS, ...ACESSORIOS];
 
 /* as seções do catálogo, na ordem em que aparecem para o cliente */
 const CATEGORIAS = [
-  {nome:"iPhone",          titulo:"iPhone",           sub:"Lacrados e seminovos, do 7 ao 18 Pro Max.",              catalogo:CATALOGO,  campoVar:"arm"},
+  {nome:"iPhone",          titulo:"iPhone",           sub:"Lacrados e seminovos, do 7 ao 18 Pro Max — mais o Air e a linha e.", catalogo:CATALOGO,  campoVar:"arm"},
+  {nome:"iPad",            titulo:"iPad",             sub:"iPad, mini, Air e Pro para estudo, trabalho e desenho.", catalogo:CAT_IPAD,  campoVar:"var"},
   {nome:"Apple Watch",     titulo:"Apple Watch",      sub:"SE, Series e Ultra, com pulseira à sua escolha.",        catalogo:CAT_WATCH, campoVar:"var"},
   {nome:"MacBook",         titulo:"MacBook",          sub:"Air e Pro com configurações para estudo e trabalho.",    catalogo:CAT_MAC,   campoVar:"var"},
   {nome:"Acessórios",      titulo:"Acessórios",       sub:"AirPods, carregadores, capas, caixas de som e mais.",    catalogo:CAT_ACES,  campoVar:"var"},

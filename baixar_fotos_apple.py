@@ -37,6 +37,14 @@ MODELOS = {
     "iPhone 17": ("iphone-17", ["202509"], {
         "Preto": "black", "Branco": "white", "Azul-névoa": "mistblue",
         "Lavanda": "lavender", "Sálvia": "sage"}),
+    # linha "e" (mais em conta) e o Air (o mais fino)
+    "iPhone 17e": ("iphone-17e", ["202603", "202602"], {
+        "Preto": "black", "Branco": "white", "Rosa-suave": "softpink"}),
+    "iPhone 16e": ("iphone-16e", ["202502", "202503"], {
+        "Preto": "black", "Branco": "white"}),
+    "iPhone Air": ("iphone-air", ["202509"], {
+        "Preto-espacial": "spaceblack", "Branco-nuvem": "cloudwhite",
+        "Dourado-claro": "lightgold", "Azul-celeste": "skyblue"}),
 
     "iPhone 16 Pro Max": ("iphone-16-pro-max", ["202409"], {
         "Titânio Natural": "naturaltitanium", "Titânio Preto": "blacktitanium",
@@ -101,10 +109,37 @@ def variantes_de_cor(cor):
     return list(dict.fromkeys(v))          # sem repetir, mantendo a ordem
 
 
+# Fora do iPhone, cada linha da Apple nomeia o arquivo de um jeito. Em vez de
+# tentar uma regra geral, aqui vai o molde exato de cada modelo: {cor} e o
+# unico buraco a preencher.
+MODELOS_EXATOS = {
+    "iPad Pro 11\" M4":     ("ipad-pro-11-select-wifi-{cor}-202405",
+                             {"Preto-espacial": "spaceblack", "Prata": "silver"}),
+    "iPad Pro 13\" M4":     ("ipad-pro-13-select-wifi-{cor}-202405",
+                             {"Preto-espacial": "spaceblack", "Prata": "silver"}),
+    "iPad Air 11\" M3":     ("ipad-air-select-11in-wifi-{cor}-202405",
+                             {"Cinza-espacial": "spacegray", "Azul": "blue",
+                              "Roxo": "purple", "Estelar": "starlight"}),
+    "iPad Air 13\" M3":     ("ipad-air-select-13in-wifi-{cor}-202405",
+                             {"Cinza-espacial": "spacegray", "Azul": "blue",
+                              "Roxo": "purple", "Estelar": "starlight"}),
+    "iPad mini (A17 Pro)":  ("ipad-mini-select-wifi-{cor}-202410",
+                             {"Cinza-espacial": "spacegray", "Azul": "blue",
+                              "Roxo": "purple", "Estelar": "starlight"}),
+    "iPad (11ª geração)":   ("ipad-2022-hero-{cor}-wifi-select",
+                             {"Azul": "blue", "Rosa": "pink",
+                              "Amarelo": "yellow", "Prata": "silver"}),
+}
+
+
 def sem_acento(s):
+    """Precisa dar EXATAMENTE o mesmo resultado que a funcao semAcento() do
+    estoque.js — e o nome do arquivo que liga um ao outro. Cuidado com o
+    `isalnum()` do Python: ele aceita "ª" e "²" como letra, o JavaScript nao.
+    Por isso a regra aqui e apenas a-z e 0-9, nada mais."""
     s = unicodedata.normalize("NFD", s)
     s = "".join(c for c in s if unicodedata.category(c) != "Mn")
-    limpo = "".join(c if c.isalnum() else "-" for c in s.lower())
+    limpo = "".join(c if ("a" <= c <= "z" or "0" <= c <= "9") else "-" for c in s.lower())
     return "-".join(p for p in limpo.split("-") if p)
 
 
@@ -150,6 +185,25 @@ def main():
                 ok += 1
             else:
                 print(f"  ---   {nome}  (nenhum padrao/data respondeu)")
+                falhou += 1
+
+    # modelos com molde de nome exato (iPad, e o que mais for entrando)
+    for modelo, (molde, cores) in MODELOS_EXATOS.items():
+        for cor_site, cor_apple in cores.items():
+            nome = f"{sem_acento(modelo)}-{sem_acento(cor_site)}.png"
+            caminho = os.path.join(DESTINO, nome)
+            if os.path.exists(caminho):
+                pulou += 1
+                continue
+            dados = tentar(BASE + molde.format(cor=cor_apple) + QUERY)
+            time.sleep(0.2)
+            if dados:
+                with open(caminho, "wb") as f:
+                    f.write(dados)
+                print(f"  OK    {nome}  {len(dados)//1024} KB")
+                ok += 1
+            else:
+                print(f"  ---   {nome}")
                 falhou += 1
 
     print(f"\nbaixadas {ok} | sem foto {falhou} | ja existiam {pulou}")

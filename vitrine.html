@@ -535,10 +535,12 @@ a{color:inherit;text-decoration:none}
 <script src="estoque.js?v=3"></script>
 <script>
 /* ============================================================
-   ⚠️ TROQUE AQUI: o número que recebe as mensagens do site.
-   Formato: 55 + DDD + número, só dígitos. Ex.: 5581999998888
+   Número que recebe as mensagens do site.
+   Formato: 55 (Brasil) + DDD + número, só dígitos.
+   Hoje é o celular do dono; quando a loja tiver uma linha própria,
+   troque só esta linha.
    ============================================================ */
-const WHATSAPP = "5581999998888";
+const WHATSAPP = "5581993116436";
 
 const $ = s => document.querySelector(s);
 const brl  = n => "R$ " + n.toLocaleString("pt-BR",{maximumFractionDigits:0});

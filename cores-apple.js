@@ -54,7 +54,13 @@ const CORES_APPLE = {
   "Laranja-cósmico":      {hex:"#d2622c"},
   "Azul-profundo":        {hex:"#2f4257"},
   "Azul-névoa":           {hex:"#b9c8d4"},
-  "Sálvia":               {hex:"#c2cdb4"}
+  "Sálvia":               {hex:"#c2cdb4"},
+  "Rosa-suave":           {hex:"#efd6da", borda:true},
+
+  // iPhone Air
+  "Azul-celeste":         {hex:"#c9dce8", borda:true},
+  "Dourado-claro":        {hex:"#e6d9bf", borda:true},
+  "Branco-nuvem":         {hex:"#efedE8", borda:true}
 };
 
 /* cinza neutro para cor que ainda não está no mapa — nunca deixa a bolinha vazia */
