@@ -70,10 +70,20 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- HERO ---------- */
 .hero{position:relative;min-height:100svh;display:grid;place-items:center;text-align:center;overflow:hidden;background:var(--escuro)}
-.hero-fundo{position:absolute;inset:0;z-index:0}
-.hero-fundo img{width:100%;height:100%;object-fit:cover}
-.hero-fundo::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.75),rgba(0,0,0,.35) 42%,rgba(0,0,0,.6) 78%,var(--escuro) 100%)}
+.hero-fundo{position:absolute;inset:0;z-index:0;background:var(--escuro)}
+.hero-fundo img,
+.hero-fundo video{
+  width:100%;height:100%;object-fit:cover;
+  /* exposição baixa: o vídeo vira ambiente, não concorre com o texto.
+     brightness derruba a luz, contrast e saturate devolvem a cor que o
+     escurecimento rouba — sem isso o vídeo fica cinza e sujo. */
+  filter:brightness(.34) contrast(1.12) saturate(1.15);
+}
+/* duas camadas por cima: um véu parelho que garante o contraste mínimo do
+   texto, e um degradê que costura o fim do vídeo com o fundo da página */
+.hero-fundo::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.30);z-index:1}
+.hero-fundo::after{content:"";position:absolute;inset:0;z-index:2;
+  background:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,.28) 40%,rgba(0,0,0,.62) 78%,var(--escuro) 100%)}
 /* sem foto ainda: brilho suave para não ficar um retângulo preto morto */
 .hero-fundo.sem::after{background:
   radial-gradient(58% 46% at 50% 34%,rgba(255,255,255,.10),transparent 68%),
@@ -307,7 +317,13 @@ a{color:inherit;text-decoration:none}
 
 <header class="hero" id="topo">
   <div class="hero-fundo" id="heroFundo">
-    <img src="fotos/hero.jpg" alt="" onerror="this.parentElement.classList.add('sem');this.remove()">
+    <!-- muted + playsinline sao obrigatorios: sem os dois, o celular recusa
+         tocar sozinho e o fundo fica preto. autoplay so vale com muted. -->
+    <video id="heroVideo" autoplay muted loop playsinline preload="auto"
+           poster="fotos/iphone-17-pro-laranja-cosmico.png"
+           onerror="this.parentElement.classList.add('sem');this.remove()">
+      <source src="video/iphone-17-pro-hero.mp4" type="video/mp4">
+    </video>
   </div>
   <!-- iPhones flutuando nas laterais, cada um numa velocidade de parallax -->
   <div class="gemeas" aria-hidden="true">
@@ -688,6 +704,21 @@ document.addEventListener("click", e=>{
 /* ---------- MENU NO CELULAR ---------- */
 $("#menuMob").onclick = ()=> $("#links").classList.toggle("abre");
 $("#links").onclick   = ()=> $("#links").classList.remove("abre");
+
+/* ---------- VÍDEO DE FUNDO ----------
+   Pausa quando o hero sai da tela: vídeo rodando fora de vista só gasta
+   bateria do celular do cliente. E respeita quem pediu menos animação
+   no sistema — nesse caso nem toca. */
+(function(){
+  const v = $("#heroVideo");
+  if(!v) return;
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ v.pause(); return; }
+  const io = new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting) v.play().catch(()=>{});   // catch: alguns navegadores recusam sem gesto
+    else v.pause();
+  }), {threshold:0.05});
+  io.observe(v);
+})();
 
 /* ---------- PARALLAX DO HERO ----------
    Cada camada anda numa fração do scroll: fundo devagar, aparelhos médio,
