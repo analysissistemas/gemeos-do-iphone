@@ -321,6 +321,20 @@ const FOTOS = {
   "iPhone 11|Roxo":      "fotos/iphone-11-roxo.jpg",
   "iPhone 11|Vermelho":  "fotos/iphone-11-vermelho.jpg",
 
+  /* Fotos OFICIAIS da Apple, aparelho sozinho e fundo transparente,
+     baixadas por baixar_fotos_apple.py. Uma por modelo e por cor — é o que
+     faz o clique na bolinha trocar a foto nos modelos novos. */
+  "iPhone 17 Pro Max|Titânio Prata":   "fotos/iphone-17-pro-max-titanio-prata.png",
+  "iPhone 17 Pro Max|Titânio Natural": "fotos/iphone-17-pro-max-titanio-natural.png",
+  "iPhone 17 Pro Max|Titânio Preto":   "fotos/iphone-17-pro-max-titanio-preto.png",
+  "iPhone 17 Pro|Titânio Prata":       "fotos/iphone-17-pro-titanio-prata.png",
+  "iPhone 17 Pro|Titânio Natural":     "fotos/iphone-17-pro-titanio-natural.png",
+  "iPhone 17 Pro|Titânio Preto":       "fotos/iphone-17-pro-titanio-preto.png",
+  "iPhone 17|Preto":                   "fotos/iphone-17-preto.png",
+  "iPhone 17|Branco":                  "fotos/iphone-17-branco.png",
+  "iPhone 17|Azul":                    "fotos/iphone-17-azul.png",
+  "iPhone 17|Lavanda":                 "fotos/iphone-17-lavanda.png",
+
   /* outras combinações exatas de modelo + cor */
   "iPhone 12 Pro Max|Azul-pacífico": "fotos/iphone-12-pro-max-azul-pacifico.jpg",
   "iPhone 12|Roxo":                  "fotos/iphone-12-roxo.jpg",
@@ -339,14 +353,32 @@ const FOTOS = {
   "Redmi Note 13":                   "fotos/redmi-note-13.jpg"
 };
 
-/** Foto do produto: primeiro tenta modelo+cor, depois só o modelo.
- *  Devolve null quando não existe — e aí a tela desenha o contorno. */
+/** Foto do produto, na ordem: mapa explícito (modelo+cor), mapa por modelo,
+ *  e por fim o arquivo por convenção de nome — desde que ele realmente exista
+ *  (conferido em FOTOS_EXISTENTES, gerado por gerar_lista_fotos.py).
+ *  Devolve null quando não há foto, e aí a tela desenha o contorno. */
 function fotoDe(modelo, cor){
-  return FOTOS[`${modelo}|${cor}`] || FOTOS[modelo] || null;
+  const direto = FOTOS[`${modelo}|${cor}`] || FOTOS[modelo];
+  if(direto) return direto;
+  if(typeof FOTOS_EXISTENTES !== "undefined"){
+    for(const caminho of fotosPorNome(modelo, cor)){
+      if(FOTOS_EXISTENTES.has(caminho.replace("fotos/",""))) return caminho;
+    }
+  }
+  return null;
 }
-/** Caminho por convenção de nome, para as fotos que VOCÊ for acrescentando
- *  depois em fotos/ sem precisar mexer no código. */
-function fotoPorNome(modelo, cor){
-  return cor ? `fotos/${semAcento(modelo)}-${semAcento(cor)}.jpg`
-             : `fotos/${semAcento(modelo)}.jpg`;
+/** Caminhos por convenção de nome, na ordem em que devem ser tentados.
+ *  .png primeiro porque é o formato das fotos oficiais com fundo transparente
+ *  (baixar_fotos_apple.py); .jpg cobre as fotos tiradas na loja.
+ *  Serve para acrescentar foto nova sem mexer em código: basta salvar o
+ *  arquivo em fotos/ com o nome certo. */
+function fotosPorNome(modelo, cor){
+  const m = semAcento(modelo);
+  const lista = [];
+  if(cor){
+    const c = semAcento(cor);
+    lista.push(`fotos/${m}-${c}.png`, `fotos/${m}-${c}.jpg`);
+  }
+  lista.push(`fotos/${m}.png`, `fotos/${m}.jpg`);
+  return lista;
 }
