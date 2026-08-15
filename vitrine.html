@@ -530,9 +530,11 @@ a{color:inherit;text-decoration:none}
 <!-- O ?v= força o navegador a buscar a versão nova em vez de usar a guardada.
      Suba o número sempre que mexer nestes arquivos, senão você (e o cliente)
      continuam vendo a versão antiga sem entender por quê. -->
-<script src="cores-apple.js?v=4"></script>
-<script src="fotos-disponiveis.js?v=4"></script>
-<script src="estoque.js?v=4"></script>
+<script src="cores-apple.js?v=5"></script>
+<script src="fotos-disponiveis.js?v=5"></script>
+<!-- antes do estoque.js: é daqui que sai fotoDoProduto -->
+<script src="foto-produto.js?v=5"></script>
+<script src="estoque.js?v=5"></script>
 <script>
 /* ============================================================
    Número que recebe as mensagens do site.
@@ -609,6 +611,10 @@ function precoEscolhido(a){
    Nunca mostra foto de um modelo em anúncio de outro. */
 function fotoDupla(a){
   const e = esc(a);
+  /* A foto tirada na loja ganha de tudo: é a peça que o cliente vai receber,
+     e não a foto de fábrica de um aparelho perfeito. */
+  const propria = fotoManual(a.id);
+  if(propria) return `<img src="${propria}" alt="${a.modelo}" loading="lazy">`;
   const mapeada = fotoDe(a.modelo, e.cor);
   /* ordem: o mapa explícito, depois os nomes por convenção (png e jpg,
      com cor e sem cor). O que não existir dispara onerror e passa ao próximo. */
@@ -717,11 +723,8 @@ function pinta(){
     /* Quem tem foto aparece primeiro. Não é maquiagem: vitrine boa mostra
        primeiro o que está bem apresentado, e o resto continua logo abaixo,
        com o contorno, sem fingir ser outro modelo. */
-    const l = paraVitrine(c.nome).filter(combina).slice().sort((a,b)=>{
-      const fa = fotoDe(a.modelo, esc(a).cor) ? 0 : 1;
-      const fb = fotoDe(b.modelo, esc(b).cor) ? 0 : 1;
-      return fa - fb;
-    });
+    const temFoto = p => (fotoManual(p.id) || fotoDe(p.modelo, esc(p).cor)) ? 0 : 1;
+    const l = paraVitrine(c.nome).filter(combina).slice().sort((a,b)=>temFoto(a)-temFoto(b));
     if(!l.length) return "";
     const lim = limites[c.nome] || 8;
     return `<div class="${CATEGORIAS.indexOf(c)%2 ? "faixa-clara" : ""}">

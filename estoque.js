@@ -302,6 +302,30 @@ function definirPreco(id, valor){
 /** True se esse aparelho está com preço definido por você (e não pelo cálculo). */
 function precoManual(id){ return typeof _ler(_CHAVE_PRECOS)[id] === "number"; }
 
+/* ============================================================
+   FOTO TIRADA NA LOJA
+   ============================================================
+   É a foto DAQUELE aparelho, não a genérica do modelo. Ganha de qualquer
+   foto oficial, e é o que resolve tudo que não tem foto de fábrica: PS5,
+   Xbox, Starlink, iPhone antigo, e qualquer produto novo que a loja passe
+   a vender.
+
+   Para uma loja de seminovo isso vale mais que a foto de catálogo: o cliente
+   vê a peça que vai receber, com a marca de uso que ela realmente tem.
+
+   ⚠️ Limite de hoje: a foto fica guardada no navegador desta máquina
+   (localStorage, teto de ~5 MB). Por isso ela é reduzida antes de salvar.
+   Quando o sistema tiver servidor, só aquelas funções mudam.
+
+   ONDE ESTÁ O CÓDIGO: em foto-produto.js, não aqui. O index.html ainda tem a
+   própria cópia dos dados e não carrega este arquivo — deixar o recurso de
+   foto separado faz ele funcionar nos DOIS lados hoje, sem depender de
+   unificar o index.html antes.
+
+   De lá vêm: fotoManual, definirFotoManual, resumoFotosManuais e
+   fotoDoProduto(p) — que devolve a foto da loja e, na falta dela, a oficial.
+   ============================================================ */
+
 /** Aparece na vitrine do cliente? */
 function naVitrine(ap){
   const v = _ler(_CHAVE_VITRINE)[ap.id];

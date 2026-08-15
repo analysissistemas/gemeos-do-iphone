@@ -428,8 +428,20 @@ tbody tr:last-child td{border-bottom:none}
 .chip:hover{border-color:var(--linha-forte);color:var(--ink)}
 .chip.on{background:var(--ink);color:var(--contra-ink);border-color:var(--ink);font-weight:600}
 .mini{width:34px;height:44px;border-radius:6px;border:1px solid var(--linha-forte);
-  background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.02));flex:none;position:relative}
+  background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.02));flex:none;position:relative;
+  overflow:hidden;cursor:pointer;transition:.2s}
 .mini::after{content:"";position:absolute;top:3px;left:50%;transform:translateX(-50%);width:12px;height:2.5px;background:#000;border-radius:3px}
+.mini:hover{border-color:var(--ink);transform:scale(1.06)}
+/* com foto: a imagem toma o quadrinho inteiro e o entalhe some */
+.mini.tem-foto{background:#fff}
+.mini.tem-foto::after{display:none}
+.mini img{width:100%;height:100%;object-fit:cover;display:block}
+/* sinal de que dá para clicar e trocar a foto */
+.mini .lente{
+  position:absolute;inset:0;display:grid;place-items:center;font-size:13px;
+  background:rgba(0,0,0,.55);opacity:0;transition:.2s;color:#fff
+}
+.mini:hover .lente{opacity:1}
 .prod-cel{display:flex;align-items:center;gap:13px}
 .prod-cel .nm{font-weight:600;letter-spacing:-.01em}
 .prod-cel .meta{font-size:11.5px;color:var(--ink-3);margin-top:3px}
@@ -902,6 +914,9 @@ tbody tr:last-child td{border-bottom:none}
   <div class="modal" id="modal"></div>
 </div>
 
+<!-- foto tirada na loja: guardar, reduzir e anexar. Sem dependências, então
+     funciona aqui mesmo o index.html não carregando o estoque.js. -->
+<script src="foto-produto.js?v=1"></script>
 <script>
 /* ============================================================
    DADOS SIMULADOS — tudo inventado, só para o protótipo
@@ -1361,6 +1376,79 @@ $("#abaEst").onclick = e => {
   abaEstAtual=b.dataset.aba; pintaAbaEst();
 };
 
+/* ============================================================
+   FOTO DO PRODUTO — o quadrinho da tabela é o botão
+   ============================================================
+   Clicar abre a câmera (no celular) ou o seletor de arquivo (no computador).
+   Com foto já anexada, o clique troca; o × ao lado remove.
+   A foto tirada aqui ganha da oficial e aparece na vitrine do cliente. */
+/* Aparelho tem `id` numérico; acessório e motinha não têm, porque são
+   controlados por quantidade. Para esses a chave é o nome do produto — assim
+   a foto de um não sobrescreve a do outro. */
+function chaveFoto(p){
+  return p.id !== undefined ? String(p.id) : "ac-" + (p.nome || p.modelo || "");
+}
+function nomeDoProduto(p){ return p.modelo || p.nome || "produto"; }
+
+function miniFoto(p){
+  const k = chaveFoto(p);
+  const propria = fotoManual(k);
+  const f = propria || (typeof fotoDe === "function" ? fotoDe(nomeDoProduto(p), p.cor) : null);
+  const titulo = propria ? "Foto da loja — clique para trocar"
+                         : "Clique para tirar ou anexar a foto deste produto";
+  return `<div class="mini ${f ? "tem-foto" : ""}" data-foto="${k}" title="${titulo}">
+    ${f ? `<img src="${f}" alt="">` : ""}
+    <span class="lente">${propria ? "↻" : "+"}</span>
+  </div>`;
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-foto]");
+  if(!b) return;
+  const id = b.dataset.foto;          // texto: serve para aparelho e acessório
+
+  /* já tem foto da loja? oferece trocar ou remover antes de abrir a câmera */
+  if(fotoManual(id)){
+    const item = aparelhos.find(p => String(p.id) === id)
+              || estoque.find(p => "ac-" + p.nome === id);
+    $("#modal").innerHTML = `
+      <h3>Foto de ${item ? nomeDoProduto(item) : "produto"}</h3>
+      <div class="dsc">Esta é a foto que o cliente vê na loja.</div>
+      <div style="margin-top:20px;border:1px solid var(--linha);border-radius:14px;
+                  overflow:hidden;background:#fff">
+        <img src="${fotoManual(id)}" alt="" style="width:100%;display:block">
+      </div>
+      <div class="modal-pe">
+        <button class="btn btn-s" data-remover-foto="${id}">Remover foto</button>
+        <button class="btn btn-p" data-trocar-foto="${id}">Trocar foto</button>
+      </div>`;
+    $("#fundo").classList.add("on");
+    return;
+  }
+  anexar(id);
+});
+
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-trocar-foto]");
+  const r = e.target.closest("[data-remover-foto]");
+  if(t){ fecharModal(); anexar(t.dataset.trocarFoto); return; }
+  if(r){
+    definirFotoManual(r.dataset.removerFoto, null);
+    fecharModal(); atualizarTudo();
+    aviso("Foto removida. O produto volta para a foto oficial, se houver.");
+  }
+});
+
+function anexar(id){
+  anexarFotoAoProduto(id, res => {
+    if(!res.ok){ aviso(res.motivo); return; }
+    atualizarTudo();
+    const r = resumoFotosManuais();
+    aviso(`Foto salva (${res.kbAntes} KB → ${res.kbDepois} KB). ` +
+          `${r.quantas} ${r.quantas === 1 ? "foto tirada" : "fotos tiradas"} na loja, ${r.mb} MB usados.`);
+  });
+}
+
 /* --- TABELA DE APARELHOS --- */
 let filtroAparAtual="Todos";
 function pintaFiltroApar(){
@@ -1374,7 +1462,7 @@ function pintaAparelhos(){
   else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria<85);
   else if(filtroAparAtual!=="Todos")         l=l.filter(a=>a.cond===filtroAparAtual);
   $("#tbAparelhos").innerHTML = l.map(a=>`<tr>
-    <td><div class="prod-cel"><div class="mini"></div><div>
+    <td><div class="prod-cel">${miniFoto(a)}<div>
       <div class="nm">${a.modelo}</div><div class="meta">${a.arm} · ${a.cor}</div></div></div></td>
     <td style="color:var(--ink-2)">${a.cond}</td>
     <td>${a.cond==="Novo (lacrado)"
@@ -1414,7 +1502,7 @@ function pintaEstoque(){
               : i.qtd<=2  ? `<span class="selo s-av"><span class="pt"></span>Acabando</span>`
                           : `<span class="selo s-ok"><span class="pt"></span>Disponível</span>`;
     return `<tr>
-      <td><div class="prod-cel"><div class="mini"></div><div>
+      <td><div class="prod-cel">${miniFoto(i)}<div>
         <div class="nm">${i.nome}</div><div class="meta">${i.sub} · ${i.cat}</div></div></div></td>
       <td style="color:var(--ink-2)">${i.cond}</td>
       <td class="num forte">${i.qtd}</td>
@@ -2120,6 +2208,7 @@ function aviso(txt, acao){
 /* redesenha tudo que depende do estoque */
 function atualizarTudo(){
   pintaKpiEstoque(); pintaAparelhos(); pintaRoscas(); pintaMovs();
+  if(typeof pintaEstoque === "function") pintaEstoque();   // acessórios e motinhas
 }
 
 document.addEventListener("click",e=>{
