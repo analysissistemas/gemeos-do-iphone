@@ -124,9 +124,13 @@ body::before{
 
 /* A logo é branca; no tema claro entra a versão preta. Trocar por CSS (e não
    por JavaScript) faz a troca ser instantânea, sem piscar a imagem antiga. */
-.logo-claro{display:none}
-:root[data-theme="light"] .logo-escuro{display:none}
-:root[data-theme="light"] .logo-claro{display:block}
+/* O seletor precisa do `img` na frente: sem ele, estas regras empatam em
+   especificidade com `.logo-nav{display:block}` / `.logo-hero{display:block}`
+   e perdem por virem antes no arquivo — resultado, as DUAS logos apareciam
+   ao mesmo tempo e a preta virava um borrão no fundo escuro. */
+img.logo-claro{display:none}
+:root[data-theme="light"] img.logo-escuro{display:none}
+:root[data-theme="light"] img.logo-claro{display:block}
 
 /* botão de tema */
 .tema{

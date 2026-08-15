@@ -317,12 +317,17 @@ function semAcento(s){
 const FOTOS = {
   /* iPhone 11 — as seis cores, recortadas uma a uma do anúncio da loja.
      É o que faz o clique na bolinha trocar a foto de verdade. */
+  /* DESATIVADOS a pedido do dono: eram recortes de baixa resolução, com
+     pedaço de outro aparelho no quadro. Ficavam piores que não ter foto —
+     sem foto, o card mostra o contorno desenhado, que é limpo. Os arquivos
+     seguem na pasta; para voltar, basta tirar o comentário.
   "iPhone 11|Preto":     "fotos/iphone-11-preto.jpg",
   "iPhone 11|Branco":    "fotos/iphone-11-branco.jpg",
   "iPhone 11|Verde":     "fotos/iphone-11-verde.jpg",
   "iPhone 11|Amarelo":   "fotos/iphone-11-amarelo.jpg",
   "iPhone 11|Roxo":      "fotos/iphone-11-roxo.jpg",
   "iPhone 11|Vermelho":  "fotos/iphone-11-vermelho.jpg",
+  */
 
   /* Fotos OFICIAIS da Apple, aparelho sozinho e fundo transparente,
      baixadas por baixar_fotos_apple.py. Uma por modelo e por cor — é o que
@@ -330,15 +335,14 @@ const FOTOS = {
   /* A linha 17 resolve sozinha pelo nome do arquivo (fotos-disponiveis.js),
      entao nao precisa de entrada manual aqui. Ficam so as excecoes. */
 
-  /* outras combinações exatas de modelo + cor */
+  /* também desativados pelo mesmo motivo — baixa resolução e enquadramento ruim
   "iPhone 12 Pro Max|Azul-pacífico": "fotos/iphone-12-pro-max-azul-pacifico.jpg",
   "iPhone 12|Roxo":                  "fotos/iphone-12-roxo.jpg",
-
-  /* o modelo, em qualquer cor */
   "iPhone 11 Pro":                   "fotos/iphone-11-pro-cores.jpg",
   "iPhone 11 Pro Max":               "fotos/iphone-11-pro-cores.jpg",
   "iPhone 12":                       "fotos/iphone-12-cores.jpg",
   "iPhone 12 mini":                  "fotos/iphone-12-cores.jpg",
+  */
 
   /* acessórios */
   "iPad 10ª geração":                "fotos/ipad-pro.jpg",

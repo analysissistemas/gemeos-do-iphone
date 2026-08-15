@@ -73,17 +73,24 @@ a{color:inherit;text-decoration:none}
 .hero-fundo{position:absolute;inset:0;z-index:0;background:var(--escuro)}
 .hero-fundo img,
 .hero-fundo video{
-  width:100%;height:100%;object-fit:cover;
+  width:100%;height:100%;
+  /* `cover` preenche a tela, e o object-position escolhe QUAL parte do vídeo
+     fica visível. 100% = mostra o pé do vídeo e corta todo o topo — que é
+     onde ficam os letreiros "iPhone" e "PRO". Baixar esse número faz o texto
+     voltar a aparecer; é o botão de ajuste fino do enquadramento. */
+  object-fit:cover;object-position:center 100%;
   /* exposição baixa: o vídeo vira ambiente, não concorre com o texto.
      brightness derruba a luz, contrast e saturate devolvem a cor que o
      escurecimento rouba — sem isso o vídeo fica cinza e sujo. */
-  filter:brightness(.34) contrast(1.12) saturate(1.15);
+  filter:brightness(.58) contrast(1.08) saturate(1.12);
 }
 /* duas camadas por cima: um véu parelho que garante o contraste mínimo do
-   texto, e um degradê que costura o fim do vídeo com o fundo da página */
-.hero-fundo::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.30);z-index:1}
+   texto, e um degradê que costura o fim do vídeo com o fundo da página.
+   O véu ficou mais leve junto com o vídeo mais claro — é o par que mantém
+   o texto legível sem apagar a cena. */
+.hero-fundo::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.18);z-index:1}
 .hero-fundo::after{content:"";position:absolute;inset:0;z-index:2;
-  background:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,.28) 40%,rgba(0,0,0,.62) 78%,var(--escuro) 100%)}
+  background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.16) 40%,rgba(0,0,0,.55) 78%,var(--escuro) 100%)}
 /* sem foto ainda: brilho suave para não ficar um retângulo preto morto */
 .hero-fundo.sem::after{background:
   radial-gradient(58% 46% at 50% 34%,rgba(255,255,255,.10),transparent 68%),
@@ -204,6 +211,24 @@ a{color:inherit;text-decoration:none}
   stroke-linecap:round;stroke-linejoin:round;flex:none}
 .check.alerta{color:#8a5200}
 
+/* ---------- BUSCA DO CATÁLOGO ---------- */
+.busca-wrap{margin-top:34px}
+.busca-campo{
+  display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--linha);
+  border-radius:980px;padding:13px 20px;max-width:620px;transition:.2s;
+}
+.busca-campo:focus-within{border-color:var(--tinta);box-shadow:0 0 0 4px rgba(16,24,40,.07)}
+.busca-campo svg{width:17px;height:17px;stroke:var(--tinta-3);stroke-width:1.9;fill:none;
+  stroke-linecap:round;flex:none}
+.busca-campo input{flex:1;border:none;outline:none;background:none;font:inherit;font-size:14.5px;color:var(--tinta)}
+.busca-campo input::placeholder{color:var(--tinta-3)}
+.busca-campo input::-webkit-search-cancel-button{display:none}
+.busca-campo button{border:none;background:none;color:var(--tinta-3);cursor:pointer;font-size:15px;
+  padding:2px 4px;line-height:1}
+.busca-campo button:hover{color:var(--tinta)}
+.busca-resumo{margin-top:12px;font-size:13.5px;color:var(--tinta-2);min-height:20px}
+.busca-resumo b{color:var(--tinta)}
+
 /* ---------- ATALHOS DE CATEGORIA ---------- */
 .atalhos{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:38px}
 .atalho{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:20px 18px;
@@ -278,9 +303,42 @@ a{color:inherit;text-decoration:none}
 .zap-flut:hover{transform:scale(1.09)}
 .zap-flut svg{width:28px;height:28px}
 
+/* seletor temporário de vídeo — sai quando o dono decidir */
+.escolha-video{
+  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:5;
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:980px;
+  background:rgba(0,0,0,.62);backdrop-filter:blur(16px);border:1px solid var(--linha-esc);
+}
+.escolha-video span{font-size:11.5px;color:var(--ink-2);padding-left:8px}
+.escolha-video button{
+  border:1px solid var(--linha-esc);background:transparent;color:var(--ink-2);
+  font-size:12px;padding:6px 13px;border-radius:980px;cursor:pointer;font-family:inherit;transition:.2s;
+}
+.escolha-video button:hover{color:var(--ink);border-color:rgba(255,255,255,.35)}
+.escolha-video button.on{background:#fff;color:var(--tinta);border-color:#fff;font-weight:640}
+
 /* ---------- REVELAÇÃO ---------- */
 .rev{opacity:0;transform:translateY(26px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
 .rev.vis{opacity:1;transform:none}
+
+/* ---------- ENQUADRAMENTO DO VÍDEO POR TAMANHO DE TELA ----------
+   O corte certo depende do formato da tela. Em monitor largo sobra altura e o
+   texto do vídeo tende a aparecer; no celular, em pé, sobra largura. Por isso
+   o ponto de corte muda em vez de ser um só para todos. */
+/* No celular, em pé, sobra MUITA altura para um vídeo deitado: o `cover`
+   amplia pela altura e o letreiro do topo volta a caber na tela. Por isso o
+   corte fica colado no pé do vídeo (100%) e a escala sobe um pouco, para o
+   aparelho continuar grande sem trazer o texto de volta. */
+@media(min-width:1400px){ .hero-fundo video{object-position:center 100%} }
+@media(max-width:900px){
+  .hero-fundo video{object-position:center 100%;transform:scale(1.35);transform-origin:center bottom}
+}
+@media(max-width:560px){
+  .hero-fundo video{transform:scale(1.7);transform-origin:center bottom}
+  .escolha-video{bottom:14px;padding:6px 8px;flex-wrap:wrap;justify-content:center;
+    max-width:calc(100% - 28px)}
+  .escolha-video span{display:none}
+}
 
 @media(max-width:860px){
   .nav-links{display:none}
@@ -321,17 +379,11 @@ a{color:inherit;text-decoration:none}
          tocar sozinho e o fundo fica preto. autoplay so vale com muted. -->
     <video id="heroVideo" autoplay muted loop playsinline preload="auto"
            poster="fotos/iphone-17-pro-laranja-cosmico.png"
-           onerror="this.parentElement.classList.add('sem');this.remove()">
-      <source src="video/iphone-17-pro-hero.mp4" type="video/mp4">
-    </video>
+           onerror="this.parentElement.classList.add('sem');this.remove()"></video>
   </div>
-  <!-- iPhones flutuando nas laterais, cada um numa velocidade de parallax -->
-  <div class="gemeas" aria-hidden="true">
-    <div class="fone esq" id="foneE"><img src="fotos/iphone-17-pro-laranja-cosmico.png" alt=""
-         onerror="this.parentElement.classList.add('molde');this.remove()"></div>
-    <div class="fone dir" id="foneD"><img src="fotos/iphone-17-pro-max-azul-profundo.png" alt=""
-         onerror="this.parentElement.classList.add('molde');this.remove()"></div>
-  </div>
+
+  <!-- Os aparelhos das laterais sairam: com o video de fundo eles competiam
+       com a cena e poluiam o topo. Quem faz o parallax agora e o video. -->
 
   <div class="hero-txt" id="heroTxt">
     <span class="hero-selo">Carpina · Goiana — Pernambuco</span>
@@ -358,6 +410,15 @@ a{color:inherit;text-decoration:none}
     <h2>Qual produto você procura?</h2>
     <p>Escolha abaixo e confira nossas opções com garantia, bateria verificada
        e IMEI conferido.</p>
+  </div>
+  <div class="busca-wrap rev">
+    <div class="busca-campo">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m17 17-3.5-3.5"/></svg>
+      <input id="buscaCat" type="search" autocomplete="off"
+             placeholder="Buscar modelo, cor ou memória — ex.: 15 pro, azul, 256GB">
+      <button id="limparBusca" aria-label="Limpar busca" hidden>✕</button>
+    </div>
+    <div class="busca-resumo" id="buscaResumo"></div>
   </div>
   <div class="atalhos rev" id="atalhos"></div>
 </section>
@@ -633,12 +694,28 @@ $("#atalhos").innerHTML = CATEGORIAS.map(c=>{
     <span class="atalho-q">${n} ${n===1?"item":"itens"}</span></a>`;
 }).join("");
 
+/* ---------- BUSCA ----------
+   Compara sem acento e sem maiúscula, então "titanio" acha "Titânio" e
+   "15 PRO" acha "iPhone 15 Pro". Procura no modelo, na cor, na memória e na
+   condição de uma vez só — o cliente não precisa saber em qual campo digitar. */
+let termo = "";
+const normal = s => (s||"").toString().normalize("NFD")
+  .replace(/[̀-ͯ]/g,"").toLowerCase();
+function combina(p){
+  if(!termo) return true;
+  const e = esc(p);
+  const alvo = normal(`${p.modelo} ${e.cor} ${e.arm} ${e.cond} ${p.categoria}`);
+  /* cada palavra digitada precisa aparecer: "15 pro" acha o 15 Pro,
+     e não tudo que tem 15 OU pro */
+  return normal(termo).split(/\s+/).filter(Boolean).every(t => alvo.includes(t));
+}
+
 function pinta(){
   $("#secoes").innerHTML = CATEGORIAS.map(c=>{
     /* Quem tem foto aparece primeiro. Não é maquiagem: vitrine boa mostra
        primeiro o que está bem apresentado, e o resto continua logo abaixo,
        com o contorno, sem fingir ser outro modelo. */
-    const l = paraVitrine(c.nome).slice().sort((a,b)=>{
+    const l = paraVitrine(c.nome).filter(combina).slice().sort((a,b)=>{
       const fa = fotoDe(a.modelo, esc(a).cor) ? 0 : 1;
       const fb = fotoDe(b.modelo, esc(b).cor) ? 0 : 1;
       return fa - fb;
@@ -657,9 +734,34 @@ function pinta(){
           <button class="btn-preto" data-mais="${c.nome}">Ver mais ${c.titulo} →</button></div>` : ""}
       </section></div>`;
   }).join("");
+
+  const achados = CATEGORIAS.reduce((s,c)=>s + paraVitrine(c.nome).filter(combina).length, 0);
+  const res = $("#buscaResumo");
+  if(res){
+    res.innerHTML = !termo ? ""
+      : achados ? `<b>${achados}</b> ${achados===1?"produto encontrado":"produtos encontrados"} para "<b>${termo}</b>"`
+                : `Nada encontrado para "<b>${termo}</b>". Chama no WhatsApp que a gente procura pra você.`;
+  }
   revelar();
 }
 pinta();
+
+/* busca ao digitar, com uma pausa curta para não redesenhar a cada tecla */
+(function(){
+  const campo = $("#buscaCat"), limpar = $("#limparBusca");
+  if(!campo) return;
+  let timer;
+  campo.addEventListener("input", ()=>{
+    clearTimeout(timer);
+    timer = setTimeout(()=>{
+      termo = campo.value.trim();
+      limpar.hidden = !termo;
+      Object.keys(limites).forEach(k=>delete limites[k]);   // busca nova recomeça a contagem
+      pinta();
+    }, 180);
+  });
+  limpar.onclick = ()=>{ campo.value=""; termo=""; limpar.hidden=true; pinta(); campo.focus(); };
+})();
 
 document.addEventListener("click", e=>{
   const bMais = e.target.closest("[data-mais]");
@@ -712,10 +814,25 @@ $("#links").onclick   = ()=> $("#links").classList.remove("abre");
 (function(){
   const v = $("#heroVideo");
   if(!v) return;
+
+  /* Vídeo escolhido pelo dono: iPhone 17 Pro. O do iPhone Air continua na
+     pasta video/ — para trocar, basta mudar o nome do arquivo aqui. */
+  v.src = "video/iphone-17-pro-hero.mp4";
+  v.load();
+
   if(matchMedia("(prefers-reduced-motion: reduce)").matches){ v.pause(); return; }
+
+  /* Toca UMA vez e congela no último quadro — pedido do dono. Vídeo em loop
+     no topo cansa e rouba atenção do que importa, que é o catálogo.
+     removeAttribute em vez de loop=false porque o atributo vem no HTML. */
+  v.removeAttribute("loop");
+  v.loop = false;
+
+  /* Só toca quando o topo está à vista. Não recomeça sozinho: se ja terminou,
+     fica parado no último quadro em vez de reiniciar a cada rolagem. */
   const io = new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting) v.play().catch(()=>{});   // catch: alguns navegadores recusam sem gesto
-    else v.pause();
+    if(e.isIntersecting && !v.ended) v.play().catch(()=>{});  // catch: navegador pode recusar sem gesto
+    else if(!e.isIntersecting) v.pause();
   }), {threshold:0.05});
   io.observe(v);
 })();
