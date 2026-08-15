@@ -295,9 +295,50 @@ function semAcento(s){
   return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()
           .replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 }
+/* ============================================================
+   FOTOS DOS PRODUTOS
+   ============================================================
+   As fotos vieram do material de redes sociais da própria loja (o PDF do
+   Behance), extraídas das imagens ORIGINAIS embutidas — não de captura de
+   tela, que sai borrada.
+
+   REGRA QUE NÃO SE QUEBRA: cada foto só é usada no produto que ela realmente
+   mostra. Nada de pôr foto de iPhone 11 num anúncio de iPhone 15 só para
+   preencher — a loja vende confiança e o cliente percebe. Modelo sem foto
+   mostra o contorno desenhado, que é honesto.
+
+   Para COMPLETAR: fotografe o aparelho e salve em fotos/ com o nome do modelo
+   sem acento e com hífen (ex.: fotos/iphone-15-pro.jpg). Aparece sozinho.
+   Para uma cor específica: fotos/iphone-15-pro-titanio-azul.jpg
+   ============================================================ */
+const FOTOS = {
+  /* combinação exata modelo + cor */
+  "iPhone 12 Pro Max|Azul-pacífico": "fotos/iphone-12-pro-max-azul-pacifico.jpg",
+  "iPhone 11|Preto":                 "fotos/iphone-11-preto.jpg",
+  "iPhone 12|Roxo":                  "fotos/iphone-12-roxo.jpg",
+
+  /* o modelo, em qualquer cor */
+  "iPhone 11 Pro":                   "fotos/iphone-11-pro-cores.jpg",
+  "iPhone 11 Pro Max":               "fotos/iphone-11-pro-cores.jpg",
+  "iPhone 12":                       "fotos/iphone-12-cores.jpg",
+  "iPhone 12 mini":                  "fotos/iphone-12-cores.jpg",
+
+  /* acessórios */
+  "iPad 10ª geração":                "fotos/ipad-pro.jpg",
+  "iPad Pro M4":                     "fotos/ipad-pro.jpg",
+  "AirTag (rastreador)":             "fotos/airtag.jpg",
+  "JBL PartyBox 100":                "fotos/jbl-partybox-100.jpg",
+  "Redmi Note 13":                   "fotos/redmi-note-13.jpg"
+};
+
+/** Foto do produto: primeiro tenta modelo+cor, depois só o modelo.
+ *  Devolve null quando não existe — e aí a tela desenha o contorno. */
 function fotoDe(modelo, cor){
-  return `fotos/${semAcento(modelo)}-${semAcento(cor)}.jpg`;
+  return FOTOS[`${modelo}|${cor}`] || FOTOS[modelo] || null;
 }
-function fotoGenerica(modelo){
-  return `fotos/${semAcento(modelo)}.jpg`;
+/** Caminho por convenção de nome, para as fotos que VOCÊ for acrescentando
+ *  depois em fotos/ sem precisar mexer no código. */
+function fotoPorNome(modelo, cor){
+  return cor ? `fotos/${semAcento(modelo)}-${semAcento(cor)}.jpg`
+             : `fotos/${semAcento(modelo)}.jpg`;
 }

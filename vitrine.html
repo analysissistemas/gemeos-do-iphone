@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gêmeos do iPhone — iPhones com garantia em Carpina e Goiana</title>
-<meta name="description" content="iPhones lacrados e seminovos com bateria verificada, IMEI conferido e garantia. Carpina e Goiana, Pernambuco. Parcelamos em até 18x.">
+<title>Gêmeos do iPhone — Celulares, acessórios e assistência em Carpina e Goiana</title>
+<meta name="description" content="Celulares lacrados e seminovos com bateria verificada, IMEI conferido e garantia. Acessórios, motinhas elétricas e assistência técnica própria. Carpina e Goiana, Pernambuco. Até 18x.">
 <style>
 /* ============================================================
    VITRINE — a parte do CLIENTE.
@@ -57,6 +57,16 @@ a{color:inherit;text-decoration:none}
 }
 .btn-topo:hover{opacity:.88}
 .menu-mob{display:none;background:none;border:none;color:var(--ink);font-size:19px;cursor:pointer;padding:8px 12px}
+/* botão da equipe: presente mas sem competir com o "Fale Conosco", que é o
+   que o cliente precisa achar. Fica em contorno, não em cor cheia. */
+.btn-sistema{
+  display:inline-flex;align-items:center;gap:7px;color:var(--ink-2);font-size:13px;
+  border:1px solid var(--linha-esc);border-radius:980px;padding:9px 15px;transition:.2s;white-space:nowrap;
+}
+.btn-sistema:hover{color:var(--ink);border-color:rgba(255,255,255,.34);background:rgba(255,255,255,.08)}
+.btn-sistema svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round}
+.btn-sistema.logado{color:#8ee8ad;border-color:rgba(37,211,102,.45);background:rgba(37,211,102,.10)}
+@media(max-width:520px){ .btn-sistema span{display:none} .btn-sistema{padding:9px 11px} }
 
 /* ---------- HERO ---------- */
 .hero{position:relative;min-height:100svh;display:grid;place-items:center;text-align:center;overflow:hidden;background:var(--escuro)}
@@ -269,6 +279,11 @@ a{color:inherit;text-decoration:none}
     <a href="#faq">FAQ</a>
   </div>
   <button class="menu-mob" id="menuMob" aria-label="Abrir menu">☰</button>
+  <!-- entrada da equipe: discreta, mas achável. O texto muda se já houver sessão. -->
+  <a class="btn-sistema" id="btSistema" href="login.html" title="Acesso da equipe">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="8.5" width="12" height="8" rx="2"/><path d="M7 8.5V6a3 3 0 0 1 6 0v2.5"/></svg>
+    <span id="txtSistema">Sistema</span>
+  </a>
   <button class="btn-topo" data-zap="Olá! Vim pelo site e queria falar com vocês.">
     <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
     Fale Conosco
@@ -290,9 +305,12 @@ a{color:inherit;text-decoration:none}
   <div class="hero-txt" id="heroTxt">
     <span class="hero-selo">Carpina · Goiana — Pernambuco</span>
     <img src="logo-gemeos.png" alt="Gêmeos do iPhone" class="logo-hero">
-    <h1>Apple com<br><em>procedência.</em></h1>
-    <p>Lacrados e seminovos com bateria verificada, IMEI conferido e garantia por escrito.
-       Você vê o estado real do aparelho antes de decidir.</p>
+    <!-- frase do próprio material da loja: cobre celular, acessório, motinha e
+         a assistência, sem prometer que só trabalhamos com Apple -->
+    <h1>Pra tudo tem<br><em>solução.</em></h1>
+    <p>iPhone e Android, lacrados e seminovos. Acessórios, motinhas elétricas
+       e assistência técnica própria. Bateria verificada, IMEI conferido e
+       garantia por escrito.</p>
     <div class="hero-acoes">
       <a href="#catalogo" class="btn-branco">Ver catálogo →</a>
       <button class="btn-vidro" data-zap="Olá! Queria saber o que tem disponível hoje.">Falar no WhatsApp</button>
@@ -417,8 +435,11 @@ a{color:inherit;text-decoration:none}
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.06c-.25.69-1.45 1.32-2 1.4-.51.08-1.16.11-1.87-.12-.43-.14-.98-.32-1.69-.63-2.97-1.28-4.91-4.27-5.06-4.47-.15-.2-1.21-1.61-1.21-3.07 0-1.46.77-2.18 1.04-2.48.27-.3.59-.37.79-.37s.39 0 .56.01c.18.01.42-.7.8.61.4.94 1.36 3.25 1.48 3.48.12.24.2.51.04.81-.16.3-.24.49-.47.75-.24.26-.5.58-.71.78-.24.23-.48.49-.21.96.27.47 1.2 1.98 2.58 3.21 1.77 1.58 3.27 2.07 3.73 2.3.46.23.73.2 1-.12.27-.32 1.15-1.34 1.46-1.8.31-.46.62-.38 1.04-.23.42.15 2.67 1.26 3.13 1.49.46.23.77.35.88.54.11.19.11 1.11-.14 1.8Z"/></svg>
 </button>
 
-<script src="cores-apple.js"></script>
-<script src="estoque.js"></script>
+<!-- O ?v= força o navegador a buscar a versão nova em vez de usar a guardada.
+     Suba o número sempre que mexer nestes arquivos, senão você (e o cliente)
+     continuam vendo a versão antiga sem entender por quê. -->
+<script src="cores-apple.js?v=2"></script>
+<script src="estoque.js?v=2"></script>
 <script>
 /* ============================================================
    ⚠️ TROQUE AQUI: o número que recebe as mensagens do site.
@@ -440,9 +461,26 @@ document.addEventListener("click", e=>{
 $("#foneRodape").textContent =
   "+" + WHATSAPP.replace(/^(\d\d)(\d\d)(\d{5})(\d{4})$/,"$1 ($2) $3-$4");
 
+/* ---------- LIGAÇÃO COM O SISTEMA DO VENDEDOR ----------
+   Se já existe sessão aberta, o botão vira "Voltar ao sistema" e pula o login.
+   sessionStorage (e não localStorage) de propósito: fechou o navegador, caiu a
+   sessão — o mínimo que uma tela de acesso deve fazer num computador de loja,
+   onde várias pessoas usam a mesma máquina. */
+(function(){
+  let quem = null;
+  try{ quem = sessionStorage.getItem("gemeos-usuario"); }catch(e){}
+  const bt = $("#btSistema"), tx = $("#txtSistema");
+  if(quem && bt){
+    bt.href = "index.html";
+    bt.classList.add("logado");
+    tx.textContent = "Voltar ao sistema";
+    bt.title = `Conectado como ${quem}`;
+  }
+})();
+
 /* ---------- FAIXA ---------- */
-const FRASES=["Aparelho testado","Bateria verificada","IMEI conferido","Lacrado ou seminovo",
-              "Garantia por escrito","Até 18x no cartão","Assistência própria"];
+const FRASES=["Produtos de qualidade","Aparelho testado","Bateria verificada","IMEI conferido",
+              "Lacrado ou seminovo","Garantia por escrito","Até 18x no cartão","Assistência própria"];
 const g = `<div class="faixa-grupo">${FRASES.map(f=>
   `<span class="faixa-item">${f}</span><span class="faixa-pt"></span>`).join("")}</div>`;
 $("#faixa").innerHTML = g + g;    // duplicado: é o que faz o loop não ter emenda
@@ -468,13 +506,33 @@ function precoEscolhido(a){
   const p = precoDe(a);
   return Math.max(20, Math.round((p + passo*p*0.08)/10)*10);
 }
+/* Ordem de busca da foto:
+   1) o mapa FOTOS (modelo+cor, depois só modelo)
+   2) o arquivo por convenção de nome, para as fotos que a loja for
+      acrescentando na pasta depois, sem mexer em código
+   3) o contorno desenhado
+   Nunca mostra foto de um modelo em anúncio de outro. */
 function fotoDupla(a){
   const e = esc(a);
-  /* tenta a foto da cor escolhida; se não existir, cai na do modelo;
-     se nem essa existir, desenha o contorno — nunca imagem quebrada */
-  return `<img src="${fotoDe(a.modelo, e.cor)}" alt="${a.modelo} ${e.cor}" loading="lazy"
-    onerror="if(!this.dataset.p){this.dataset.p=1;this.src='${fotoGenerica(a.modelo)}';}
-             else{this.replaceWith(molde());}">`;
+  const mapeada = fotoDe(a.modelo, e.cor);
+  const porCor  = fotoPorNome(a.modelo, e.cor);
+  const porMod  = fotoPorNome(a.modelo);
+  const inicio  = mapeada || porCor;
+  const resto   = mapeada ? [] : [porMod];
+  return `<img src="${inicio}" alt="${a.modelo} ${e.cor}" loading="lazy"
+    data-alt='${JSON.stringify(resto)}'
+    onerror="tentarProxima(this)">`;
+}
+/* troca para o próximo caminho da lista; acabando a lista, desenha o contorno */
+function tentarProxima(img){
+  let restantes = [];
+  try{ restantes = JSON.parse(img.dataset.alt || "[]"); }catch(e){}
+  if(restantes.length){
+    img.src = restantes.shift();
+    img.dataset.alt = JSON.stringify(restantes);
+  } else {
+    img.replaceWith(molde());
+  }
 }
 function molde(){
   const d = document.createElement("div");
@@ -546,7 +604,14 @@ $("#atalhos").innerHTML = CATEGORIAS.map(c=>{
 
 function pinta(){
   $("#secoes").innerHTML = CATEGORIAS.map(c=>{
-    const l = paraVitrine(c.nome);
+    /* Quem tem foto aparece primeiro. Não é maquiagem: vitrine boa mostra
+       primeiro o que está bem apresentado, e o resto continua logo abaixo,
+       com o contorno, sem fingir ser outro modelo. */
+    const l = paraVitrine(c.nome).slice().sort((a,b)=>{
+      const fa = fotoDe(a.modelo, esc(a).cor) ? 0 : 1;
+      const fb = fotoDe(b.modelo, esc(b).cor) ? 0 : 1;
+      return fa - fb;
+    });
     if(!l.length) return "";
     const lim = limites[c.nome] || 8;
     return `<div class="${CATEGORIAS.indexOf(c)%2 ? "faixa-clara" : ""}">

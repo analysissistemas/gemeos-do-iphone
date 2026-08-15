@@ -169,8 +169,22 @@ body::before{
 .busca input::placeholder{color:var(--ink-3)}
 .avatar{
   width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--contra-ink);
-  display:grid;place-items:center;font-size:11px;font-weight:700;letter-spacing:-.02em;
+  display:grid;place-items:center;font-size:11px;font-weight:700;letter-spacing:-.02em;flex:none;
 }
+/* ida e volta entre o sistema e a loja do cliente */
+.btn-loja{
+  display:inline-flex;align-items:center;gap:7px;color:var(--ink-2);font-size:12.5px;
+  border:1px solid var(--linha);border-radius:8px;padding:6px 12px;text-decoration:none;transition:.2s;white-space:nowrap;
+}
+.btn-loja:hover{color:var(--ink);border-color:var(--linha-forte);background:var(--vidro-forte)}
+.btn-loja svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.conta{display:flex;align-items:center;gap:8px}
+.sair{
+  background:none;border:1px solid var(--linha);border-radius:8px;color:var(--ink-3);
+  font-size:11.5px;padding:5px 10px;cursor:pointer;font-family:inherit;transition:.2s;
+}
+.sair:hover{color:var(--ink);border-color:var(--linha-forte)}
+@media(max-width:900px){ .btn-loja span{display:none} .sair{display:none} }
 
 /* ---------- SIDEBAR ---------- */
 .side{
@@ -572,8 +586,15 @@ tbody tr:last-child td{border-bottom:none}
       <span style="color:var(--ink-3);font-size:12px">⌕</span>
       <input placeholder="Buscar cliente, IMEI, aparelho…" id="buscaGlobal">
     </div>
+    <a class="btn-loja" href="vitrine.html" title="Abrir a loja que o cliente vê">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h14l-1 9.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 4 16.5L3 7Z"/><path d="M7 7V5.5a3 3 0 0 1 6 0V7"/></svg>
+      <span>Ver a loja</span>
+    </a>
     <button class="tema" id="btTema" title="Trocar entre tema claro e escuro" aria-label="Trocar tema"></button>
-    <div class="avatar">GI</div>
+    <div class="conta" id="conta">
+      <div class="avatar" id="avatar">GI</div>
+      <button class="sair" id="btSair" title="Sair do sistema" aria-label="Sair">Sair</button>
+    </div>
   </div>
 </nav>
 
@@ -1133,6 +1154,26 @@ function temaAtual(){
       || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
 }
 aplicarTema(temaAtual());
+
+/* ---------- QUEM ESTÁ USANDO O SISTEMA ----------
+   Vem da tela de login. Sem sessão, mostra "GI" e o botão Sair só leva de
+   volta para a loja — porque hoje o login ainda não bloqueia o acesso direto
+   (está escrito em login.html: sem servidor, não há como bloquear de verdade). */
+(function(){
+  let quem = null;
+  try{ quem = sessionStorage.getItem("gemeos-usuario"); }catch(e){}
+  const av = document.getElementById("avatar");
+  const bs = document.getElementById("btSair");
+  if(quem && av){
+    av.textContent = quem.split(/\s+/).map(p=>p[0]).join("").slice(0,2).toUpperCase();
+    av.title = quem;
+    document.getElementById("conta").title = `Conectado como ${quem}`;
+  }
+  if(bs) bs.onclick = ()=>{
+    try{ sessionStorage.removeItem("gemeos-usuario"); }catch(e){}
+    location.href = "vitrine.html";
+  };
+})();
 document.addEventListener("click", e=>{
   if(!e.target.closest("#btTema")) return;
   const novo = document.documentElement.getAttribute("data-theme")==="light" ? "dark" : "light";
