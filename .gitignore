@@ -14,3 +14,9 @@ _extrai_logo.py
 __pycache__/
 *.pyc
 .venv/
+
+# testes descartaveis de imagem
+_teste/
+
+_*.py
+_msg.txt
