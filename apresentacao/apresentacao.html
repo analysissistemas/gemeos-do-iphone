@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gêmeos do iPhone — Sistema da loja</title>
+<style>
+/* ============================================================
+   APRESENTAÇÃO — feita para virar PDF
+   Ctrl+P  ->  Destino: "Salvar como PDF"  ->  Margens: Nenhuma
+               marque "Gráficos de segundo plano"
+   Cada .folha vira uma pagina A4 exata.
+   ============================================================ */
+@page{ size:A4; margin:0 }
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#4a4a4f;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.folha{
+  width:210mm;height:297mm;background:#0b0b0c;color:#f5f5f7;
+  margin:0 auto 14px;padding:18mm 16mm;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.folha.clara{background:#f4f6fa;color:#101828}
+
+/* ---------- CAPA ---------- */
+.capa{justify-content:center;text-align:center}
+.capa::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(58% 42% at 50% 32%,rgba(255,255,255,.12),transparent 68%);
+}
+.capa > *{position:relative;z-index:1}
+.capa img{height:76px;width:auto;margin:0 auto 34px}
+.capa h1{font-size:44pt;font-weight:700;letter-spacing:-.035em;line-height:1.04}
+.capa h1 em{font-style:normal;background:linear-gradient(180deg,#fff 30%,#8e8e93 120%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.capa .sub{margin-top:20px;font-size:13pt;color:#a1a1a6;line-height:1.6}
+.capa .selo{display:inline-block;margin-top:38px;font-size:8.5pt;letter-spacing:.18em;
+  text-transform:uppercase;color:#a1a1a6;border:1px solid rgba(255,255,255,.2);
+  border-radius:99px;padding:8px 20px}
+.capa .rodape{position:absolute;bottom:18mm;left:0;right:0;font-size:9pt;color:#6e6e73}
+
+/* ---------- PÁGINA COMUM ---------- */
+.tag{display:inline-block;font-size:8pt;letter-spacing:.16em;text-transform:uppercase;
+  color:#6e6e73;border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:5px 13px;margin-bottom:14px}
+.clara .tag{color:#475467;border-color:#d6dbe4;background:#fff}
+h2{font-size:26pt;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.linha-fina{font-size:11pt;color:#a1a1a6;margin-top:10px;line-height:1.55;max-width:150mm}
+.clara .linha-fina{color:#475467}
+
+.tela{margin-top:16px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.clara .tela{border-color:#dfe4ec;box-shadow:0 8px 24px rgba(16,24,40,.12)}
+.tela img{width:100%;display:block}
+
+.pontos{margin-top:auto;padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px 22px}
+.ponto{display:flex;gap:10px;align-items:flex-start}
+.ponto b{display:block;font-size:10.5pt;font-weight:650;letter-spacing:-.01em;margin-bottom:3px}
+.ponto p{font-size:9.5pt;color:#a1a1a6;line-height:1.5}
+.clara .ponto p{color:#475467}
+.bolha{width:20px;height:20px;border-radius:50%;background:#f5f5f7;color:#0b0b0c;flex:none;
+  display:grid;place-items:center;font-size:9pt;font-weight:800;margin-top:1px}
+.clara .bolha{background:#101828;color:#fff}
+
+/* ---------- DOIS LADOS ---------- */
+.dois{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px;flex:1}
+.lado{border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:22px;display:flex;flex-direction:column}
+.clara .lado{border-color:#dfe4ec;background:#fff}
+.lado h3{font-size:15pt;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.lado .quem{font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;color:#6e6e73;margin-bottom:14px}
+.lado ul{list-style:none;margin-top:6px}
+.lado li{font-size:10pt;color:#a1a1a6;padding:7px 0 7px 18px;position:relative;line-height:1.45;
+  border-bottom:1px solid rgba(255,255,255,.07)}
+.clara .lado li{color:#475467;border-color:#eef1f6}
+.lado li:last-child{border-bottom:none}
+.lado li::before{content:"";position:absolute;left:0;top:14px;width:6px;height:6px;border-radius:50%;background:#6e6e73}
+.lado .nao{margin-top:auto;padding-top:14px;font-size:9pt;color:#6e6e73;line-height:1.5;
+  border-top:1px solid rgba(255,255,255,.1)}
+.clara .lado .nao{border-color:#eef1f6;color:#667085}
+
+/* ---------- NÚMEROS ---------- */
+.numeros{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.num{border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:20px}
+.clara .num{border-color:#dfe4ec;background:#fff}
+.num .v{font-size:30pt;font-weight:700;letter-spacing:-.04em;line-height:1}
+.num .r{font-size:9.5pt;color:#a1a1a6;margin-top:8px;line-height:1.4}
+.clara .num .r{color:#475467}
+
+.passos{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+.passo{display:flex;gap:14px;align-items:flex-start;border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:15px 18px}
+.clara .passo{border-color:#dfe4ec;background:#fff}
+.passo .n{width:24px;height:24px;border-radius:50%;background:#f5f5f7;color:#0b0b0c;flex:none;
+  display:grid;place-items:center;font-size:10pt;font-weight:800}
+.clara .passo .n{background:#101828;color:#fff}
+.passo b{font-size:11pt;font-weight:650;display:block;margin-bottom:3px}
+.passo p{font-size:9.5pt;color:#a1a1a6;line-height:1.5}
+.clara .passo p{color:#475467}
+
+.pe{position:absolute;bottom:10mm;left:16mm;right:16mm;display:flex;justify-content:space-between;
+  font-size:8pt;color:#4a4a50;border-top:1px solid rgba(255,255,255,.09);padding-top:8px}
+.clara .pe{color:#98a2b3;border-color:#e4e8f0}
+
+@media print{
+  body{background:none}
+  .folha{margin:0;page-break-after:always;box-shadow:none}
+  .folha:last-child{page-break-after:auto}
+  .aviso-tela{display:none}
+}
+.aviso-tela{
+  max-width:210mm;margin:14px auto;padding:14px 18px;border-radius:10px;
+  background:#fff;color:#101828;font-size:13px;line-height:1.55;
+}
+.aviso-tela b{display:block;margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<div class="aviso-tela">
+  <b>Para gerar o PDF</b>
+  Aperte <b style="display:inline">Ctrl + P</b> → em Destino escolha <b style="display:inline">Salvar como PDF</b> →
+  em Margens escolha <b style="display:inline">Nenhuma</b> → marque <b style="display:inline">Gráficos de segundo plano</b>.
+  Esta faixa cinza não sai no PDF.
+</div>
+
+<!-- ============ 1. CAPA ============ -->
+<section class="folha capa">
+  <img src="logo.png" alt="Gêmeos do iPhone">
+  <h1>O sistema da<br><em>loja, de ponta a ponta.</em></h1>
+  <p class="sub">Da vitrine que o cliente vê ao controle que só a equipe enxerga.<br>
+     Estoque, vendas, assistência técnica e caixa em um lugar só.</p>
+  <span class="selo">Carpina · Goiana — Pernambuco</span>
+  <div class="rodape">Apresentação — 15 de agosto de 2026</div>
+</section>
+
+<!-- ============ 2. DOIS LADOS ============ -->
+<section class="folha">
+  <span class="tag">Como funciona</span>
+  <h2>Dois lados, um cadastro só.</h2>
+  <p class="linha-fina">Você dá entrada no aparelho uma vez. Ele aparece na loja para o cliente
+     e no controle para a equipe — sem digitar nada duas vezes.</p>
+  <div class="dois">
+    <div class="lado">
+      <div class="quem">O cliente vê</div>
+      <h3>A loja</h3>
+      <ul>
+        <li>Foto do aparelho, que troca ao escolher a cor</li>
+        <li>Memória, condição e saúde da bateria</li>
+        <li>Avarias declaradas abertamente</li>
+        <li>Preço e parcela em até 18x</li>
+        <li>Botão que abre o WhatsApp com a mensagem pronta</li>
+      </ul>
+      <div class="nao"><b>Não vê:</b> quanto você pagou, sua margem, nem o lucro.</div>
+    </div>
+    <div class="lado">
+      <div class="quem">A equipe vê</div>
+      <h3>O sistema</h3>
+      <ul>
+        <li>Custo, preço de venda, margem e lucro por peça</li>
+        <li>IMEI, bateria e avarias de cada aparelho</li>
+        <li>Funil de vendas com cada negócio em aberto</li>
+        <li>Ordens de serviço da assistência técnica</li>
+        <li>Caixa: recebido, a receber e parcelas atrasadas</li>
+      </ul>
+      <div class="nao"><b>Protegido por login</b>, com acesso separado por pessoa.</div>
+    </div>
+  </div>
+  <div class="pe"><span>Gêmeos do iPhone</span><span>2</span></div>
+</section>
+
+<!-- ============ 3. A LOJA ============ -->
+<section class="folha">
+  <span class="tag">Parte do cliente</span>
+  <h2>A loja aberta 24 horas.</h2>
+  <p class="linha-fina">O cliente entra pelo link, vê o estoque real e chama no WhatsApp
+     já sabendo o que quer.</p>
+  <div class="tela"><img src="01-loja-topo.jpg" alt="Topo da loja"></div>
+  <div class="pontos">
+    <div class="ponto"><span class="bolha">1</span><div>
+      <b>Identidade da loja</b><p>Logo, cores e a frase da casa: "Pra tudo tem solução".</p></div></div>
+    <div class="ponto"><span class="bolha">2</span><div>
+      <b>Vídeo de fundo</b><p>Abre com movimento, como as grandes lojas de tecnologia.</p></div></div>
+    <div class="ponto"><span class="bolha">3</span><div>
+      <b>Funciona no celular</b><p>A maioria dos clientes vai abrir pelo telefone.</p></div></div>
+    <div class="ponto"><span class="bolha">4</span><div>
+      <b>WhatsApp sempre à mão</b><p>Botão fixo na tela inteira, em qualquer página.</p></div></div>
+  </div>
+  <div class="pe"><span>Gêmeos do iPhone</span><span>3</span></div>
+</section>
+
+<!-- ============ 4. CATÁLOGO ============ -->
+<section class="folha clara">
+  <span class="tag">Parte do cliente</span>
+  <h2>Catálogo que responde sozinho.</h2>
+  <p class="linha-fina">Seis categorias: iPhone, iPad, Apple Watch, MacBook, acessórios
+     e motos elétricas. Com busca por modelo, cor ou memória.</p>
+  <div class="tela"><img src="02-catalogo.jpg" alt="Catálogo"></div>
+  <div class="pontos">
+    <div class="ponto"><span class="bolha">1</span><div>
+      <b>Escolhe a cor, a foto muda</b><p>Cores reais de cada geração, com a foto oficial do aparelho.</p></div></div>
+    <div class="ponto"><span class="bolha">2</span><div>
+      <b>Bateria e avarias à mostra</b><p>O que os outros escondem, aqui está escrito no anúncio.</p></div></div>
+    <div class="ponto"><span class="bolha">3</span><div>
+      <b>Preço e parcela na hora</b><p>Valor à vista e em 18x, sem o cliente precisar perguntar.</p></div></div>
+    <div class="ponto"><span class="bolha">4</span><div>
+      <b>Mensagem pronta</b><p>Chega no WhatsApp com modelo, cor, memória, bateria e preço.</p></div></div>
+  </div>
+  <div class="pe"><span>Gêmeos do iPhone</span><span>4</span></div>
+</section>
+
+<!-- ============ 5. ESTOQUE ============ -->
+<section class="folha">
+  <span class="tag">Parte da equipe</span>
+  <h2>Cada aparelho é uma peça única.</h2>
+  <p class="linha-fina">Bateria e avaria são daquele aparelho, não do modelo. Por isso o
+     controle é peça por peça, com IMEI — não por quantidade.</p>
+  <div class="tela"><img src="03-estoque.jpg" alt="Estoque"></div>
+  <div class="pontos">
+    <div class="ponto"><span class="bolha">1</span><div>
+      <b>Lucro por aparelho</b><p>Custo, venda e lucro lado a lado, na mesma linha.</p></div></div>
+    <div class="ponto"><span class="bolha">2</span><div>
+      <b>Preço sugerido</b><p>O sistema calcula pela condição, bateria e avarias — e mostra a conta.</p></div></div>
+    <div class="ponto"><span class="bolha">3</span><div>
+      <b>Filtros que importam</b><p>Com avaria, bateria baixa, lacrado, seminovo, vitrine.</p></div></div>
+    <div class="ponto"><span class="bolha">4</span><div>
+      <b>Cadastro em segundos</b><p>Escolhido o modelo, ele já oferece as memórias e cores que existem.</p></div></div>
+  </div>
+  <div class="pe"><span>Gêmeos do iPhone</span><span>5</span></div>
+</section>
+
+<!-- ============ 6. FUNIL ============ -->
+<section class="folha clara">
+  <span class="tag">Parte da equipe</span>
+  <h2>Nenhuma venda esquecida.</h2>
+  <p class="linha-fina">Cada conversa vira um cartão, da primeira mensagem até o fechamento.
+     Dá para ver quanto dinheiro está em jogo agora.</p>
+  <div class="tela"><img src="04-funil.jpg" alt="Funil de vendas"></div>
+  <div class="pontos">
+    <div class="ponto"><span class="bolha">1</span><div>
+      <b>Cinco etapas</b><p>Chegou no WhatsApp, qualificado, proposta, negociando troca, fechada.</p></div></div>
+    <div class="ponto"><span class="bolha">2</span><div>
+      <b>Conversão por etapa</b><p>Mostra onde o cliente desiste, para atacar o ponto certo.</p></div></div>
+    <div class="ponto"><span class="bolha">3</span><div>
+      <b>Valor em jogo</b><p>Quanto está parado no funil, em reais, agora.</p></div></div>
+    <div class="ponto"><span class="bolha">4</span><div>
+      <b>Alerta de parado</b><p>Negócio sem resposta há mais de 7 dias aparece na Visão Geral.</p></div></div>
+  </div>
+  <div class="pe"><span>Gêmeos do iPhone</span><span>6</span></div>
+</section>
+
+<!-- ============ 7. ASSISTÊNCIA ============ -->
+<section class="folha">
+  <span class="tag">Parte da equipe</span>
+  <h2>A bancada sob controle.</h2>
+  <p class="linha-fina">Toda ordem de serviço, da entrada até a entrega, com prazo e técnico
+     responsável — e a nota do cliente sai pronta para imprimir.</p>
+  <div class="tela"><img src="05-assistencia.jpg" alt="Assistência técnica"></div>
+  <div class="pontos">
+    <div class="ponto"><span class="bolha">1</span><div>
+      <b>Seis etapas</b><p>Recebido, orçamento, aprovado, na bancada, aguardando peça, pronto.</p></div></div>
+    <div class="ponto"><span class="bolha">2</span><div>
+      <b>Aparelho parado aparece</b><p>Quem está esperando peça e há quantos dias.</p></div></div>
+    <div class="ponto"><span class="bolha">3</span><div>
+      <b>Nota com garantia</b><p>Sai com defeito, valor, prazo de garantia e as duas assinaturas.</p></div></div>
+    <div class="ponto"><span class="bolha">4</span><div>
+      <b>Quanto vai entrar</b><p>Soma dos orçamentos aprovados que ainda serão recebidos.</p></div></div>
+  </div>
+  <div class="pe"><span>Gêmeos do iPhone</span><span>7</span></div>
+</section>
+
+<!-- ============ 8. NÚMEROS E PRÓXIMOS PASSOS ============ -->
+<section class="folha clara">
+  <span class="tag">Onde estamos</span>
+  <h2>O que já está de pé.</h2>
+  <p class="linha-fina">Tudo abaixo funciona hoje, com dados de exemplo, e pode ser
+     aberto agora no celular de qualquer pessoa da equipe.</p>
+
+  <div class="numeros">
+    <div class="num"><div class="v">8</div><div class="r">telas prontas, entre loja e sistema</div></div>
+    <div class="num"><div class="v">6</div><div class="r">categorias no catálogo</div></div>
+    <div class="num"><div class="v">78</div><div class="r">fotos oficiais de produto</div></div>
+  </div>
+
+  <h2 style="font-size:17pt;margin-top:30px">Próximos passos</h2>
+  <div class="passos">
+    <div class="passo"><span class="n">1</span><div>
+      <b>Foto pelo celular, no cadastro</b>
+      <p>Fotografar o aparelho na entrada resolve os modelos sem foto oficial — e mostra a peça real ao cliente.</p></div></div>
+    <div class="passo"><span class="n">2</span><div>
+      <b>Guardar os dados de verdade</b>
+      <p>Hoje o cadastro vive no navegador. Com servidor, passa a valer para toda a equipe ao mesmo tempo.</p></div></div>
+    <div class="passo"><span class="n">3</span><div>
+      <b>Endereço próprio na internet</b>
+      <p>Um gemeosdoiphone.com.br no lugar do link interno, para o cliente chegar de qualquer lugar.</p></div></div>
+    <div class="passo"><span class="n">4</span><div>
+      <b>Integração com o WhatsApp</b>
+      <p>Conectar ao atendimento para o cliente sair da loja direto na conversa, já identificado.</p></div></div>
+  </div>
+  <div class="pe"><span>Gêmeos do iPhone · Analysis Sistemas</span><span>8</span></div>
+</section>
+
+</body>
+</html>
