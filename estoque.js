@@ -58,9 +58,12 @@ const CATALOGO = {
   "iPhone 16 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],         base: 4900},
   "iPhone 16 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 5800},
   "iPhone 16 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 6800},
-  "iPhone 17":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Lavanda"],                                 base: 5400},
-  "iPhone 17 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],                 base: 6900},
-  "iPhone 17 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],                 base: 7900},
+  /* Cores REAIS da linha 17 — ela não usa titânio como o 15 e o 16 Pro.
+     O 17 Pro é Prata, Laranja-cósmico e Azul-profundo; o 17 tem Lavanda,
+     Sálvia, Azul-névoa, Branco e Preto. */
+  "iPhone 17":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul-névoa","Lavanda","Sálvia"],                  base: 5400},
+  "iPhone 17 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Prata","Laranja-cósmico","Azul-profundo"],                         base: 6900},
+  "iPhone 17 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Prata","Laranja-cósmico","Azul-profundo"],                         base: 7900},
   "iPhone 18":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Verde"],                                   base: 6200},
   "iPhone 18 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],                 base: 7800},
   "iPhone 18 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],                 base: 8900}
@@ -324,16 +327,8 @@ const FOTOS = {
   /* Fotos OFICIAIS da Apple, aparelho sozinho e fundo transparente,
      baixadas por baixar_fotos_apple.py. Uma por modelo e por cor — é o que
      faz o clique na bolinha trocar a foto nos modelos novos. */
-  "iPhone 17 Pro Max|Titânio Prata":   "fotos/iphone-17-pro-max-titanio-prata.png",
-  "iPhone 17 Pro Max|Titânio Natural": "fotos/iphone-17-pro-max-titanio-natural.png",
-  "iPhone 17 Pro Max|Titânio Preto":   "fotos/iphone-17-pro-max-titanio-preto.png",
-  "iPhone 17 Pro|Titânio Prata":       "fotos/iphone-17-pro-titanio-prata.png",
-  "iPhone 17 Pro|Titânio Natural":     "fotos/iphone-17-pro-titanio-natural.png",
-  "iPhone 17 Pro|Titânio Preto":       "fotos/iphone-17-pro-titanio-preto.png",
-  "iPhone 17|Preto":                   "fotos/iphone-17-preto.png",
-  "iPhone 17|Branco":                  "fotos/iphone-17-branco.png",
-  "iPhone 17|Azul":                    "fotos/iphone-17-azul.png",
-  "iPhone 17|Lavanda":                 "fotos/iphone-17-lavanda.png",
+  /* A linha 17 resolve sozinha pelo nome do arquivo (fotos-disponiveis.js),
+     entao nao precisa de entrada manual aqui. Ficam so as excecoes. */
 
   /* outras combinações exatas de modelo + cor */
   "iPhone 12 Pro Max|Azul-pacífico": "fotos/iphone-12-pro-max-azul-pacifico.jpg",

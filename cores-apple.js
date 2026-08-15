@@ -48,7 +48,13 @@ const CORES_APPLE = {
   // 16 em diante
   "Ultramarino":          {hex:"#a7b8e0"},
   "Verde-acinzentado":    {hex:"#ccd8cf"},
-  "Lavanda":              {hex:"#d6cfe6"}
+  "Lavanda":              {hex:"#d6cfe6"},
+
+  // linha 17 — nao usa titanio, tem cores proprias
+  "Laranja-cósmico":      {hex:"#d2622c"},
+  "Azul-profundo":        {hex:"#2f4257"},
+  "Azul-névoa":           {hex:"#b9c8d4"},
+  "Sálvia":               {hex:"#c2cdb4"}
 };
 
 /* cinza neutro para cor que ainda não está no mapa — nunca deixa a bolinha vazia */

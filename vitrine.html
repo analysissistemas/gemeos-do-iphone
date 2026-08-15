@@ -93,12 +93,15 @@ a{color:inherit;text-decoration:none}
    Dois aparelhos nas laterais, cada um numa velocidade diferente — é o que dá
    a sensação de profundidade quando a página desce. */
 .gemeas{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+/* As fotos oficiais vêm com fundo transparente, então o aparelho flutua solto:
+   sem moldura, sem borda, sem cartão. A sombra vai no próprio contorno do
+   aparelho (drop-shadow), não numa caixa retangular em volta. */
 .fone{
-  position:absolute;top:50%;width:clamp(150px,17vw,270px);aspect-ratio:3/3.4;
-  border-radius:22px;overflow:hidden;will-change:transform;
-  box-shadow:0 34px 90px rgba(0,0,0,.85);border:1px solid rgba(255,255,255,.16);
+  position:absolute;top:50%;width:clamp(190px,21vw,340px);aspect-ratio:1/1;
+  will-change:transform;
 }
-.fone img{width:100%;height:100%;object-fit:cover}
+.fone img{width:100%;height:100%;object-fit:contain;
+  filter:drop-shadow(0 30px 60px rgba(0,0,0,.9)) drop-shadow(0 0 30px rgba(255,255,255,.10))}
 .fone.esq{left:clamp(-40px,3vw,80px);transform:translateY(-50%) rotate(-9deg)}
 .fone.dir{right:clamp(-40px,3vw,80px);transform:translateY(-50%) rotate(9deg)}
 /* sem foto: contorno de aparelho, para não ficar um buraco */
@@ -308,9 +311,9 @@ a{color:inherit;text-decoration:none}
   </div>
   <!-- iPhones flutuando nas laterais, cada um numa velocidade de parallax -->
   <div class="gemeas" aria-hidden="true">
-    <div class="fone esq" id="foneE"><img src="fotos/iphone-12-pro-max-azul-pacifico.jpg" alt=""
+    <div class="fone esq" id="foneE"><img src="fotos/iphone-17-pro-laranja-cosmico.png" alt=""
          onerror="this.parentElement.classList.add('molde');this.remove()"></div>
-    <div class="fone dir" id="foneD"><img src="fotos/iphone-11-preto.jpg" alt=""
+    <div class="fone dir" id="foneD"><img src="fotos/iphone-17-pro-max-azul-profundo.png" alt=""
          onerror="this.parentElement.classList.add('molde');this.remove()"></div>
   </div>
 

@@ -29,12 +29,14 @@ MINIMO = 40_000          # abaixo disso e erro disfarcado ou bolinha de cor
 
 # modelo do site -> (slug da Apple, datas a tentar, {cor do site: cor da Apple})
 MODELOS = {
+    # a linha 17 nao usa titanio: tem cores proprias
     "iPhone 17 Pro Max": ("iphone-17-pro-max", ["202509"], {
-        "Titânio Prata": "silver", "Titânio Natural": "cosmicorange", "Titânio Preto": "deepblue"}),
+        "Prata": "silver", "Laranja-cósmico": "cosmicorange", "Azul-profundo": "deepblue"}),
     "iPhone 17 Pro": ("iphone-17-pro", ["202509"], {
-        "Titânio Prata": "silver", "Titânio Natural": "cosmicorange", "Titânio Preto": "deepblue"}),
+        "Prata": "silver", "Laranja-cósmico": "cosmicorange", "Azul-profundo": "deepblue"}),
     "iPhone 17": ("iphone-17", ["202509"], {
-        "Preto": "black", "Branco": "white", "Azul": "mistblue", "Lavanda": "lavender"}),
+        "Preto": "black", "Branco": "white", "Azul-névoa": "mistblue",
+        "Lavanda": "lavender", "Sálvia": "sage"}),
 
     "iPhone 16 Pro Max": ("iphone-16-pro-max", ["202409"], {
         "Titânio Natural": "naturaltitanium", "Titânio Preto": "blacktitanium",
@@ -86,6 +88,18 @@ PADROES = [
     "{slug}-{cor}-select-{data}",
 ]
 
+def variantes_de_cor(cor):
+    """A Apple escreve a mesma cor de jeitos diferentes conforme a geração:
+    naturaltitanium, natural-titanium, titanium-natural. Em vez de adivinhar
+    qual vale para cada modelo, tentamos todas — a que responder imagem, vale."""
+    v = [cor]
+    if "titanium" in cor and "-" not in cor:
+        base = cor.replace("titanium", "")
+        v += [f"{base}-titanium", f"titanium-{base}"]
+    if "-" in cor:
+        v.append(cor.replace("-", ""))
+    return list(dict.fromkeys(v))          # sem repetir, mantendo a ordem
+
 
 def sem_acento(s):
     s = unicodedata.normalize("NFD", s)
@@ -117,10 +131,13 @@ def main():
 
             dados = None
             for data in datas:
-                for padrao in PADROES:
-                    arq = padrao.format(slug=slug, cor=cor_apple, data=data)
-                    dados = tentar(BASE + arq + QUERY)
-                    time.sleep(0.2)          # educação com o servidor
+                for variante in variantes_de_cor(cor_apple):
+                    for padrao in PADROES:
+                        arq = padrao.format(slug=slug, cor=variante, data=data)
+                        dados = tentar(BASE + arq + QUERY)
+                        time.sleep(0.15)          # educação com o servidor
+                        if dados:
+                            break
                     if dados:
                         break
                 if dados:
