@@ -10,10 +10,57 @@ assistência técnica.
 > de dados ainda. Serve para você ver o sistema de pé e decidir o que muda
 > antes de valer a pena programar o funcionamento de verdade.
 
+## Continuar em outro computador
+
+O projeto vive na conta **analysissistemas**, na branch **`vitrine-html`**.
+Atenção: a branch `main` é OUTRO sistema, feito em Next.js pelo Leo — não
+misture as duas.
+
+**1. Baixar o projeto**
+
+Se o computador tiver Git:
+
+```
+git clone -b vitrine-html https://github.com/analysissistemas/gemeos-do-iphone
+```
+
+Se não tiver, dá para baixar sem instalar nada: abra
+`github.com/analysissistemas/gemeos-do-iphone/tree/vitrine-html`,
+clique no botão verde **Code** → **Download ZIP** e descompacte.
+
+**2. Abrir**
+
+Dois cliques em **`vitrine.html`** (a loja) ou **`index.html`** (o sistema).
+Abre direto no navegador — não precisa instalar nem ligar servidor nenhum.
+
+Acessos de teste: usuário `admin`, `gemeo1` ou `gemeo2`, senha `gemeos123`.
+
+**3. Só se for mexer nos scripts**
+
+Os arquivos `.py` (baixar fotos, otimizar, gerar Excel e a apresentação)
+precisam de **Python**. Instale de python.org marcando *Add Python to PATH*,
+e depois:
+
+```
+python -m pip install pillow openpyxl python-pptx pymupdf
+```
+
+O site em si NÃO precisa de Python — só os scripts de apoio.
+
+### O que não vem junto, e por quê
+
+| Não vem | Motivo | Como recuperar |
+|---|---|---|
+| `fotos/*.png` e `*.jpg` | Pesam 70 MB; o site usa os `.webp`, que pesam 1,5 MB | `python baixar_fotos_apple.py` |
+| `video/iphone-air-hero.mp4` | Vídeo que não foi escolhido | Está no histórico, se precisar |
+
+**As 81 fotos `.webp` e o vídeo do iPhone 17 Pro VÊM junto** — o site funciona
+completo assim que você abrir, sem baixar mais nada.
+
 ## Como abrir
 
-Dê dois cliques em **`index.html`**. Abre no navegador, não precisa instalar
-nada, não precisa de internet.
+Dê dois cliques em **`vitrine.html`** (loja do cliente) ou **`index.html`**
+(sistema da equipe). Abre no navegador, não precisa instalar nada.
 
 ## Como mandar para alguém
 
