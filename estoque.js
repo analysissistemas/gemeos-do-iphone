@@ -179,6 +179,20 @@ const CAT_MOTO = {
   "Scooter Elétrica 350W":      {var:["Única"], cor:["Preto","Branco"],                  base:2100},
   "Scooter Elétrica 800W":      {var:["Única"], cor:["Preto","Branco"],                  base:3400}
 };
+/* Fora do mundo Apple: console e internet via satélite. Entram por QUANTIDADE
+   porque não têm bateria nem IMEI — as duas coisas que fazem um iPhone ser
+   peça única. Aqui um Xbox é igual ao outro. */
+const CAT_OUTROS = {
+  "PlayStation 5 Slim":        {var:["1TB com leitor","1TB Digital"], cor:["Branco"],           base:3999},
+  "PlayStation 5 Pro":         {var:["2TB"],                          cor:["Branco"],           base:6499},
+  "Xbox Series X":             {var:["1TB","2TB Galaxy Black"],       cor:["Preto"],            base:4299},
+  "Xbox Series S":             {var:["512GB","1TB"],                  cor:["Branco","Preto"],   base:2299},
+  "Controle DualSense":        {var:["Único"],                        cor:["Branco","Preto"],   base: 449},
+  "Controle Xbox Wireless":    {var:["Único"],                        cor:["Preto","Branco"],   base: 429},
+  "Starlink Standard (kit)":   {var:["Kit completo"],                 cor:["Branco"],           base:2300},
+  "Starlink Mini (kit)":       {var:["Kit completo"],                 cor:["Branco"],           base:1800}
+};
+
 const CAT_ACES = {
   "AirPods 4":                {var:["Única"],             cor:["Branco"],                 base: 950},
   "AirPods Pro 2":            {var:["Única"],             cor:["Branco"],                 base:1450},
@@ -232,14 +246,16 @@ function _gerarQuantidade(catalogo, categoria){
 const WATCHES     = _gerarPecas(CAT_WATCH, "Apple Watch", COND);
 const IPADS       = _gerarPecas(CAT_IPAD,  "iPad",        ["Novo (lacrado)","Seminovo","Vitrine"]);
 const MACBOOKS    = _gerarPecas(CAT_MAC,   "MacBook",     ["Novo (lacrado)","Seminovo","Vitrine"]);
-const MOTOS       = _gerarQuantidade(CAT_MOTO, "Motos elétricas");
-const ACESSORIOS  = _gerarQuantidade(CAT_ACES, "Acessórios");
+const MOTOS       = _gerarQuantidade(CAT_MOTO,   "Motos elétricas");
+const ACESSORIOS  = _gerarQuantidade(CAT_ACES,   "Acessórios");
+const OUTROS      = _gerarQuantidade(CAT_OUTROS, "Games e internet");
 
 /* marca a categoria dos iPhones, que foram gerados antes das outras */
 APARELHOS.forEach(a => a.categoria = "iPhone");
 
 /* tudo o que a loja vende, numa lista só */
-const PRODUTOS = [...APARELHOS, ...IPADS, ...WATCHES, ...MACBOOKS, ...MOTOS, ...ACESSORIOS];
+const PRODUTOS = [...APARELHOS, ...IPADS, ...WATCHES, ...MACBOOKS,
+                  ...OUTROS, ...MOTOS, ...ACESSORIOS];
 
 /* as seções do catálogo, na ordem em que aparecem para o cliente */
 const CATEGORIAS = [
@@ -247,6 +263,7 @@ const CATEGORIAS = [
   {nome:"iPad",            titulo:"iPad",             sub:"iPad, mini, Air e Pro para estudo, trabalho e desenho.", catalogo:CAT_IPAD,  campoVar:"var"},
   {nome:"Apple Watch",     titulo:"Apple Watch",      sub:"SE, Series e Ultra, com pulseira à sua escolha.",        catalogo:CAT_WATCH, campoVar:"var"},
   {nome:"MacBook",         titulo:"MacBook",          sub:"Air e Pro com configurações para estudo e trabalho.",    catalogo:CAT_MAC,   campoVar:"var"},
+  {nome:"Games e internet",titulo:"Games e internet", sub:"PlayStation, Xbox, controles e kits Starlink.",          catalogo:CAT_OUTROS,campoVar:"var"},
   {nome:"Acessórios",      titulo:"Acessórios",       sub:"AirPods, carregadores, capas, caixas de som e mais.",    catalogo:CAT_ACES,  campoVar:"var"},
   {nome:"Motos elétricas", titulo:"Motos elétricas",  sub:"Motinhas e scooters elétricas para as crianças.",        catalogo:CAT_MOTO,  campoVar:"var"}
 ];

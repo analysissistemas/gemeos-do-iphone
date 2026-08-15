@@ -10,6 +10,9 @@
    ============================================================ */
 const FOTOS_EXISTENTES = new Set([
   "airtag.webp",
+  "apple-watch-se-3.webp",
+  "apple-watch-series-11.webp",
+  "apple-watch-ultra-3.webp",
   "ipad-11-geracao-amarelo.webp",
   "ipad-11-geracao-azul.webp",
   "ipad-11-geracao-prata.webp",

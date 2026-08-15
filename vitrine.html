@@ -530,9 +530,9 @@ a{color:inherit;text-decoration:none}
 <!-- O ?v= força o navegador a buscar a versão nova em vez de usar a guardada.
      Suba o número sempre que mexer nestes arquivos, senão você (e o cliente)
      continuam vendo a versão antiga sem entender por quê. -->
-<script src="cores-apple.js?v=3"></script>
-<script src="fotos-disponiveis.js?v=3"></script>
-<script src="estoque.js?v=3"></script>
+<script src="cores-apple.js?v=4"></script>
+<script src="fotos-disponiveis.js?v=4"></script>
+<script src="estoque.js?v=4"></script>
 <script>
 /* ============================================================
    Número que recebe as mensagens do site.
@@ -790,18 +790,27 @@ document.addEventListener("click", e=>{
   if(bz){
     const el = esc(a), lac = el.cond==="Novo (lacrado)";
     const igual = el.cor===a.cor && el.arm===a.arm && el.cond===a.cond;
-    abrirZap([
-      "Olá! Tenho interesse neste aparelho do site:","",
-      `📱 ${a.modelo}`,
-      `💾 ${el.arm}`,
-      `🎨 ${el.cor}`,
-      `📦 ${el.cond}`,
-      lac ? "🔋 Bateria 100% (lacrado)" : `🔋 Bateria ${a.bateria}%`,
-      a.avarias.length ? `⚠️ ${a.avarias.join(", ")}` : "✅ Sem avarias",
-      `💰 ${brl(precoEscolhido(a))} (ou 18x de ${brlc(precoEscolhido(a)/18)})`,
+    /* Sem emoji, de propósito: emoji ocupa 4 bytes e é o primeiro a quebrar
+       quando a mensagem passa por um sistema que não trata bem a codificação —
+       foi o que aconteceu, chegava tudo como "?". O negrito aqui é o do
+       próprio WhatsApp (*texto entre asteriscos*), que é só ASCII e sempre
+       chega inteiro — além de ficar com cara de loja, não de conversa. */
+    const linhas = [
+      "Olá! Tenho interesse neste aparelho do site:", "",
+      `*${a.modelo}*`,
+      `${el.arm} - ${el.cor}`,
+      el.cond,
+      lac ? "Bateria 100% (lacrado)" : `Bateria ${a.bateria}%`,
+      a.avarias.length ? `Avarias: ${a.avarias.join(", ")}` : "Sem avarias",
+      "",
+      /* travessão e ponto-do-meio trocados por hífen: são caracteres de vários
+         bytes e já perdemos emoji por codificação uma vez. Hífen é ASCII puro
+         e chega inteiro em qualquer aparelho. */
+      `*${brl(precoEscolhido(a))}* - ou 18x de ${brlc(precoEscolhido(a)/18)}`,
       "",
       igual ? "Ainda está disponível?" : "Vocês têm nessa configuração?"
-    ].join("\n"));
+    ];
+    abrirZap(linhas.join("\n"));
   }
 });
 
