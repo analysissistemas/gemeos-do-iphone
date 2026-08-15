@@ -1,6 +1,12 @@
 ﻿import os, json
 pasta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fotos")
-arqs = sorted(f for f in os.listdir(pasta) if f.lower().endswith((".png",".jpg")))
+todos = sorted(f for f in os.listdir(pasta) if f.lower().endswith((".webp", ".png", ".jpg", ".jpeg")))
+webps = {os.path.splitext(f)[0] for f in todos if f.lower().endswith(".webp")}
+# Um PNG que já tem .webp gêmeo NÃO entra na lista: ele fica só nesta máquina
+# (está no .gitignore), então listá-lo faria o site procurar, depois de clonar,
+# um arquivo que não existe — e cair no contorno sem necessidade.
+arqs = [f for f in todos
+        if f.lower().endswith(".webp") or os.path.splitext(f)[0] not in webps]
 cab = """/* ============================================================
    LISTA DAS FOTOS QUE EXISTEM NA PASTA fotos/
    ------------------------------------------------------------

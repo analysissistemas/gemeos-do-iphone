@@ -20,3 +20,15 @@ _teste/
 
 _*.py
 _msg.txt
+
+# ---- fotos: so o .webp vai pro GitHub ----
+# Os PNG/JPG originais sao pesados (70 MB) e da para baixar de novo com
+# baixar_fotos_apple.py. O .webp e o que o site usa e pesa 1,5 MB no total.
+fotos/*.png
+fotos/*.jpg
+fotos/*.jpeg
+fotos/_baixa-resolucao/
+fotos/_nao-usadas/
+
+# video que nao foi escolhido
+video/iphone-air-hero.mp4

@@ -391,10 +391,14 @@ function fotoDe(modelo, cor){
 function fotosPorNome(modelo, cor){
   const m = semAcento(modelo);
   const lista = [];
+  /* .webp primeiro: mesma imagem, mesma transparência, cerca de 10x menor.
+     No celular, na rede da rua, é a diferença entre a loja abrir rápido e o
+     cliente desistir. O .png/.jpg fica como reserva para foto acrescentada
+     à mão que ainda não passou pelo otimizar_fotos.py. */
   if(cor){
     const c = semAcento(cor);
-    lista.push(`fotos/${m}-${c}.png`, `fotos/${m}-${c}.jpg`);
+    lista.push(`fotos/${m}-${c}.webp`, `fotos/${m}-${c}.png`, `fotos/${m}-${c}.jpg`);
   }
-  lista.push(`fotos/${m}.png`, `fotos/${m}.jpg`);
+  lista.push(`fotos/${m}.webp`, `fotos/${m}.png`, `fotos/${m}.jpg`);
   return lista;
 }
