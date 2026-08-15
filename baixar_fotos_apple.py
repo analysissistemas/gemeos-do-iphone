@@ -129,6 +129,30 @@ MODELOS_EXATOS = {
     "iPad (11ª geração)":   ("ipad-2022-hero-{cor}-wifi-select",
                              {"Azul": "blue", "Rosa": "pink",
                               "Amarelo": "yellow", "Prata": "silver"}),
+
+    # ⚠️ APPLE WATCH NÃO FUNCIONA por este caminho, e já foi testado.
+    # O que a página do Watch expõe é o nome da BOLINHA de cor, que termina
+    # em _SW_COLOR. Tirar esse sufixo não dá a foto do produto — o arquivo do
+    # relógio tem outro nome, que não aparece no HTML e não se deduz.
+    # Testadas e recusadas: ...-cell-s11, ...-nc-s11, ...-ultra3, ...-nc-se3.
+    # Caminho que resolve: foto tirada na loja, pelo cadastro do admin.
+    # As linhas abaixo ficam como registro do que já foi tentado.
+    "Apple Watch Series 11": ("watch-case-42-aluminum-{cor}-nc-s11",
+                              {"Cinza-espacial": "spacegray", "Prata": "silver",
+                               "Ouro-rosé": "rosegold", "Preto-jato": "jetblack"}),
+    "Apple Watch SE 3":      ("watch-case-40-aluminum-{cor}-nc-se3",
+                              {"Meia-noite": "midnight", "Estelar": "starlight"}),
+    "Apple Watch Ultra 3":   ("watch-case-49-titanium-{cor}-ultra3",
+                              {"Titânio Natural": "natural", "Titânio Preto": "black"}),
+
+    # Mac
+    "MacBook Neo":           ("macbook-neo-{cor}-cto-hero-202603",
+                              {"Prata": "silver", "Blush": "blush",
+                               "Citrus": "citrus", "Índigo": "indigo"}),
+    "iMac 24\" M4":          ("imac-{cor}-selection-hero-202410",
+                              {"Azul": "blue", "Roxo": "purple", "Rosa": "pink",
+                               "Amarelo": "yellow", "Verde": "green",
+                               "Laranja": "orange", "Prata": "silver"}),
 }
 
 

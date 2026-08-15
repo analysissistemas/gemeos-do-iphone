@@ -60,7 +60,17 @@ const CORES_APPLE = {
   // iPhone Air
   "Azul-celeste":         {hex:"#c9dce8", borda:true},
   "Dourado-claro":        {hex:"#e6d9bf", borda:true},
-  "Branco-nuvem":         {hex:"#efedE8", borda:true}
+  "Branco-nuvem":         {hex:"#efede8", borda:true},
+
+  // Apple Watch
+  "Preto-jato":           {hex:"#26262a"},
+  "Ouro-rosé":            {hex:"#e0bfb2", borda:true},
+
+  // MacBook Neo e iMac
+  "Blush":                {hex:"#e9cfc9", borda:true},
+  "Citrus":               {hex:"#e5e2a8", borda:true},
+  "Índigo":               {hex:"#4a5470"},
+  "Laranja":              {hex:"#e9884d"}
 };
 
 /* cinza neutro para cor que ainda não está no mapa — nunca deixa a bolinha vazia */

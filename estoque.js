@@ -149,17 +149,19 @@ Object.keys(CATALOGO).forEach(m=>{
    igual iPhone. Acessório e motinha são por quantidade — não faz sentido
    guardar "saúde da bateria" de uma película.
    ============================================================ */
+/* Linha atual do Apple Watch (Series 11, SE 3 e Ultra 3). Cada modelo tem
+   material e cores próprios — o alumínio e o titânio não compartilham cor. */
 const CAT_WATCH = {
-  "Apple Watch SE (2ª ger.)": {var:["40mm","44mm"],       cor:["Meia-noite","Estelar","Prata"],                     base:1100},
-  "Apple Watch Series 9":     {var:["41mm","45mm"],       cor:["Meia-noite","Estelar","Prata","Rosa","Vermelho"],   base:1900},
-  "Apple Watch Series 10":    {var:["42mm","46mm"],       cor:["Preto","Prata","Dourado"],                          base:2600},
-  "Apple Watch Ultra 2":      {var:["49mm"],              cor:["Titânio Natural","Titânio Preto"],                  base:5200}
+  "Apple Watch SE 3":       {var:["40mm","44mm"], cor:["Meia-noite","Estelar"],                                    base:2200},
+  "Apple Watch Series 11":  {var:["42mm","46mm"], cor:["Preto-jato","Prata","Cinza-espacial","Ouro-rosé"],         base:3900},
+  "Apple Watch Ultra 3":    {var:["49mm"],        cor:["Titânio Natural","Titânio Preto"],                         base:8900}
 };
 const CAT_MAC = {
-  "MacBook Air 13\" M2":  {var:["256GB","512GB","1TB"], cor:["Cinza-espacial","Estelar","Meia-noite","Prata"], base:4800},
-  "MacBook Air 13\" M3":  {var:["256GB","512GB","1TB"], cor:["Cinza-espacial","Estelar","Meia-noite","Prata"], base:5900},
-  "MacBook Air 15\" M3":  {var:["256GB","512GB","1TB"], cor:["Cinza-espacial","Estelar","Meia-noite","Prata"], base:7200},
-  "MacBook Pro 14\" M4":  {var:["512GB","1TB"],         cor:["Preto-espacial","Prata"],                        base:11500}
+  "MacBook Neo":          {var:["256GB","512GB","1TB"], cor:["Prata","Blush","Citrus","Índigo"],               base: 8499},
+  "MacBook Air 13\" M3":  {var:["256GB","512GB","1TB"], cor:["Cinza-espacial","Estelar","Meia-noite","Prata"], base: 5900},
+  "MacBook Air 15\" M3":  {var:["256GB","512GB","1TB"], cor:["Cinza-espacial","Estelar","Meia-noite","Prata"], base: 7200},
+  "MacBook Pro 14\" M4":  {var:["512GB","1TB"],         cor:["Preto-espacial","Prata"],                        base:11500},
+  "iMac 24\" M4":         {var:["256GB","512GB"],       cor:["Azul","Roxo","Rosa","Amarelo","Verde","Laranja","Prata"], base:9800}
 };
 const CAT_IPAD = {
   "iPad (11ª geração)": {var:["128GB","256GB","512GB"],      cor:["Prata","Azul","Rosa","Amarelo"],            base:2900},

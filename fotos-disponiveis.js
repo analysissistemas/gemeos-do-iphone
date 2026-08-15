@@ -10,6 +10,13 @@
    ============================================================ */
 const FOTOS_EXISTENTES = new Set([
   "airtag.jpg",
+  "imac-24-m4-amarelo.png",
+  "imac-24-m4-azul.png",
+  "imac-24-m4-laranja.png",
+  "imac-24-m4-prata.png",
+  "imac-24-m4-rosa.png",
+  "imac-24-m4-roxo.png",
+  "imac-24-m4-verde.png",
   "imac-m1.jpg",
   "ipad-11-geracao-amarelo.png",
   "ipad-11-geracao-azul.png",
@@ -83,5 +90,9 @@ const FOTOS_EXISTENTES = new Set([
   "iphone-air-dourado-claro.png",
   "iphone-air-preto-espacial.png",
   "jbl-partybox-100.jpg",
+  "macbook-neo-blush.png",
+  "macbook-neo-citrus.png",
+  "macbook-neo-indigo.png",
+  "macbook-neo-prata.png",
   "redmi-note-13.jpg"
 ]);
