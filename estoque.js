@@ -160,8 +160,9 @@ const CAT_MAC = {
   "MacBook Neo":          {var:["256GB","512GB","1TB"], cor:["Prata","Blush","Citrus","Índigo"],               base: 8499},
   "MacBook Air 13\" M3":  {var:["256GB","512GB","1TB"], cor:["Cinza-espacial","Estelar","Meia-noite","Prata"], base: 5900},
   "MacBook Air 15\" M3":  {var:["256GB","512GB","1TB"], cor:["Cinza-espacial","Estelar","Meia-noite","Prata"], base: 7200},
-  "MacBook Pro 14\" M4":  {var:["512GB","1TB"],         cor:["Preto-espacial","Prata"],                        base:11500},
-  "iMac 24\" M4":         {var:["256GB","512GB"],       cor:["Azul","Roxo","Rosa","Amarelo","Verde","Laranja","Prata"], base:9800}
+  "MacBook Pro 14\" M4":  {var:["512GB","1TB"],         cor:["Preto-espacial","Prata"],                        base:11500}
+  /* iMac fora de propósito: a loja trabalha só com notebook, não com
+     computador de mesa. As fotos dele saíram da pasta junto. */
 };
 const CAT_IPAD = {
   "iPad (11ª geração)": {var:["128GB","256GB","512GB"],      cor:["Prata","Azul","Rosa","Amarelo"],            base:2900},

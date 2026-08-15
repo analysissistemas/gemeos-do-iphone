@@ -149,10 +149,7 @@ MODELOS_EXATOS = {
     "MacBook Neo":           ("macbook-neo-{cor}-cto-hero-202603",
                               {"Prata": "silver", "Blush": "blush",
                                "Citrus": "citrus", "Índigo": "indigo"}),
-    "iMac 24\" M4":          ("imac-{cor}-selection-hero-202410",
-                              {"Azul": "blue", "Roxo": "purple", "Rosa": "pink",
-                               "Amarelo": "yellow", "Verde": "green",
-                               "Laranja": "orange", "Prata": "silver"}),
+    # iMac removido: a loja vende notebook, não computador de mesa.
 }
 
 
