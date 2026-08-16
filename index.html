@@ -2079,18 +2079,38 @@ function wizEntrada(){
     b.onclick = ok ? salvar : null;
   }
 
-  function salvar(){
+  async function salvar(){
     const {sugerido}=precificar(st);
-    aparelhos.push({
-      id:proximoId++, modelo:st.modelo, arm:st.arm, cor:st.cor, cond:st.cond,
-      bateria:st.cond==="Novo (lacrado)"?100:st.bateria, avarias:[...st.avarias],
-      imei:st.imei, custo:+st.custo||0, venda:st.venda||sugerido,
-      entrada:"12/08/2026", vendido:false
-    });
-    movs.unshift({data:"12/08/2026",tipo:"Entrada",apar:`${st.modelo} · ${st.arm}`,imei:st.imei,
-      quem:"Entrada manual",valor:+st.custo||0,forma:"—",vend:"Você"});
-    fecharModal(); atualizarTudo();
-    aviso(`${st.modelo} ${st.arm} entrou no estoque.`);
+    const bateria = st.cond==="Novo (lacrado)"?100:st.bateria;
+    const venda = st.venda||sugerido;
+    const btn=$("#wSalvar"); btn.disabled=true; btn.textContent="Salvando…";
+    try{
+      const r = await fetch("/api/estoque", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          acao:"criar_produto",
+          modeloInfo:{ tipo:"iphone", marca:"Apple", modelo:st.modelo },
+          armazenamento:st.arm, cor:st.cor, condicao:st.cond, bateria,
+          imei:st.imei, avarias:[...st.avarias], custo:+st.custo||0, preco:venda,
+          data_entrada: new Date().toISOString().slice(0,10)
+        })
+      });
+      const res = await r.json();
+      if(!res.ok) throw new Error(res.erro || "Não consegui salvar no banco.");
+      aparelhos.push({
+        id:res.produto.id, modelo:st.modelo, arm:st.arm, cor:st.cor, cond:st.cond,
+        bateria, avarias:[...st.avarias],
+        imei:st.imei, custo:+st.custo||0, venda,
+        entrada:"12/08/2026", vendido:false
+      });
+      movs.unshift({data:"12/08/2026",tipo:"Entrada",apar:`${st.modelo} · ${st.arm}`,imei:st.imei,
+        quem:"Entrada manual",valor:+st.custo||0,forma:"—",vend:"Você"});
+      fecharModal(); atualizarTudo();
+      aviso(`${st.modelo} ${st.arm} entrou no estoque — já salvo, aparece na vitrine.`);
+    }catch(e){
+      btn.disabled=false; btn.textContent="Salvar";
+      aviso(`Não deu pra salvar: ${e.message}`);
+    }
   }
 }
 
@@ -2189,15 +2209,27 @@ function wizVenda(idPre){
     b.onclick = ok ? confirmar : null;
   }
 
-  function confirmar(){
+  async function confirmar(){
     const a=st.ap;
-    a.vendido=true;
-    const forma = st.parcelas>1 ? `${st.forma} ${st.parcelas}x` : st.forma;
-    const mov = {data:"12/08/2026",tipo:"Saída",apar:`${a.modelo} · ${a.arm}`,imei:a.imei,
-      quem:st.cliente,valor:st.preco,forma,vend:"Você",cli:st.cliente};
-    movs.unshift(mov);
-    fecharModal(); atualizarTudo();
-    aviso(`Venda registrada: ${a.modelo} para ${st.cliente}.`, ()=>abrirNota("venda",mov));
+    const btn=$("#vSalvar"); btn.disabled=true; btn.textContent="Confirmando…";
+    try{
+      const r = await fetch("/api/estoque", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ acao:"marcar_vendido", id:a.id })
+      });
+      const res = await r.json();
+      if(!res.ok) throw new Error(res.erro || "Não consegui registrar no banco.");
+      a.vendido=true;
+      const forma = st.parcelas>1 ? `${st.forma} ${st.parcelas}x` : st.forma;
+      const mov = {data:"12/08/2026",tipo:"Saída",apar:`${a.modelo} · ${a.arm}`,imei:a.imei,
+        quem:st.cliente,valor:st.preco,forma,vend:"Você",cli:st.cliente};
+      movs.unshift(mov);
+      fecharModal(); atualizarTudo();
+      aviso(`Venda registrada: ${a.modelo} para ${st.cliente}.`, ()=>abrirNota("venda",mov));
+    }catch(e){
+      btn.disabled=false; btn.textContent="Confirmar venda";
+      aviso(`Não deu pra confirmar: ${e.message}`);
+    }
   }
 }
 
