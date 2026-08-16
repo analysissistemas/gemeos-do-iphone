@@ -28,6 +28,23 @@ git clone -b vitrine-html https://github.com/analysissistemas/gemeos-do-iphone
 
 Sem o `-b`, vem o sistema do Leo.
 
+## Trava: `vitrine.html` não se mexe sem autorização explícita
+
+**Nunca editar `vitrine.html` por conta própria** — nem para "melhorar", nem
+como efeito colateral de mexer em outra coisa. Antes de qualquer edição
+nesse arquivo específico, pedir confirmação nomeando o arquivo
+(`vitrine.html`) e o que vai mudar, e esperar um "sim" claro.
+
+Se o pedido for sobre dado (estoque, preço, foto, categoria), o caminho é
+mexer no banco (Supabase) ou no `estoque.js`/`index.html` — o `vitrine.html`
+só lê o que os outros produzem, quase nunca precisa mudar por dentro.
+
+**Por quê:** numa sessão de 2026-08-16, o dono pediu reversão de código várias
+vezes seguidas achando que `vitrine.html` tinha sido alterado, quando na
+prática o arquivo nunca mudou (só o banco por trás dele, ou o `index.html`) —
+o `git diff` provou isso repetidas vezes. A ansiedade em torno desse arquivo
+específico é alta; tratar como intocável por padrão evita esse ciclo.
+
 ## O dono
 
 Se descreve como **leigo em programação**. Explicar em linguagem simples, sem
