@@ -914,11 +914,9 @@ tbody tr:last-child td{border-bottom:none}
   <div class="modal" id="modal"></div>
 </div>
 
-<!-- foto tirada na loja: guardar, reduzir e anexar. Sem dependências. -->
+<!-- foto tirada na loja: guardar, reduzir e anexar. Sem dependências, então
+     funciona aqui mesmo o index.html não carregando o estoque.js. -->
 <script src="foto-produto.js?v=1"></script>
-<!-- estoque real (Supabase) — mesma fonte que a vitrine.html usa. Preenche
-     PRODUTOS e expõe ESTOQUE_CARREGADO (ver estoque.js). -->
-<script src="estoque.js?v=1"></script>
 <script>
 /* ============================================================
    DADOS SIMULADOS — tudo inventado, só para o protótipo
@@ -945,7 +943,7 @@ const ACES  = ["Capa Silicone MagSafe","Película 3D Cerâmica","Carregador 20W 
                "Redmi Note 13","Fonte Turbo 20W"];
 const ARMAZ = ["64GB","128GB","256GB","512GB","1TB"];
 const CORES = ["Preto","Branco","Azul","Titânio Natural","Meia-noite","Estelar","Grafite"];
-/* COND já vem do estoque.js (carregado acima) — mesma lista, uma fonte só */
+const COND  = ["Novo (lacrado)","Seminovo","Vitrine","Usado"];
 const NOMES = ["Ana Beatriz","Carlos Eduardo","Juliana","Rafael","Marina","Thiago","Patrícia","Lucas","Fernanda","Bruno",
                "Camila","Diego","Larissa","Rodrigo","Amanda","Gustavo","Vanessa","Felipe","Tatiane","Marcelo",
                "Renata","André","Bianca","Vinícius","Priscila","Leandro","Débora","Mateus","Sabrina","Igor"];
@@ -1044,32 +1042,38 @@ function precificar({modelo,cond,bateria,avarias}){
   return {sugerido:Math.max(100,Math.round((bruto-descAv)/10)*10), linhas};
 }
 
-/* ---- APARELHOS (peça única) e ESTOQUE (por quantidade) ----
-   Antes eram inventados aqui. Agora os dois vêm do banco real, pelo
-   estoque.js — os MESMOS produtos que a vitrine.html mostra pro cliente.
-   proximoId/CATALOGO/AVARIAS/precificar continuam existindo: são usados
-   pelo formulário de "cadastrar aparelho novo" mais abaixo, que ainda
-   funciona só localmente (não grava no banco real ainda). */
+/* ---- APARELHOS: cada iPhone é uma peça única (IMEI, bateria, avarias) ---- */
 let proximoId = 1;
 const aparelhos = [];
-const estoque = [];
+Object.keys(CATALOGO).forEach(m=>{
+  const qtd = ent(0,3);
+  for(let i=0;i<qtd;i++){
+    const info=CATALOGO[m];
+    const cond=pick(COND);
+    const bat = cond==="Novo (lacrado)" ? 100 : ent(76,100);
+    const avs = cond==="Novo (lacrado)" ? [] : (rnd()>0.55 ? [pick(AVARIAS).k] : []);
+    const {sugerido}=precificar({modelo:m,cond,bateria:bat,avarias:avs});
+    aparelhos.push({
+      id:proximoId++, modelo:m, arm:pick(info.arm), cor:pick(info.cor), cond,
+      bateria:bat, avarias:avs, imei:`35${ent(100000,999999)}${ent(100000,999999)}`,
+      custo:Math.round(sugerido*(0.68+rnd()*0.12)), venda:sugerido,
+      entrada:`${String(ent(1,12)).padStart(2,"0")}/08/2026`, vendido:false
+    });
+  }
+});
 
-/* "Motos elétricas"/"Acessórios"/"Games e internet" (categorias da vitrine)
-   viram "Motinha elétrica"/"Acessório" aqui — são os únicos filtros que a
-   tabela de baixo já tinha. */
-function categoriaEstoqueDe(categoria) {
-  return categoria === "Motos elétricas" ? "Motinha elétrica" : "Acessório";
-}
-function carregarEstoqueIndex() {
-  PRODUTOS.forEach(p => {
-    if (p.porQuantidade) {
-      estoque.push({ nome: p.modelo, sub: p.cor || p.arm || "", cat: categoriaEstoqueDe(p.categoria),
-        cond: p.cond, qtd: p.qtd, custo: p.custo, venda: p.venda });
-    } else {
-      aparelhos.push(p); // mesmo objeto que a vitrine usa — não tem como "desincronizar"
-    }
-  });
-}
+/* ---- ESTOQUE por quantidade: acessórios e motinhas ---- */
+const estoque = [];
+MOTOS.forEach(m=>{
+  const base = ent(700,2600);
+  estoque.push({cat:"Motinha elétrica", nome:m, sub:pick(["Vermelha","Preta","Rosa","Azul"]),
+    cond:"Novo (lacrado)", qtd:ent(0,9), custo:base, venda:Math.round(base*1.42)});
+});
+ACES.forEach(a=>{
+  const base = ent(18,1500);
+  estoque.push({cat:"Acessório", nome:a, sub:pick(["Compatível 12→18","Universal","Original Apple","Linha premium"]),
+    cond:"Novo (lacrado)", qtd:ent(0,45), custo:base, venda:Math.round(base*1.75)});
+});
 
 /* ---- CLIENTES ---- */
 const SITUACAO = [
@@ -1351,13 +1355,12 @@ function pintaKpiEstoque(){
   const valorAp = ap.reduce((s,a)=>s+a.custo,0);
   const valorAc = estoque.reduce((s,i)=>s+i.qtd*i.custo,0);
   $("#kpiEstoque").innerHTML =
-    kpi("Aparelhos em estoque", ap.length,"cada um cadastrado individualmente","") +
+    kpi("iPhones em estoque", ap.length,"cada um cadastrado individualmente","") +
     kpi("Acessórios e motinhas", estoque.reduce((s,i)=>s+i.qtd,0),`${estoque.length} tipos diferentes`,"") +
     kpi("Dinheiro parado", brl(valorAp+valorAc),"a preço de custo","") +
     kpi("Lucro se vender tudo", brl(ap.reduce((s,a)=>s+(a.venda-a.custo),0)),"só nos aparelhos","");
 }
-/* só desenha depois que carregarEstoqueIndex() rodar (ver mais abaixo,
-   junto de ESTOQUE_CARREGADO) — antes disso aparelhos/estoque estão vazios */
+pintaKpiEstoque();
 
 /* abas: aparelho individual x produto por quantidade */
 let abaEstAtual="Aparelhos";
@@ -1442,7 +1445,7 @@ function anexar(id){
     atualizarTudo();
     const r = resumoFotosManuais();
     aviso(`Foto salva (${res.kbAntes} KB → ${res.kbDepois} KB). ` +
-          `${r.quantas} ${r.quantas === 1 ? "foto tirada" : "fotos tiradas"} na loja, já disponível em qualquer computador.`);
+          `${r.quantas} ${r.quantas === 1 ? "foto tirada" : "fotos tiradas"} na loja, ${r.mb} MB usados.`);
   });
 }
 
@@ -1456,7 +1459,7 @@ function corBateria(b){ return b>=90?"var(--good)":b>=80?"var(--warning)":"var(-
 function pintaAparelhos(){
   let l=emEstoque();
   if(filtroAparAtual==="Com avaria")        l=l.filter(a=>a.avarias.length);
-  else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria!=null && a.bateria<85);
+  else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria<85);
   else if(filtroAparAtual!=="Todos")         l=l.filter(a=>a.cond===filtroAparAtual);
   $("#tbAparelhos").innerHTML = l.map(a=>`<tr>
     <td><div class="prod-cel">${miniFoto(a)}<div>
@@ -1464,8 +1467,6 @@ function pintaAparelhos(){
     <td style="color:var(--ink-2)">${a.cond}</td>
     <td>${a.cond==="Novo (lacrado)"
       ? `<span style="color:var(--ink-3)">lacrado</span>`
-      : a.bateria==null
-      ? `<span style="color:var(--ink-3);font-size:12px">não cadastrada</span>`
       : `<div class="bat-cel"><div class="bat-barra"><i style="width:${a.bateria}%;background:${corBateria(a.bateria)}"></i></div>
          <span style="font-variant-numeric:tabular-nums">${a.bateria}%</span></div>`}</td>
     <td>${a.avarias.length ? a.avarias.map(v=>`<span class="tag-av">${v}</span>`).join("")
@@ -1477,6 +1478,7 @@ function pintaAparelhos(){
     <td><button class="btn btn-p btn-sm" data-vender="${a.id}">Vender</button></td></tr>`).join("")
     || `<tr><td colspan="9" style="text-align:center;color:var(--ink-3);padding:36px">nenhum aparelho nesse filtro</td></tr>`;
 }
+pintaFiltroApar(); pintaAparelhos();
 $("#filtroApar").onclick = e => {
   const b=e.target.closest("[data-ap]"); if(!b) return;
   filtroAparAtual=b.dataset.ap; pintaFiltroApar(); pintaAparelhos();
@@ -1557,18 +1559,9 @@ function pintaRoscas(){
   }).filter(d=>d.v>0);
   $("#vizCondicao").innerHTML=rosca(porCond,"APARELHOS");
 }
+pintaRoscas();
 
-/* aqui sim: os 4 blocos de estoque (KPIs, tabela de aparelhos, roscas,
-   tabela de acessórios/motinhas) só desenham depois que o estoque real E a
-   lista de fotos da loja terminarem de carregar. */
-Promise.all([ESTOQUE_CARREGADO, FOTOS_LOJA_CARREGADO]).then(()=>{
-  carregarEstoqueIndex();
-  pintaKpiEstoque();
-  pintaFiltroApar(); pintaAparelhos();
-  pintaRoscas();
-  pintaFiltroEst(); pintaEstoque();
-});
-
+pintaFiltroEst(); pintaEstoque();
 $("#filtroEst").onclick = e => {
   const b=e.target.closest("[data-e]"); if(!b) return;
   filtroEstAtual=b.dataset.e; pintaFiltroEst(); pintaEstoque();
@@ -2119,12 +2112,12 @@ function wizVenda(idPre){
   autocomplete($("#vBusca"), $("#vLista"),
     q => emEstoque().filter(a=>(`${a.modelo} ${a.arm} ${a.cor} ${a.imei}`).toLowerCase().includes(q))
           .map(a=>({titulo:`${a.modelo} · ${a.arm}`,
-                    sub:`${a.cor} · ${a.cond}${a.cond!=="Novo (lacrado)"&&a.bateria!=null?` · bateria ${a.bateria}%`:""}${a.avarias.length?` · ${a.avarias.length} avaria(s)`:""}`,
+                    sub:`${a.cor} · ${a.cond}${a.cond!=="Novo (lacrado)"?` · bateria ${a.bateria}%`:""}${a.avarias.length?` · ${a.avarias.length} avaria(s)`:""}`,
                     det:brl(a.venda), valor:a})),
     o => { st.ap=o.valor; st.preco=o.valor.venda; $("#vBusca").value=`${o.valor.modelo} · ${o.valor.arm} · ${o.valor.imei}`; montar(); });
 
   if(idPre){
-    const a=aparelhos.find(x=>String(x.id)===String(idPre));
+    const a=aparelhos.find(x=>x.id===+idPre);
     if(a){ st.ap=a; st.preco=a.venda; $("#vBusca").value=`${a.modelo} · ${a.arm} · ${a.imei}`; montar(); }
   }
 
