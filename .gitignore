@@ -32,3 +32,9 @@ fotos/_nao-usadas/
 
 # video que nao foi escolhido
 video/iphone-air-hero.mp4
+.vercel
+
+# credenciais — nunca commitar (repositorio e publico no GitHub)
+.env
+.env.*
+!.env.example
