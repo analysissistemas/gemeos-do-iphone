@@ -152,6 +152,10 @@ a{color:inherit;text-decoration:none}
 .secao-cab h2{font-size:clamp(32px,5vw,58px);font-weight:700;letter-spacing:-.035em;line-height:1.04}
 .secao-cab p{margin-top:14px;color:var(--tinta-2);font-size:16px;line-height:1.6}
 .contagem{font-size:13.5px;font-weight:600;color:var(--tinta-2);margin:26px 0 18px}
+.familia-cab{margin:34px 0 16px}
+.familia-cab:first-child{margin-top:0}
+.familia-cab h3{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.familia-cab h3 small{font-size:13px;font-weight:600;color:var(--tinta-2);margin-left:8px}
 
 /* ---------- FILTROS ---------- */
 .filtros{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px}
@@ -606,7 +610,9 @@ function esc(a){
     escolha[a.id] = {
       cor: achaEquivalente(a.cor, o.cores),
       arm: achaEquivalente(a.arm, o.vars),
-      cond: a.cond
+      /* a pedido do dono: a vitrine só mostra "Seminovo", nunca "Lacrado",
+         mesmo que o cadastro real do aparelho diga outra coisa. */
+      cond: "Seminovo"
     };
   }
   return escolha[a.id];
@@ -690,8 +696,8 @@ function card(a){
       </div>` : ""}
 
       ${a.porQuantidade ? "" : `<div class="opcoes">
-        ${["Seminovo","Novo (lacrado)"].map(c=>`<button class="op verde ${c===e.cond?"on":""}"
-          data-cond="${c}">${c==="Novo (lacrado)"?"Lacrado":"Seminovo"}</button>`).join("")}
+        ${["Seminovo"].map(c=>`<button class="op verde ${c===e.cond?"on":""}"
+          data-cond="${c}">Seminovo</button>`).join("")}
       </div>`}
 
       <div class="checks">
@@ -713,6 +719,28 @@ function card(a){
 }
 
 const idSecao = n => "cat-" + semAcento(n);
+
+/* "iPhone 11 Pro Max" -> "iPhone 11". Usado só pra agrupar a categoria
+   iPhone em linhas por geração (11, 11 Pro, 11 Pro Max juntos), em vez de
+   uma grade só misturando todo mundo. */
+function familiaIphone(modelo){
+  const m = modelo.match(/^iPhone\s+(?:XS|XR|SE|Air|\d+e?)/i);
+  return m ? m[0] : modelo;
+}
+function agruparPorFamilia(lista){
+  const grupos = [];
+  const porNome = new Map();
+  for(const p of lista){
+    const nome = familiaIphone(p.modelo);
+    if(!porNome.has(nome)){
+      const g = {nome, itens:[]};
+      porNome.set(nome, g);
+      grupos.push(g);
+    }
+    porNome.get(nome).itens.push(p);
+  }
+  return grupos;
+}
 
 /* atalhos do topo — a grade "qual produto você procura" da referência.
    Vira função porque só pode desenhar depois que o estoque carregar do
@@ -786,6 +814,19 @@ function pinta(){
     const l = paraVitrine(c.nome).filter(combina).slice().sort((a,b)=>temFoto(a)-temFoto(b));
     if(!l.length) return "";
     const lim = limites[c.nome] || 8;
+
+    /* só o iPhone agrupa por geração — as outras categorias não têm essa
+       ideia de "família" (11, 11 Pro, 11 Pro Max) tão clara. */
+    const corpo = c.nome === "iPhone"
+      ? agruparPorFamilia(l).map(g => `
+        <div class="familia-cab">
+          <h3>${g.nome} <small>${g.itens.length} ${g.itens.length===1?"modelo":"modelos"}</small></h3>
+        </div>
+        <div class="grade">${g.itens.map(card).join("")}</div>`).join("")
+      : `<div class="grade">${l.slice(0,lim).map(card).join("")}</div>
+         ${l.length>lim ? `<div class="ver-mais rev">
+           <button class="btn-preto" data-mais="${c.nome}">Ver mais ${c.titulo} →</button></div>` : ""}`;
+
     return `<div class="${CATEGORIAS.indexOf(c)%2 ? "faixa-clara" : ""}">
       <section class="secao" id="${idSecao(c.nome)}">
         <div class="secao-cab rev">
@@ -793,9 +834,7 @@ function pinta(){
           <p>${c.sub}</p>
         </div>
         <div class="contagem">${l.length} ${l.length===1?"produto encontrado":"produtos encontrados"}</div>
-        <div class="grade">${l.slice(0,lim).map(card).join("")}</div>
-        ${l.length>lim ? `<div class="ver-mais rev">
-          <button class="btn-preto" data-mais="${c.nome}">Ver mais ${c.titulo} →</button></div>` : ""}
+        ${corpo}
       </section></div>`;
   }).join("");
 
