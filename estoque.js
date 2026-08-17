@@ -108,7 +108,7 @@ const PRODUTOS = [];
 
 async function carregarEstoque() {
   const [modelos, produtos] = await Promise.all([
-    _supabaseGet("modelos?select=id,tipo,marca,modelo,versao,categoria"),
+    _supabaseGet("modelos?select=id,tipo,marca,modelo,versao,categoria,ficha_tecnica"),
     _supabaseGet(
       "produtos?select=id,modelo_id,cor,armazenamento,condicao,quantidade,preco,custo_aquisicao,observacao,data_entrada,status,imei,bateria,avarias,na_vitrine&status=eq.disponivel"
     )
@@ -125,6 +125,7 @@ async function carregarEstoque() {
       id: p.id,
       modeloId: p.modelo_id,
       modelo: nomeModelo(m),
+      fichaTecnica: m.ficha_tecnica || "",
       categoria,
       arm: p.armazenamento || "",
       cor: p.cor || "",
