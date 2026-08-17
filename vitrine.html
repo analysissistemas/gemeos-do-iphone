@@ -637,7 +637,10 @@ function fotoDupla(a){
   /* A foto tirada na loja ganha de tudo: é a peça que o cliente vai receber,
      e não a foto de fábrica de um aparelho perfeito. */
   const propria = fotoManual(a.id);
-  if(propria) return `<img src="${propria}" alt="${a.modelo}" loading="lazy">`;
+  /* sem loading="lazy" aqui: são poucas fotos (tiradas na loja), e o
+     carregamento tardio às vezes nunca dispara — vale mais garantir que
+     apareça do que economizar essa carga. */
+  if(propria) return `<img src="${propria}" alt="${a.modelo}">`;
   const mapeada = fotoDe(a.modelo, e.cor);
   /* ordem: o mapa explícito, depois os nomes por convenção (png e jpg,
      com cor e sem cor). O que não existir dispara onerror e passa ao próximo. */
@@ -741,6 +744,21 @@ function agruparPorFamilia(lista){
   }
   return grupos;
 }
+/* Dentro de uma família, o mesmo MODELO pode ter várias peças reais (cores
+   diferentes fotografadas). É 1 card só por modelo — a peça exibida é a
+   primeira da lista (já vem com foto primeiro, por causa do sort em pinta());
+   as outras cores viram opção de clique, que troca de peça de verdade (ver
+   handler de [data-cor] mais abaixo), não só o rótulo. */
+function unicoPorModelo(itens){
+  const vistos = new Set();
+  const unicos = [];
+  for(const p of itens){
+    if(vistos.has(p.modelo)) continue;
+    vistos.add(p.modelo);
+    unicos.push(p);
+  }
+  return unicos;
+}
 
 /* atalhos do topo — a grade "qual produto você procura" da referência.
    Vira função porque só pode desenhar depois que o estoque carregar do
@@ -818,11 +836,14 @@ function pinta(){
     /* só o iPhone agrupa por geração — as outras categorias não têm essa
        ideia de "família" (11, 11 Pro, 11 Pro Max) tão clara. */
     const corpo = c.nome === "iPhone"
-      ? agruparPorFamilia(l).map(g => `
+      ? agruparPorFamilia(l).map(g => {
+          const modelos = unicoPorModelo(g.itens);
+          return `
         <div class="familia-cab">
-          <h3>${g.nome} <small>${g.itens.length} ${g.itens.length===1?"modelo":"modelos"}</small></h3>
+          <h3>${g.nome} <small>${modelos.length} ${modelos.length===1?"modelo":"modelos"}</small></h3>
         </div>
-        <div class="grade">${g.itens.map(card).join("")}</div>`).join("")
+        <div class="grade">${modelos.map(card).join("")}</div>`;
+        }).join("")
       : `<div class="grade">${l.slice(0,lim).map(card).join("")}</div>
          ${l.length>lim ? `<div class="ver-mais rev">
            <button class="btn-preto" data-mais="${c.nome}">Ver mais ${c.titulo} →</button></div>` : ""}`;
@@ -906,6 +927,16 @@ document.addEventListener("click", e=>{
   const bm = e.target.closest("[data-arm]");
   const bd = e.target.closest("[data-cond]");
   if(bc || bm || bd){
+    /* Se a cor clicada é de uma peça REAL do mesmo modelo (foto, bateria e
+       preço próprios — não um cálculo hipotético), troca pra ela de vez,
+       em vez de só repintar o rótulo por cima da peça que já estava. */
+    if(bc){
+      const irmaoReal = PRODUTOS.find(x => x.modeloId===a.modeloId && x.cor===bc.dataset.cor && !x.vendido);
+      if(irmaoReal && irmaoReal.id !== a.id){
+        cartao.outerHTML = card(irmaoReal);
+        return;
+      }
+    }
     const el = esc(a);
     if(bc) el.cor  = bc.dataset.cor;
     if(bm) el.arm  = bm.dataset.arm;

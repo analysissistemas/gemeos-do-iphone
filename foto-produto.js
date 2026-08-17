@@ -28,7 +28,12 @@ const FOTO_QUALIDADE = 0.78;    // acima disso o arquivo cresce sem ganho visív
 const SUPABASE_STORAGE_URL = "https://bzeceniidapsjvaudwwb.supabase.co/storage/v1/object/public/produtos-fotos/";
 const N8N_UPLOAD_FOTO_URL = "https://formacao-n8n.flnu5t.easypanel.host/webhook/upload-foto-gemeos";
 
+/* guarda nome -> data da última atualização, não só o nome. É o que vira o
+   "quebra-cache" da URL (?v=...) — sem isso, o navegador de quem já visitou
+   a página ANTES da foto existir guarda a resposta antiga (sem imagem) e
+   nunca busca de novo, mesmo a foto já estando lá. */
 let _fotosLojaSet = new Set();
+let _fotosLojaVersao = new Map();
 async function _carregarFotosLoja() {
   try {
     const r = await fetch("https://bzeceniidapsjvaudwwb.supabase.co/storage/v1/object/list/produtos-fotos", {
@@ -37,7 +42,9 @@ async function _carregarFotosLoja() {
       body: JSON.stringify({ prefix: "", limit: 1000 })
     });
     const objs = await r.json();
-    _fotosLojaSet = new Set((Array.isArray(objs) ? objs : []).map(o => o && o.name).filter(Boolean));
+    const lista = (Array.isArray(objs) ? objs : []).filter(o => o && o.name);
+    _fotosLojaSet = new Set(lista.map(o => o.name));
+    _fotosLojaVersao = new Map(lista.map(o => [o.name, Date.parse(o.updated_at || o.created_at || "") || Date.now()]));
   } catch (e) {
     console.error("Não consegui carregar a lista de fotos da loja:", e);
   }
@@ -51,7 +58,9 @@ const FOTOS_LOJA_CARREGADO = _carregarFotosLoja();
  *  carregado por FOTOS_LOJA_CARREGADO, não faz rede a cada chamada. */
 function fotoManual(id) {
   const nome = id + ".jpg";
-  return _fotosLojaSet.has(nome) ? (SUPABASE_STORAGE_URL + nome) : null;
+  if (!_fotosLojaSet.has(nome)) return null;
+  const v = _fotosLojaVersao.get(nome) || Date.now();
+  return SUPABASE_STORAGE_URL + nome + "?v=" + v;
 }
 /** Sobe (ou remove, se dataUrl for null) a foto no banco de verdade.
  *  Devolve {ok, motivo} — mesmo formato de antes, pra não mudar quem chama. */
@@ -70,8 +79,13 @@ async function definirFotoManual(id, dataUrl) {
     if (!res.ok) return { ok: false, motivo: res.erro || "Não consegui salvar a foto." };
     // atualiza o Set local pra refletir na hora, sem esperar recarregar a página
     const nome = id + ".jpg";
-    if (dataUrl === null || dataUrl === undefined) _fotosLojaSet.delete(nome);
-    else _fotosLojaSet.add(nome);
+    if (dataUrl === null || dataUrl === undefined) {
+      _fotosLojaSet.delete(nome);
+      _fotosLojaVersao.delete(nome);
+    } else {
+      _fotosLojaSet.add(nome);
+      _fotosLojaVersao.set(nome, Date.now());
+    }
     return { ok: true };
   } catch (e) {
     return { ok: false, motivo: "Sem conexão com o servidor — tenta de novo em alguns segundos." };
