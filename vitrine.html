@@ -590,8 +590,25 @@ $("#faixa").innerHTML = g + g;    // duplicado: é o que faz o loop não ter eme
 const escolha = {};    // id do produto -> {cor, arm, cond}
 const limites = {};    // categoria -> quantos cards mostrar
 
+/* acha, numa lista de opções (cor ou GB), a que "é a mesma coisa" que o
+   valor real da unidade — mesmo escrito diferente ("64 GB" vs "64GB",
+   "Preto (Black)" vs "Preto"). Sem isso, o botão da opção real não
+   aparecia marcado quando a lista vem da tabela oficial de cores. */
+function achaEquivalente(valorReal, opcoes){
+  if(!valorReal) return opcoes[0];
+  const limpo = s => normal(corSemTraducao(s)).replace(/[^a-z0-9]/g,"");
+  const alvo = limpo(valorReal);
+  return opcoes.find(o => limpo(o) === alvo) || valorReal;
+}
 function esc(a){
-  if(!escolha[a.id]) escolha[a.id] = {cor:a.cor, arm:a.arm, cond:a.cond};
+  if(!escolha[a.id]){
+    const o = opcoesDe(a);
+    escolha[a.id] = {
+      cor: achaEquivalente(a.cor, o.cores),
+      arm: achaEquivalente(a.arm, o.vars),
+      cond: a.cond
+    };
+  }
   return escolha[a.id];
 }
 /* opção diferente da que a peça tem muda o preço em degraus.
@@ -650,13 +667,16 @@ function card(a){
   const p = precoEscolhido(a);
   const temBateria = a.bateria !== null && !a.porQuantidade;
   const varUnica = o.vars.length === 1 && o.vars[0] === "Única";
+  /* foto e nome clicáveis levam pra página só daquele aparelho — igual
+     Magazine Luiza, Amazon etc. Sem isso, a única forma de chegar lá era
+     o link que o Milton manda; agora também dá pra chegar navegando. */
   return `<article class="prod" data-id="${a.id}">
-    <div class="prod-foto">
+    <a class="prod-foto" href="?produto=${encodeURIComponent(a.id)}" aria-label="Ver ${a.modelo}">
       <span class="selo ${lac?"lac":"semi"}">${lac?"Lacrado":e.cond}</span>
       ${fotoDupla(a)}
-    </div>
+    </a>
     <div class="prod-corpo">
-      <h3 class="prod-nome">${a.modelo}</h3>
+      <a href="?produto=${encodeURIComponent(a.id)}" style="color:inherit"><h3 class="prod-nome">${a.modelo}</h3></a>
       <div class="prod-spec">${varUnica?e.cor:`${e.arm} • ${e.cor}`}${
         temBateria && !lac ? ` • bateria ${a.bateria}%` : ""}</div>
 
@@ -694,22 +714,34 @@ function card(a){
 
 const idSecao = n => "cat-" + semAcento(n);
 
-/* atalhos do topo — a grade "qual produto você procura" da referência */
-$("#atalhos").innerHTML = CATEGORIAS.map(c=>{
-  const n = paraVitrine(c.nome).length;
-  return `<a class="atalho" href="#${idSecao(c.nome)}">
-    <span class="atalho-n">${c.titulo}</span>
-    <span class="atalho-q">${n} ${n===1?"item":"itens"}</span></a>`;
-}).join("");
+/* atalhos do topo — a grade "qual produto você procura" da referência.
+   Vira função porque só pode desenhar depois que o estoque carregar do
+   Supabase (ver estoque.js) — antes disso PRODUTOS está vazio. */
+function pintaAtalhos(){
+  $("#atalhos").innerHTML = CATEGORIAS.map(c=>{
+    const n = paraVitrine(c.nome).length;
+    return `<a class="atalho" href="#${idSecao(c.nome)}">
+      <span class="atalho-n">${c.titulo}</span>
+      <span class="atalho-q">${n} ${n===1?"item":"itens"}</span></a>`;
+  }).join("");
+}
 
 /* ---------- BUSCA ----------
    Compara sem acento e sem maiúscula, então "titanio" acha "Titânio" e
    "15 PRO" acha "iPhone 15 Pro". Procura no modelo, na cor, na memória e na
    condição de uma vez só — o cliente não precisa saber em qual campo digitar. */
 let termo = "";
+/* travado só pelo link do Milton (?modelo=), nunca pela busca digitada à
+   mão: exige o NOME DO MODELO exatamente igual, pra "iPhone 14" não trazer
+   também o "iPhone 14 Pro Max" junto. Some assim que o cliente digitar algo. */
+let modeloExatoTravado = null;
+/* link do Milton pra UM aparelho específico (?produto=ID) — não é destaque
+   no meio da grade, é uma página só daquele aparelho. */
+let produtoAlvoTravado = null;
 const normal = s => (s||"").toString().normalize("NFD")
   .replace(/[̀-ͯ]/g,"").toLowerCase();
 function combina(p){
+  if(modeloExatoTravado && normal(p.modelo) !== normal(modeloExatoTravado)) return false;
   if(!termo) return true;
   const e = esc(p);
   const alvo = normal(`${p.modelo} ${e.cor} ${e.arm} ${e.cond} ${p.categoria}`);
@@ -718,7 +750,34 @@ function combina(p){
   return normal(termo).split(/\s+/).filter(Boolean).every(t => alvo.includes(t));
 }
 
+function sairDoProdutoUnico(){
+  produtoAlvoTravado = null;
+  history.replaceState(null, "", location.pathname);
+  pinta();
+}
+
 function pinta(){
+  /* página de UM aparelho só, sem o resto do catálogo em volta */
+  if(produtoAlvoTravado){
+    const p = PRODUTOS.find(x=>String(x.id)===String(produtoAlvoTravado));
+    if(p){
+      $("#secoes").innerHTML = `<div>
+        <section class="secao">
+          <div class="secao-cab rev">
+            <a href="#" id="verCatalogoCompleto" style="display:inline-block;margin-bottom:14px;color:var(--tinta-2);font-size:14px">← Ver catálogo completo</a>
+            <h2>O aparelho que você perguntou</h2>
+          </div>
+          <div class="grade" style="max-width:340px">${card(p)}</div>
+        </section></div>`;
+      const el = $("#verCatalogoCompleto");
+      if(el) el.onclick = (e)=>{ e.preventDefault(); sairDoProdutoUnico(); };
+      const res = $("#buscaResumo");
+      if(res) res.innerHTML = "";
+      revelar();
+      return;
+    }
+    produtoAlvoTravado = null; // id no link não existe mais — cai pro catálogo normal
+  }
   $("#secoes").innerHTML = CATEGORIAS.map(c=>{
     /* Quem tem foto aparece primeiro. Não é maquiagem: vitrine boa mostra
        primeiro o que está bem apresentado, e o resto continua logo abaixo,
@@ -749,7 +808,33 @@ function pinta(){
   }
   revelar();
 }
-pinta();
+
+/* ---------- LINKS DO MILTON ----------
+   ?produto=ID -> página só daquele aparelho (tem prioridade)
+   ?modelo=Nome -> compara as variações reais daquele modelo, sem a IA
+   ter que descrever cor/armazenamento por áudio (onde ela mais erra) */
+function aplicarLinksIniciais(){
+  const produtoAlvoDoLink = new URLSearchParams(location.search).get("produto");
+  if(produtoAlvoDoLink) produtoAlvoTravado = produtoAlvoDoLink.trim();
+  const modeloAlvoDoLink = new URLSearchParams(location.search).get("modelo");
+  if(!produtoAlvoTravado && modeloAlvoDoLink){
+    termo = modeloAlvoDoLink.trim();
+    modeloExatoTravado = termo;
+    const campoBuscaInicial = $("#buscaCat");
+    if(campoBuscaInicial) campoBuscaInicial.value = termo;
+    const limparBuscaInicial = $("#limparBusca");
+    if(limparBuscaInicial) limparBuscaInicial.hidden = false;
+  }
+}
+
+/* espera o estoque E a lista de fotos da loja carregarem (ver estoque.js e
+   foto-produto.js) antes de desenhar a tela pela primeira vez — sem isso, a
+   vitrine apareceria vazia (ou sem foto própria) por um instante. */
+Promise.all([ESTOQUE_CARREGADO, FOTOS_LOJA_CARREGADO]).then(()=>{
+  aplicarLinksIniciais();
+  pintaAtalhos();
+  pinta();
+});
 
 /* busca ao digitar, com uma pausa curta para não redesenhar a cada tecla */
 (function(){
@@ -758,6 +843,7 @@ pinta();
   let timer;
   campo.addEventListener("input", ()=>{
     clearTimeout(timer);
+    modeloExatoTravado = null;   // cliente editou a busca: destrava do modelo exato do link
     timer = setTimeout(()=>{
       termo = campo.value.trim();
       limpar.hidden = !termo;
@@ -765,7 +851,7 @@ pinta();
       pinta();
     }, 180);
   });
-  limpar.onclick = ()=>{ campo.value=""; termo=""; limpar.hidden=true; pinta(); campo.focus(); };
+  limpar.onclick = ()=>{ campo.value=""; termo=""; modeloExatoTravado=null; limpar.hidden=true; pinta(); campo.focus(); };
 })();
 
 document.addEventListener("click", e=>{
@@ -774,7 +860,7 @@ document.addEventListener("click", e=>{
 
   const cartao = e.target.closest(".prod");
   if(!cartao) return;
-  const a = PRODUTOS.find(x=>x.id===+cartao.dataset.id);
+  const a = PRODUTOS.find(x=>String(x.id)===cartao.dataset.id);
   if(!a) return;
 
   const bc = e.target.closest("[data-cor]");
@@ -801,9 +887,9 @@ document.addEventListener("click", e=>{
     const linhas = [
       "Olá! Tenho interesse neste aparelho do site:", "",
       `*${a.modelo}*`,
-      `${el.arm} - ${el.cor}`,
+      [el.arm, el.cor].filter(Boolean).join(" - ") || null,
       el.cond,
-      lac ? "Bateria 100% (lacrado)" : `Bateria ${a.bateria}%`,
+      lac ? "Bateria 100% (lacrado)" : (a.bateria != null ? `Bateria ${a.bateria}%` : null),
       a.avarias.length ? `Avarias: ${a.avarias.join(", ")}` : "Sem avarias",
       "",
       /* travessão e ponto-do-meio trocados por hífen: são caracteres de vários
@@ -812,7 +898,7 @@ document.addEventListener("click", e=>{
       `*${brl(precoEscolhido(a))}* - ou 18x de ${brlc(precoEscolhido(a)/18)}`,
       "",
       igual ? "Ainda está disponível?" : "Vocês têm nessa configuração?"
-    ];
+    ].filter(l => l !== null);
     abrirZap(linhas.join("\n"));
   }
 });

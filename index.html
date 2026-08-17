@@ -914,13 +914,10 @@ tbody tr:last-child td{border-bottom:none}
   <div class="modal" id="modal"></div>
 </div>
 
-<!-- foto tirada na loja: guardar, reduzir e anexar. Sem dependências, então
-     funciona aqui mesmo o index.html não carregando o estoque.js. -->
-<script src="fotos-disponiveis.js?v=1"></script>
+<!-- foto tirada na loja: guardar, reduzir e anexar. Sem dependências. -->
 <script src="foto-produto.js?v=1"></script>
-<!-- fonte única de verdade do catálogo/estoque — antes o index.html tinha
-     uma cópia própria e desatualizada; agora lê exatamente o que a
-     vitrine.html lê, sem chance de desalinhar de novo. -->
+<!-- estoque real (Supabase) — mesma fonte que a vitrine.html usa. Preenche
+     PRODUTOS e expõe ESTOQUE_CARREGADO (ver estoque.js). -->
 <script src="estoque.js?v=1"></script>
 <script>
 /* ============================================================
@@ -940,12 +937,15 @@ const MODELOS = [
   "iPhone 16 Pro","iPhone 16 Pro Max","iPhone 17","iPhone 17 Pro","iPhone 17 Pro Max","iPhone 18","iPhone 18 Pro",
   "iPhone 18 Pro Max"
 ];
-/* MOTOS, ACES, COND, CATALOGO, AVARIAS, FATOR_COND, fatorBateria() e
-   precificar() vêm do estoque.js agora (carregado acima) — eram cópias
-   idênticas mantidas à mão aqui, e desalinhavam sempre que uma mudava
-   sem a outra acompanhar. */
+const MOTOS = ["Motinha Elétrica Kids 6V","Motinha Elétrica Kids 12V","Scooter Elétrica 350W","Scooter Elétrica 800W","Triciclo Elétrico Infantil"];
+/* o material da loja mostra que vocês vendem além de iPhone: JBL, AirTag, iPad, Redmi, iMac */
+const ACES  = ["Capa Silicone MagSafe","Película 3D Cerâmica","Carregador 20W USB-C","Cabo Lightning 1m","Cabo USB-C 2m",
+               "AirPods 4","AirPods Pro 2","Apple Watch SE","Carregador MagSafe","Fone Lightning","Power Bank 10.000mAh",
+               "Suporte Veicular","JBL PartyBox 100","JBL Go 4","AirTag (rastreador)","iPad 10ª geração","iPad Pro M4",
+               "Redmi Note 13","Fonte Turbo 20W"];
 const ARMAZ = ["64GB","128GB","256GB","512GB","1TB"];
 const CORES = ["Preto","Branco","Azul","Titânio Natural","Meia-noite","Estelar","Grafite"];
+/* COND já vem do estoque.js (carregado acima) — mesma lista, uma fonte só */
 const NOMES = ["Ana Beatriz","Carlos Eduardo","Juliana","Rafael","Marina","Thiago","Patrícia","Lucas","Fernanda","Bruno",
                "Camila","Diego","Larissa","Rodrigo","Amanda","Gustavo","Vanessa","Felipe","Tatiane","Marcelo",
                "Renata","André","Bianca","Vinícius","Priscila","Leandro","Débora","Mateus","Sabrina","Igor"];
@@ -954,25 +954,122 @@ const VEND  = ["Você","Gêmeo 1","Gêmeo 2","Balcão"];
 /* a loja anuncia "parcelamento até 18x" — as opções seguem isso */
 const FORMA = ["Pix","Cartão 18x","Cartão 12x","Cartão 6x","Carnê da loja","Dinheiro","Entrada + Pix"];
 
-/* ---- ESTOQUE: agora vem do PRODUTOS do estoque.js (mesma lista que a
-   vitrine.html usa) em vez de sortear separado. Cada iPhone/peça única
-   entra em `aparelhos`; cada item por quantidade (acessório, motinha)
-   entra em `estoque`, no formato que a tabela já sabia desenhar. */
-function categoriaEstoqueDe(categoria){
-  return categoria === "Motos elétricas" ? "Motinha elétrica" : "Acessório";
+/* ============================================================
+   CATÁLOGO DOS MODELOS
+   Armazenamentos e cores que cada geração realmente teve. É isso que faz o
+   cadastro "já dar as opções": escolheu o modelo, aparecem só as combinações
+   que existem — não dá pra cadastrar um iPhone 7 de 1TB por engano.
+   `base` = preço de referência de um aparelho em boas condições, em reais.
+   ============================================================ */
+const CATALOGO = {
+  "iPhone 7":         {arm:["32GB","128GB","256GB"],            cor:["Preto","Prata","Dourado","Rosé","Vermelho"],                 base:  480},
+  "iPhone 7 Plus":    {arm:["32GB","128GB","256GB"],            cor:["Preto","Prata","Dourado","Rosé","Vermelho"],                 base:  620},
+  "iPhone 8":         {arm:["64GB","128GB","256GB"],            cor:["Cinza-espacial","Prata","Dourado","Vermelho"],               base:  680},
+  "iPhone 8 Plus":    {arm:["64GB","128GB","256GB"],            cor:["Cinza-espacial","Prata","Dourado","Vermelho"],               base:  850},
+  "iPhone X":         {arm:["64GB","256GB"],                    cor:["Cinza-espacial","Prata"],                                    base:  900},
+  "iPhone XR":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Coral","Amarelo","Vermelho"],        base: 1050},
+  "iPhone XS":        {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado"],                          base: 1150},
+  "iPhone XS Max":    {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado"],                          base: 1350},
+  "iPhone 11":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Verde","Amarelo","Roxo","Vermelho"],        base: 1500},
+  "iPhone 11 Pro":    {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"],       base: 1750},
+  "iPhone 11 Pro Max":{arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"],       base: 2050},
+  "iPhone 12 mini":   {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"],           base: 1650},
+  "iPhone 12":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"],           base: 1950},
+  "iPhone 12 Pro":    {arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"],                 base: 2300},
+  "iPhone 12 Pro Max":{arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"],                 base: 2700},
+  "iPhone 13 mini":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"],     base: 2050},
+  "iPhone 13":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"],     base: 2400},
+  "iPhone 13 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Grafite","Prata","Dourado","Azul-sierra","Verde-alpino"],    base: 2900},
+  "iPhone 13 Pro Max":{arm:["128GB","256GB","512GB","1TB"],     cor:["Grafite","Prata","Dourado","Azul-sierra","Verde-alpino"],    base: 3400},
+  "iPhone 14":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Roxo","Amarelo","Vermelho"],   base: 2850},
+  "iPhone 14 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Roxo","Amarelo","Vermelho"],   base: 3200},
+  "iPhone 14 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Preto-espacial","Prata","Dourado","Roxo-profundo"],          base: 3800},
+  "iPhone 14 Pro Max":{arm:["128GB","256GB","512GB","1TB"],     cor:["Preto-espacial","Prata","Dourado","Roxo-profundo"],          base: 4400},
+  "iPhone 15":        {arm:["128GB","256GB","512GB"],           cor:["Preto","Azul","Verde","Amarelo","Rosa"],                     base: 3600},
+  "iPhone 15 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Preto","Azul","Verde","Amarelo","Rosa"],                     base: 4100},
+  "iPhone 15 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Natural","Titânio Azul","Titânio Branco","Titânio Preto"], base: 4900},
+  "iPhone 15 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Azul","Titânio Branco","Titânio Preto"], base: 5700},
+  "iPhone 16":        {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],   base: 4400},
+  "iPhone 16 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],   base: 4900},
+  "iPhone 16 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 5800},
+  "iPhone 16 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 6800},
+  "iPhone 17":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Lavanda"],                           base: 5400},
+  "iPhone 17 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 6900},
+  "iPhone 17 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 7900},
+  "iPhone 18":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Verde"],                             base: 6200},
+  "iPhone 18 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 7800},
+  "iPhone 18 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 8900}
+};
+
+/* Avarias e o quanto cada uma tira do preço. Valores em reais, editáveis —
+   é a régua da loja, não uma tabela oficial de ninguém. */
+const AVARIAS = [
+  {k:"Tela riscada",            d: 120},
+  {k:"Tela trincada",           d: 450},
+  {k:"Vidro traseiro trincado", d: 280},
+  {k:"Marcas de uso na lateral",d:  80},
+  {k:"Câmera com risco",        d: 200},
+  {k:"Face ID não funciona",    d: 400},
+  {k:"Botão com defeito",       d: 150},
+  {k:"Bateria trocada",         d: 180},
+  {k:"Tela trocada (paralela)", d: 350},
+  {k:"Sinal de oxidação",       d: 500}
+];
+
+/* Condição muda o preço proporcionalmente ao de referência */
+const FATOR_COND = {"Novo (lacrado)":1.00,"Vitrine":0.90,"Seminovo":0.80,"Usado":0.66};
+
+/* Saúde da bateria: abaixo de 80% a Apple já considera desgastada */
+function fatorBateria(b){
+  if(b>=95) return 1.00;
+  if(b>=90) return 0.97;
+  if(b>=85) return 0.93;
+  if(b>=80) return 0.88;
+  return 0.80;
 }
+
+/* O preço sugerido, com cada desconto explicado — nada de número que cai do céu */
+function precificar({modelo,cond,bateria,avarias}){
+  const base = CATALOGO[modelo]?.base || 1000;
+  const fc = FATOR_COND[cond] ?? 0.8;
+  const fb = cond==="Novo (lacrado)" ? 1 : fatorBateria(bateria);
+  const descAv = avarias.reduce((s,k)=>s+(AVARIAS.find(a=>a.k===k)?.d||0),0);
+  const bruto = base*fc*fb;
+  const linhas = [
+    {r:`Referência do ${modelo}`, v:base},
+    {r:`Condição: ${cond}`,       v:Math.round(base*fc-base), neg:fc<1}
+  ];
+  if(cond!=="Novo (lacrado)") linhas.push({r:`Bateria ${bateria}%`, v:Math.round(base*fc*fb-base*fc), neg:fb<1});
+  avarias.forEach(k=>linhas.push({r:k, v:-(AVARIAS.find(a=>a.k===k)?.d||0), neg:true}));
+  return {sugerido:Math.max(100,Math.round((bruto-descAv)/10)*10), linhas};
+}
+
+/* ---- APARELHOS (peça única) e ESTOQUE (por quantidade) ----
+   Antes eram inventados aqui. Agora os dois vêm do banco real, pelo
+   estoque.js — os MESMOS produtos que a vitrine.html mostra pro cliente.
+   proximoId/CATALOGO/AVARIAS/precificar continuam existindo: são usados
+   pelo formulário de "cadastrar aparelho novo" mais abaixo, que ainda
+   funciona só localmente (não grava no banco real ainda). */
+let proximoId = 1;
 const aparelhos = [];
 const estoque = [];
-PRODUTOS.forEach(p=>{
-  if(p.porQuantidade){
-    estoque.push({nome:p.modelo, sub:p.cor||p.arm||"", cat:categoriaEstoqueDe(p.categoria),
-      cond:p.cond, qtd:p.qtd, custo:p.custo, venda:p.venda});
-  }else{
-    aparelhos.push(p); // mesmo objeto que a vitrine usa — não tem como desincronizar
-  }
-});
-/* proximoId já vem do estoque.js, incrementado durante a geração —
-   continua daí pra cadastros novos, sem colidir com nenhum id existente. */
+
+/* "Motos elétricas"/"Acessórios"/"Games e internet" (categorias da vitrine)
+   viram "Motinha elétrica"/"Acessório" aqui — são os únicos filtros que a
+   tabela de baixo já tinha. */
+function categoriaEstoqueDe(categoria) {
+  return categoria === "Motos elétricas" ? "Motinha elétrica" : "Acessório";
+}
+function carregarEstoqueIndex() {
+  PRODUTOS.forEach(p => {
+    if (p.porQuantidade) {
+      estoque.push({ nome: p.modelo, sub: p.cor || p.arm || "", cat: categoriaEstoqueDe(p.categoria),
+        cond: p.cond, qtd: p.qtd, custo: p.custo, venda: p.venda });
+    } else {
+      aparelhos.push(p); // mesmo objeto que a vitrine usa — não tem como "desincronizar"
+    }
+  });
+}
 
 /* ---- CLIENTES ---- */
 const SITUACAO = [
@@ -1254,12 +1351,13 @@ function pintaKpiEstoque(){
   const valorAp = ap.reduce((s,a)=>s+a.custo,0);
   const valorAc = estoque.reduce((s,i)=>s+i.qtd*i.custo,0);
   $("#kpiEstoque").innerHTML =
-    kpi("iPhones em estoque", ap.length,"cada um cadastrado individualmente","") +
+    kpi("Aparelhos em estoque", ap.length,"cada um cadastrado individualmente","") +
     kpi("Acessórios e motinhas", estoque.reduce((s,i)=>s+i.qtd,0),`${estoque.length} tipos diferentes`,"") +
     kpi("Dinheiro parado", brl(valorAp+valorAc),"a preço de custo","") +
     kpi("Lucro se vender tudo", brl(ap.reduce((s,a)=>s+(a.venda-a.custo),0)),"só nos aparelhos","");
 }
-pintaKpiEstoque();
+/* só desenha depois que carregarEstoqueIndex() rodar (ver mais abaixo,
+   junto de ESTOQUE_CARREGADO) — antes disso aparelhos/estoque estão vazios */
 
 /* abas: aparelho individual x produto por quantidade */
 let abaEstAtual="Aparelhos";
@@ -1292,7 +1390,7 @@ function nomeDoProduto(p){ return p.modelo || p.nome || "produto"; }
 function miniFoto(p){
   const k = chaveFoto(p);
   const propria = fotoManual(k);
-  const f = propria || fotoOficialDe(nomeDoProduto(p), p.cor);
+  const f = propria || (typeof fotoDe === "function" ? fotoDe(nomeDoProduto(p), p.cor) : null);
   const titulo = propria ? "Foto da loja — clique para trocar"
                          : "Clique para tirar ou anexar a foto deste produto";
   return `<div class="mini ${f ? "tem-foto" : ""}" data-foto="${k}" title="${titulo}">
@@ -1344,7 +1442,7 @@ function anexar(id){
     atualizarTudo();
     const r = resumoFotosManuais();
     aviso(`Foto salva (${res.kbAntes} KB → ${res.kbDepois} KB). ` +
-          `${r.quantas} ${r.quantas === 1 ? "foto tirada" : "fotos tiradas"} na loja, ${r.mb} MB usados.`);
+          `${r.quantas} ${r.quantas === 1 ? "foto tirada" : "fotos tiradas"} na loja, já disponível em qualquer computador.`);
   });
 }
 
@@ -1358,7 +1456,7 @@ function corBateria(b){ return b>=90?"var(--good)":b>=80?"var(--warning)":"var(-
 function pintaAparelhos(){
   let l=emEstoque();
   if(filtroAparAtual==="Com avaria")        l=l.filter(a=>a.avarias.length);
-  else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria<85);
+  else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria!=null && a.bateria<85);
   else if(filtroAparAtual!=="Todos")         l=l.filter(a=>a.cond===filtroAparAtual);
   $("#tbAparelhos").innerHTML = l.map(a=>`<tr>
     <td><div class="prod-cel">${miniFoto(a)}<div>
@@ -1366,6 +1464,8 @@ function pintaAparelhos(){
     <td style="color:var(--ink-2)">${a.cond}</td>
     <td>${a.cond==="Novo (lacrado)"
       ? `<span style="color:var(--ink-3)">lacrado</span>`
+      : a.bateria==null
+      ? `<span style="color:var(--ink-3);font-size:12px">não cadastrada</span>`
       : `<div class="bat-cel"><div class="bat-barra"><i style="width:${a.bateria}%;background:${corBateria(a.bateria)}"></i></div>
          <span style="font-variant-numeric:tabular-nums">${a.bateria}%</span></div>`}</td>
     <td>${a.avarias.length ? a.avarias.map(v=>`<span class="tag-av">${v}</span>`).join("")
@@ -1377,7 +1477,6 @@ function pintaAparelhos(){
     <td><button class="btn btn-p btn-sm" data-vender="${a.id}">Vender</button></td></tr>`).join("")
     || `<tr><td colspan="9" style="text-align:center;color:var(--ink-3);padding:36px">nenhum aparelho nesse filtro</td></tr>`;
 }
-pintaFiltroApar(); pintaAparelhos();
 $("#filtroApar").onclick = e => {
   const b=e.target.closest("[data-ap]"); if(!b) return;
   filtroAparAtual=b.dataset.ap; pintaFiltroApar(); pintaAparelhos();
@@ -1458,9 +1557,18 @@ function pintaRoscas(){
   }).filter(d=>d.v>0);
   $("#vizCondicao").innerHTML=rosca(porCond,"APARELHOS");
 }
-pintaRoscas();
 
-pintaFiltroEst(); pintaEstoque();
+/* aqui sim: os 4 blocos de estoque (KPIs, tabela de aparelhos, roscas,
+   tabela de acessórios/motinhas) só desenham depois que o estoque real E a
+   lista de fotos da loja terminarem de carregar. */
+Promise.all([ESTOQUE_CARREGADO, FOTOS_LOJA_CARREGADO]).then(()=>{
+  carregarEstoqueIndex();
+  pintaKpiEstoque();
+  pintaFiltroApar(); pintaAparelhos();
+  pintaRoscas();
+  pintaFiltroEst(); pintaEstoque();
+});
+
 $("#filtroEst").onclick = e => {
   const b=e.target.closest("[data-e]"); if(!b) return;
   filtroEstAtual=b.dataset.e; pintaFiltroEst(); pintaEstoque();
@@ -1971,18 +2079,38 @@ function wizEntrada(){
     b.onclick = ok ? salvar : null;
   }
 
-  function salvar(){
+  async function salvar(){
     const {sugerido}=precificar(st);
-    aparelhos.push({
-      id:proximoId++, modelo:st.modelo, arm:st.arm, cor:st.cor, cond:st.cond,
-      bateria:st.cond==="Novo (lacrado)"?100:st.bateria, avarias:[...st.avarias],
-      imei:st.imei, custo:+st.custo||0, venda:st.venda||sugerido,
-      entrada:"12/08/2026", vendido:false
-    });
-    movs.unshift({data:"12/08/2026",tipo:"Entrada",apar:`${st.modelo} · ${st.arm}`,imei:st.imei,
-      quem:"Entrada manual",valor:+st.custo||0,forma:"—",vend:"Você"});
-    fecharModal(); atualizarTudo();
-    aviso(`${st.modelo} ${st.arm} entrou no estoque.`);
+    const bateria = st.cond==="Novo (lacrado)"?100:st.bateria;
+    const venda = st.venda||sugerido;
+    const btn=$("#wSalvar"); btn.disabled=true; btn.textContent="Salvando…";
+    try{
+      const r = await fetch("/api/estoque", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          acao:"criar_produto",
+          modeloInfo:{ tipo:"iphone", marca:"Apple", modelo:st.modelo },
+          armazenamento:st.arm, cor:st.cor, condicao:st.cond, bateria,
+          imei:st.imei, avarias:[...st.avarias], custo:+st.custo||0, preco:venda,
+          data_entrada: new Date().toISOString().slice(0,10)
+        })
+      });
+      const res = await r.json();
+      if(!res.ok) throw new Error(res.erro || "Não consegui salvar no banco.");
+      aparelhos.push({
+        id:res.produto.id, modelo:st.modelo, arm:st.arm, cor:st.cor, cond:st.cond,
+        bateria, avarias:[...st.avarias],
+        imei:st.imei, custo:+st.custo||0, venda,
+        entrada:"12/08/2026", vendido:false
+      });
+      movs.unshift({data:"12/08/2026",tipo:"Entrada",apar:`${st.modelo} · ${st.arm}`,imei:st.imei,
+        quem:"Entrada manual",valor:+st.custo||0,forma:"—",vend:"Você"});
+      fecharModal(); atualizarTudo();
+      aviso(`${st.modelo} ${st.arm} entrou no estoque — já salvo, aparece na vitrine.`);
+    }catch(e){
+      btn.disabled=false; btn.textContent="Salvar";
+      aviso(`Não deu pra salvar: ${e.message}`);
+    }
   }
 }
 
@@ -2011,12 +2139,12 @@ function wizVenda(idPre){
   autocomplete($("#vBusca"), $("#vLista"),
     q => emEstoque().filter(a=>(`${a.modelo} ${a.arm} ${a.cor} ${a.imei}`).toLowerCase().includes(q))
           .map(a=>({titulo:`${a.modelo} · ${a.arm}`,
-                    sub:`${a.cor} · ${a.cond}${a.cond!=="Novo (lacrado)"?` · bateria ${a.bateria}%`:""}${a.avarias.length?` · ${a.avarias.length} avaria(s)`:""}`,
+                    sub:`${a.cor} · ${a.cond}${a.cond!=="Novo (lacrado)"&&a.bateria!=null?` · bateria ${a.bateria}%`:""}${a.avarias.length?` · ${a.avarias.length} avaria(s)`:""}`,
                     det:brl(a.venda), valor:a})),
     o => { st.ap=o.valor; st.preco=o.valor.venda; $("#vBusca").value=`${o.valor.modelo} · ${o.valor.arm} · ${o.valor.imei}`; montar(); });
 
   if(idPre){
-    const a=aparelhos.find(x=>x.id===+idPre);
+    const a=aparelhos.find(x=>String(x.id)===String(idPre));
     if(a){ st.ap=a; st.preco=a.venda; $("#vBusca").value=`${a.modelo} · ${a.arm} · ${a.imei}`; montar(); }
   }
 
@@ -2081,15 +2209,27 @@ function wizVenda(idPre){
     b.onclick = ok ? confirmar : null;
   }
 
-  function confirmar(){
+  async function confirmar(){
     const a=st.ap;
-    a.vendido=true;
-    const forma = st.parcelas>1 ? `${st.forma} ${st.parcelas}x` : st.forma;
-    const mov = {data:"12/08/2026",tipo:"Saída",apar:`${a.modelo} · ${a.arm}`,imei:a.imei,
-      quem:st.cliente,valor:st.preco,forma,vend:"Você",cli:st.cliente};
-    movs.unshift(mov);
-    fecharModal(); atualizarTudo();
-    aviso(`Venda registrada: ${a.modelo} para ${st.cliente}.`, ()=>abrirNota("venda",mov));
+    const btn=$("#vSalvar"); btn.disabled=true; btn.textContent="Confirmando…";
+    try{
+      const r = await fetch("/api/estoque", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ acao:"marcar_vendido", id:a.id })
+      });
+      const res = await r.json();
+      if(!res.ok) throw new Error(res.erro || "Não consegui registrar no banco.");
+      a.vendido=true;
+      const forma = st.parcelas>1 ? `${st.forma} ${st.parcelas}x` : st.forma;
+      const mov = {data:"12/08/2026",tipo:"Saída",apar:`${a.modelo} · ${a.arm}`,imei:a.imei,
+        quem:st.cliente,valor:st.preco,forma,vend:"Você",cli:st.cliente};
+      movs.unshift(mov);
+      fecharModal(); atualizarTudo();
+      aviso(`Venda registrada: ${a.modelo} para ${st.cliente}.`, ()=>abrirNota("venda",mov));
+    }catch(e){
+      btn.disabled=false; btn.textContent="Confirmar venda";
+      aviso(`Não deu pra confirmar: ${e.message}`);
+    }
   }
 }
 
