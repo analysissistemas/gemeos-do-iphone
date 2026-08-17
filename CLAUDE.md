@@ -17,8 +17,19 @@ enviar nada para `main`, nunca fazer merge das duas. São duas abordagens
 diferentes para a mesma loja, e a decisão de qual segue é dos sócios.
 
 A branch local já se chama `vitrine-html` e rastreia a do GitHub, então
-`git push` simples basta. **Combinado com o dono: commitar e enviar sempre,
-sem precisar perguntar a cada vez.**
+`git push` simples basta.
+
+**Combinado atualizado em 2026-08-16: só commitar e dar `vercel --prod`
+com autorização explícita do dono para aquela mudança específica.** (Isto
+substitui um combinado anterior de commitar sempre sem perguntar — o dono
+pediu a mudança depois de uma sessão longa e volátil.) Pode preparar/testar
+a mudança à vontade sem pedir; o que precisa de autorização é o commit e o
+deploy em si.
+
+**E antes de pedir essa autorização: testar e validar a mudança primeiro**
+(local, com servidor de teste, ou preview da Vercel — o que couber), e
+mostrar o resultado do teste junto do pedido. Não pedir autorização para
+publicar algo ainda não verificado.
 
 Clonar em outra máquina:
 

@@ -427,10 +427,10 @@ tbody tr:last-child td{border-bottom:none}
 }
 .chip:hover{border-color:var(--linha-forte);color:var(--ink)}
 .chip.on{background:var(--ink);color:var(--contra-ink);border-color:var(--ink);font-weight:600}
-.mini{width:34px;height:44px;border-radius:6px;border:1px solid var(--linha-forte);
+.mini{width:56px;height:72px;border-radius:9px;border:1px solid var(--linha-forte);
   background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.02));flex:none;position:relative;
   overflow:hidden;cursor:pointer;transition:.2s}
-.mini::after{content:"";position:absolute;top:3px;left:50%;transform:translateX(-50%);width:12px;height:2.5px;background:#000;border-radius:3px}
+.mini::after{content:"";position:absolute;top:5px;left:50%;transform:translateX(-50%);width:18px;height:3.5px;background:#000;border-radius:3px}
 .mini:hover{border-color:var(--ink);transform:scale(1.06)}
 /* com foto: a imagem toma o quadrinho inteiro e o entalhe some */
 .mini.tem-foto{background:#fff}
@@ -438,7 +438,7 @@ tbody tr:last-child td{border-bottom:none}
 .mini img{width:100%;height:100%;object-fit:cover;display:block}
 /* sinal de que dá para clicar e trocar a foto */
 .mini .lente{
-  position:absolute;inset:0;display:grid;place-items:center;font-size:13px;
+  position:absolute;inset:0;display:grid;place-items:center;font-size:18px;
   background:rgba(0,0,0,.55);opacity:0;transition:.2s;color:#fff
 }
 .mini:hover .lente{opacity:1}
@@ -916,7 +916,12 @@ tbody tr:last-child td{border-bottom:none}
 
 <!-- foto tirada na loja: guardar, reduzir e anexar. Sem dependências, então
      funciona aqui mesmo o index.html não carregando o estoque.js. -->
+<script src="fotos-disponiveis.js?v=1"></script>
 <script src="foto-produto.js?v=1"></script>
+<!-- fonte única de verdade do catálogo/estoque — antes o index.html tinha
+     uma cópia própria e desatualizada; agora lê exatamente o que a
+     vitrine.html lê, sem chance de desalinhar de novo. -->
+<script src="estoque.js?v=1"></script>
 <script>
 /* ============================================================
    DADOS SIMULADOS — tudo inventado, só para o protótipo
@@ -935,15 +940,12 @@ const MODELOS = [
   "iPhone 16 Pro","iPhone 16 Pro Max","iPhone 17","iPhone 17 Pro","iPhone 17 Pro Max","iPhone 18","iPhone 18 Pro",
   "iPhone 18 Pro Max"
 ];
-const MOTOS = ["Motinha Elétrica Kids 6V","Motinha Elétrica Kids 12V","Scooter Elétrica 350W","Scooter Elétrica 800W","Triciclo Elétrico Infantil"];
-/* o material da loja mostra que vocês vendem além de iPhone: JBL, AirTag, iPad, Redmi, iMac */
-const ACES  = ["Capa Silicone MagSafe","Película 3D Cerâmica","Carregador 20W USB-C","Cabo Lightning 1m","Cabo USB-C 2m",
-               "AirPods 4","AirPods Pro 2","Apple Watch SE","Carregador MagSafe","Fone Lightning","Power Bank 10.000mAh",
-               "Suporte Veicular","JBL PartyBox 100","JBL Go 4","AirTag (rastreador)","iPad 10ª geração","iPad Pro M4",
-               "Redmi Note 13","Fonte Turbo 20W"];
+/* MOTOS, ACES, COND, CATALOGO, AVARIAS, FATOR_COND, fatorBateria() e
+   precificar() vêm do estoque.js agora (carregado acima) — eram cópias
+   idênticas mantidas à mão aqui, e desalinhavam sempre que uma mudava
+   sem a outra acompanhar. */
 const ARMAZ = ["64GB","128GB","256GB","512GB","1TB"];
 const CORES = ["Preto","Branco","Azul","Titânio Natural","Meia-noite","Estelar","Grafite"];
-const COND  = ["Novo (lacrado)","Seminovo","Vitrine","Usado"];
 const NOMES = ["Ana Beatriz","Carlos Eduardo","Juliana","Rafael","Marina","Thiago","Patrícia","Lucas","Fernanda","Bruno",
                "Camila","Diego","Larissa","Rodrigo","Amanda","Gustavo","Vanessa","Felipe","Tatiane","Marcelo",
                "Renata","André","Bianca","Vinícius","Priscila","Leandro","Débora","Mateus","Sabrina","Igor"];
@@ -952,128 +954,25 @@ const VEND  = ["Você","Gêmeo 1","Gêmeo 2","Balcão"];
 /* a loja anuncia "parcelamento até 18x" — as opções seguem isso */
 const FORMA = ["Pix","Cartão 18x","Cartão 12x","Cartão 6x","Carnê da loja","Dinheiro","Entrada + Pix"];
 
-/* ============================================================
-   CATÁLOGO DOS MODELOS
-   Armazenamentos e cores que cada geração realmente teve. É isso que faz o
-   cadastro "já dar as opções": escolheu o modelo, aparecem só as combinações
-   que existem — não dá pra cadastrar um iPhone 7 de 1TB por engano.
-   `base` = preço de referência de um aparelho em boas condições, em reais.
-   ============================================================ */
-const CATALOGO = {
-  "iPhone 7":         {arm:["32GB","128GB","256GB"],            cor:["Preto","Prata","Dourado","Rosé","Vermelho"],                 base:  480},
-  "iPhone 7 Plus":    {arm:["32GB","128GB","256GB"],            cor:["Preto","Prata","Dourado","Rosé","Vermelho"],                 base:  620},
-  "iPhone 8":         {arm:["64GB","128GB","256GB"],            cor:["Cinza-espacial","Prata","Dourado","Vermelho"],               base:  680},
-  "iPhone 8 Plus":    {arm:["64GB","128GB","256GB"],            cor:["Cinza-espacial","Prata","Dourado","Vermelho"],               base:  850},
-  "iPhone X":         {arm:["64GB","256GB"],                    cor:["Cinza-espacial","Prata"],                                    base:  900},
-  "iPhone XR":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Coral","Amarelo","Vermelho"],        base: 1050},
-  "iPhone XS":        {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado"],                          base: 1150},
-  "iPhone XS Max":    {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado"],                          base: 1350},
-  "iPhone 11":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Verde","Amarelo","Roxo","Vermelho"],        base: 1500},
-  "iPhone 11 Pro":    {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"],       base: 1750},
-  "iPhone 11 Pro Max":{arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"],       base: 2050},
-  "iPhone 12 mini":   {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"],           base: 1650},
-  "iPhone 12":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"],           base: 1950},
-  "iPhone 12 Pro":    {arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"],                 base: 2300},
-  "iPhone 12 Pro Max":{arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"],                 base: 2700},
-  "iPhone 13 mini":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"],     base: 2050},
-  "iPhone 13":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"],     base: 2400},
-  "iPhone 13 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Grafite","Prata","Dourado","Azul-sierra","Verde-alpino"],    base: 2900},
-  "iPhone 13 Pro Max":{arm:["128GB","256GB","512GB","1TB"],     cor:["Grafite","Prata","Dourado","Azul-sierra","Verde-alpino"],    base: 3400},
-  "iPhone 14":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Roxo","Amarelo","Vermelho"],   base: 2850},
-  "iPhone 14 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Roxo","Amarelo","Vermelho"],   base: 3200},
-  "iPhone 14 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Preto-espacial","Prata","Dourado","Roxo-profundo"],          base: 3800},
-  "iPhone 14 Pro Max":{arm:["128GB","256GB","512GB","1TB"],     cor:["Preto-espacial","Prata","Dourado","Roxo-profundo"],          base: 4400},
-  "iPhone 15":        {arm:["128GB","256GB","512GB"],           cor:["Preto","Azul","Verde","Amarelo","Rosa"],                     base: 3600},
-  "iPhone 15 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Preto","Azul","Verde","Amarelo","Rosa"],                     base: 4100},
-  "iPhone 15 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Natural","Titânio Azul","Titânio Branco","Titânio Preto"], base: 4900},
-  "iPhone 15 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Azul","Titânio Branco","Titânio Preto"], base: 5700},
-  "iPhone 16":        {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],   base: 4400},
-  "iPhone 16 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],   base: 4900},
-  "iPhone 16 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 5800},
-  "iPhone 16 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 6800},
-  "iPhone 17":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Lavanda"],                           base: 5400},
-  "iPhone 17 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 6900},
-  "iPhone 17 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 7900},
-  "iPhone 18":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Verde"],                             base: 6200},
-  "iPhone 18 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 7800},
-  "iPhone 18 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 8900}
-};
-
-/* Avarias e o quanto cada uma tira do preço. Valores em reais, editáveis —
-   é a régua da loja, não uma tabela oficial de ninguém. */
-const AVARIAS = [
-  {k:"Tela riscada",            d: 120},
-  {k:"Tela trincada",           d: 450},
-  {k:"Vidro traseiro trincado", d: 280},
-  {k:"Marcas de uso na lateral",d:  80},
-  {k:"Câmera com risco",        d: 200},
-  {k:"Face ID não funciona",    d: 400},
-  {k:"Botão com defeito",       d: 150},
-  {k:"Bateria trocada",         d: 180},
-  {k:"Tela trocada (paralela)", d: 350},
-  {k:"Sinal de oxidação",       d: 500}
-];
-
-/* Condição muda o preço proporcionalmente ao de referência */
-const FATOR_COND = {"Novo (lacrado)":1.00,"Vitrine":0.90,"Seminovo":0.80,"Usado":0.66};
-
-/* Saúde da bateria: abaixo de 80% a Apple já considera desgastada */
-function fatorBateria(b){
-  if(b>=95) return 1.00;
-  if(b>=90) return 0.97;
-  if(b>=85) return 0.93;
-  if(b>=80) return 0.88;
-  return 0.80;
+/* ---- ESTOQUE: agora vem do PRODUTOS do estoque.js (mesma lista que a
+   vitrine.html usa) em vez de sortear separado. Cada iPhone/peça única
+   entra em `aparelhos`; cada item por quantidade (acessório, motinha)
+   entra em `estoque`, no formato que a tabela já sabia desenhar. */
+function categoriaEstoqueDe(categoria){
+  return categoria === "Motos elétricas" ? "Motinha elétrica" : "Acessório";
 }
-
-/* O preço sugerido, com cada desconto explicado — nada de número que cai do céu */
-function precificar({modelo,cond,bateria,avarias}){
-  const base = CATALOGO[modelo]?.base || 1000;
-  const fc = FATOR_COND[cond] ?? 0.8;
-  const fb = cond==="Novo (lacrado)" ? 1 : fatorBateria(bateria);
-  const descAv = avarias.reduce((s,k)=>s+(AVARIAS.find(a=>a.k===k)?.d||0),0);
-  const bruto = base*fc*fb;
-  const linhas = [
-    {r:`Referência do ${modelo}`, v:base},
-    {r:`Condição: ${cond}`,       v:Math.round(base*fc-base), neg:fc<1}
-  ];
-  if(cond!=="Novo (lacrado)") linhas.push({r:`Bateria ${bateria}%`, v:Math.round(base*fc*fb-base*fc), neg:fb<1});
-  avarias.forEach(k=>linhas.push({r:k, v:-(AVARIAS.find(a=>a.k===k)?.d||0), neg:true}));
-  return {sugerido:Math.max(100,Math.round((bruto-descAv)/10)*10), linhas};
-}
-
-/* ---- APARELHOS: cada iPhone é uma peça única (IMEI, bateria, avarias) ---- */
-let proximoId = 1;
 const aparelhos = [];
-Object.keys(CATALOGO).forEach(m=>{
-  const qtd = ent(0,3);
-  for(let i=0;i<qtd;i++){
-    const info=CATALOGO[m];
-    const cond=pick(COND);
-    const bat = cond==="Novo (lacrado)" ? 100 : ent(76,100);
-    const avs = cond==="Novo (lacrado)" ? [] : (rnd()>0.55 ? [pick(AVARIAS).k] : []);
-    const {sugerido}=precificar({modelo:m,cond,bateria:bat,avarias:avs});
-    aparelhos.push({
-      id:proximoId++, modelo:m, arm:pick(info.arm), cor:pick(info.cor), cond,
-      bateria:bat, avarias:avs, imei:`35${ent(100000,999999)}${ent(100000,999999)}`,
-      custo:Math.round(sugerido*(0.68+rnd()*0.12)), venda:sugerido,
-      entrada:`${String(ent(1,12)).padStart(2,"0")}/08/2026`, vendido:false
-    });
+const estoque = [];
+PRODUTOS.forEach(p=>{
+  if(p.porQuantidade){
+    estoque.push({nome:p.modelo, sub:p.cor||p.arm||"", cat:categoriaEstoqueDe(p.categoria),
+      cond:p.cond, qtd:p.qtd, custo:p.custo, venda:p.venda});
+  }else{
+    aparelhos.push(p); // mesmo objeto que a vitrine usa — não tem como desincronizar
   }
 });
-
-/* ---- ESTOQUE por quantidade: acessórios e motinhas ---- */
-const estoque = [];
-MOTOS.forEach(m=>{
-  const base = ent(700,2600);
-  estoque.push({cat:"Motinha elétrica", nome:m, sub:pick(["Vermelha","Preta","Rosa","Azul"]),
-    cond:"Novo (lacrado)", qtd:ent(0,9), custo:base, venda:Math.round(base*1.42)});
-});
-ACES.forEach(a=>{
-  const base = ent(18,1500);
-  estoque.push({cat:"Acessório", nome:a, sub:pick(["Compatível 12→18","Universal","Original Apple","Linha premium"]),
-    cond:"Novo (lacrado)", qtd:ent(0,45), custo:base, venda:Math.round(base*1.75)});
-});
+/* proximoId já vem do estoque.js, incrementado durante a geração —
+   continua daí pra cadastros novos, sem colidir com nenhum id existente. */
 
 /* ---- CLIENTES ---- */
 const SITUACAO = [
@@ -1393,7 +1292,7 @@ function nomeDoProduto(p){ return p.modelo || p.nome || "produto"; }
 function miniFoto(p){
   const k = chaveFoto(p);
   const propria = fotoManual(k);
-  const f = propria || (typeof fotoDe === "function" ? fotoDe(nomeDoProduto(p), p.cor) : null);
+  const f = propria || fotoOficialDe(nomeDoProduto(p), p.cor);
   const titulo = propria ? "Foto da loja — clique para trocar"
                          : "Clique para tirar ou anexar a foto deste produto";
   return `<div class="mini ${f ? "tem-foto" : ""}" data-foto="${k}" title="${titulo}">

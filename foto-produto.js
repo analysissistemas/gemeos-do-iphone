@@ -56,14 +56,54 @@ function resumoFotosManuais(){
     mb: +(ids.reduce((s,k)=>s+m[k].length,0)/1024/1024).toFixed(2)
   };
 }
-/** A foto que vale para ESTE produto: a da loja primeiro, a oficial depois.
- *  O `typeof` protege o index.html, que não carrega o estoque.js e portanto
- *  não tem fotoDe — lá só existe a foto tirada na loja. */
+/* ============================================================
+   FOTO OFICIAL DA APPLE
+   ------------------------------------------------------------
+   Mesmo mecanismo do estoque.js, copiado aqui com nomes próprios (não
+   FOTOS/fotoDe) de propósito: a vitrine.html carrega os dois arquivos
+   juntos, e um `const` com o mesmo nome nos dois quebraria a página
+   inteira. Assim funciona no index.html E na vitrine.html sem depender
+   de unificar os dois arquivos.
+   ============================================================ */
+function semAcentoFoto(s){
+  return s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()
+          .replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+}
+const FOTOS_OFICIAIS = {
+  "iPad 10ª geração":                "fotos/ipad-pro.jpg",
+  "iPad Pro M4":                     "fotos/ipad-pro.jpg",
+  "AirTag (rastreador)":             "fotos/airtag.jpg",
+  "JBL PartyBox 100":                "fotos/jbl-partybox-100.jpg",
+  "Redmi Note 13":                   "fotos/redmi-note-13.jpg"
+};
+/** Foto oficial pra este modelo/cor, ou null — mesma regra de sempre:
+ *  só usa se existir de verdade (conferido em FOTOS_EXISTENTES). */
+function fotoOficialDe(modelo, cor){
+  const direto = FOTOS_OFICIAIS[`${modelo}|${cor}`] || FOTOS_OFICIAIS[modelo];
+  if(direto) return direto;
+  if(typeof FOTOS_EXISTENTES !== "undefined"){
+    for(const caminho of _caminhosPorNomeFoto(modelo, cor)){
+      if(FOTOS_EXISTENTES.has(caminho.replace("fotos/",""))) return caminho;
+    }
+  }
+  return null;
+}
+function _caminhosPorNomeFoto(modelo, cor){
+  const m = semAcentoFoto(modelo);
+  const lista = [];
+  if(cor){
+    const c = semAcentoFoto(cor);
+    lista.push(`fotos/${m}-${c}.webp`, `fotos/${m}-${c}.png`, `fotos/${m}-${c}.jpg`);
+  }
+  lista.push(`fotos/${m}.webp`, `fotos/${m}.png`, `fotos/${m}.jpg`);
+  return lista;
+}
+
+/** A foto que vale para ESTE produto: a da loja primeiro, a oficial depois. */
 function fotoDoProduto(p){
   const propria = fotoManual(p.id);
   if(propria) return propria;
-  if(typeof fotoDe === "function") return fotoDe(p.modelo, p.cor);
-  return null;
+  return fotoOficialDe(p.modelo, p.cor);
 }
 
 /** Lê o arquivo escolhido, reduz e devolve a imagem pronta para guardar. */
