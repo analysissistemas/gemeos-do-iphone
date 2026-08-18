@@ -918,7 +918,7 @@ tbody tr:last-child td{border-bottom:none}
 <script src="foto-produto.js?v=1"></script>
 <!-- estoque real (Supabase) — mesma fonte que a vitrine.html usa. Preenche
      PRODUTOS e expõe ESTOQUE_CARREGADO (ver estoque.js). -->
-<script src="estoque.js?v=6"></script>
+<script src="estoque.js?v=7"></script>
 <script>
 /* ============================================================
    DADOS SIMULADOS — tudo inventado, só para o protótipo
@@ -1003,6 +1003,14 @@ const CATALOGO = {
 
 /* Avarias e o quanto cada uma tira do preço. Valores em reais, editáveis —
    é a régua da loja, não uma tabela oficial de ninguém. */
+/* Selos extras que o vendedor pode marcar num aparelho específico — não
+   abatem preço como as avarias, são pontos a favor que aparecem como
+   check verde na vitrine, junto dos que todo produto já tem. */
+const SELOS = [
+  "Garantia de 3 meses", "Garantia de 6 meses",
+  "Troca fácil", "Aparelho 100% testado", "Nota fiscal disponível"
+];
+
 const AVARIAS = [
   {k:"Tela riscada",            d: 120},
   {k:"Tela trincada",           d: 450},
@@ -1960,7 +1968,7 @@ function autocomplete(inputEl, listaEl, fonte, aoEscolher){
 function wizEntrada(){
   /* vendaManual: enquanto você não digitar um preço próprio, o campo acompanha o
      cálculo. Assim que digitar, o sistema para de sobrescrever o seu número. */
-  const st = {modelo:null, arm:null, cor:null, cond:"Seminovo", bateria:92, avarias:[],
+  const st = {modelo:null, arm:null, cor:null, cond:"Seminovo", bateria:92, avarias:[], selos:[],
               imei:"", custo:"", venda:null, vendaManual:false};
 
   $("#modal").innerHTML = `
@@ -2019,6 +2027,11 @@ function wizEntrada(){
         <div class="campo"><label>IMEI</label><input id="wImei" placeholder="digite ou bipe o código" autocomplete="off"></div>
         <div class="campo"><label>Quanto você pagou nesse aparelho</label><input id="wCusto" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"></div>
       </div>
+      <div class="passo">
+        <div class="passo-n"><i>7</i><b>Selos extras</b><small>opcional — aparece como destaque na vitrine</small></div>
+        <div class="avarias" id="wSelos">${SELOS.map(s=>
+          `<div class="av ${st.selos.includes(s)?"on":""}" data-selo="${s}"><i></i>${s}</div>`).join("")}</div>
+      </div>
       <div class="resumo" id="wResumo"></div>`;
     aplicarCond(); atualizarResumo();
 
@@ -2035,6 +2048,10 @@ function wizEntrada(){
       b.classList.toggle("on"); atualizarResumo();};
     $("#wImei").oninput = e=>{st.imei=e.target.value; travarSalvar();};
     $("#wCusto").oninput= e=>{st.custo=e.target.value.replace(/\D/g,""); atualizarResumo(); travarSalvar();};
+    $("#wSelos").onclick = e=>{const b=e.target.closest("[data-selo]"); if(!b)return;
+      const s=b.dataset.selo;
+      st.selos = st.selos.includes(s) ? st.selos.filter(x=>x!==s) : [...st.selos,s];
+      b.classList.toggle("on");};
   }
 
   function aplicarCond(){
@@ -2091,7 +2108,7 @@ function wizEntrada(){
           acao:"criar_produto",
           modeloInfo:{ tipo:"iphone", marca:"Apple", modelo:st.modelo },
           armazenamento:st.arm, cor:st.cor, condicao:st.cond, bateria,
-          imei:st.imei, avarias:[...st.avarias], custo:+st.custo||0, preco:venda,
+          imei:st.imei, avarias:[...st.avarias], selos:[...st.selos], custo:+st.custo||0, preco:venda,
           data_entrada: new Date().toISOString().slice(0,10)
         })
       });
@@ -2099,7 +2116,7 @@ function wizEntrada(){
       if(!res.ok) throw new Error(res.erro || "Não consegui salvar no banco.");
       aparelhos.push({
         id:res.produto.id, modelo:st.modelo, arm:st.arm, cor:st.cor, cond:st.cond,
-        bateria, avarias:[...st.avarias],
+        bateria, avarias:[...st.avarias], selos:[...st.selos],
         imei:st.imei, custo:+st.custo||0, venda,
         entrada:"12/08/2026", vendido:false
       });

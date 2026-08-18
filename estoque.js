@@ -110,7 +110,7 @@ async function carregarEstoque() {
   const [modelos, produtos] = await Promise.all([
     _supabaseGet("modelos?select=id,tipo,marca,modelo,versao,categoria,ficha_tecnica"),
     _supabaseGet(
-      "produtos?select=id,modelo_id,cor,armazenamento,condicao,quantidade,preco,custo_aquisicao,observacao,data_entrada,status,imei,bateria,avarias,na_vitrine&status=eq.disponivel"
+      "produtos?select=id,modelo_id,cor,armazenamento,condicao,quantidade,preco,custo_aquisicao,observacao,data_entrada,status,imei,bateria,avarias,selos,na_vitrine&status=eq.disponivel"
     )
   ]);
   const modeloPorId = {};
@@ -132,6 +132,7 @@ async function carregarEstoque() {
       cond: condicaoDe(p.condicao),
       bateria: p.bateria,
       avarias: p.avarias || [],
+      selos: p.selos || [],
       imei: p.imei || "",
       custo: Number(p.custo_aquisicao) || 0,
       venda: Number(p.preco),

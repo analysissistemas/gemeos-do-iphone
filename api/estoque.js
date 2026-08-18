@@ -58,6 +58,7 @@ async function criarProduto(dados) {
     bateria: dados.bateria ?? null,
     imei: dados.imei || null,
     avarias: dados.avarias || [],
+    selos: dados.selos || [],
     custo_aquisicao: dados.custo ?? null,
     preco: dados.preco,
     quantidade: dados.quantidade ?? 1,
@@ -79,7 +80,7 @@ async function marcarVendido(id) {
 }
 
 async function editarProduto(id, campos) {
-  const permitido = ["preco", "observacao", "na_vitrine", "condicao", "bateria", "cor", "armazenamento", "quantidade"];
+  const permitido = ["preco", "observacao", "na_vitrine", "condicao", "bateria", "cor", "armazenamento", "quantidade", "avarias", "selos", "imei"];
   const corpo = {};
   for (const k of permitido) if (campos[k] !== undefined) corpo[k] = campos[k];
   const r = await sb(`produtos?id=eq.${encodeURIComponent(id)}`, {
