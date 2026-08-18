@@ -1478,7 +1478,7 @@ function anexar(id){
 /* --- TABELA DE APARELHOS --- */
 let filtroAparAtual="Todos";
 function pintaFiltroApar(){
-  $("#filtroApar").innerHTML=["Todos",...COND,"Com avaria","Bateria baixa"].map(f=>
+  $("#filtroApar").innerHTML=["Todos",...COND,"Com avaria","Bateria baixa","Com diferencial"].map(f=>
     `<button class="chip ${f===filtroAparAtual?"on":""}" data-ap="${f}">${f}</button>`).join("");
 }
 function corBateria(b){ return b>=90?"var(--good)":b>=80?"var(--warning)":"var(--critical)"; }
@@ -1486,6 +1486,7 @@ function pintaAparelhos(){
   let l=emEstoque();
   if(filtroAparAtual==="Com avaria")        l=l.filter(a=>a.avarias.length);
   else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria!=null && a.bateria<85);
+  else if(filtroAparAtual==="Com diferencial") l=l.filter(a=>a.selos&&a.selos.length);
   else if(filtroAparAtual!=="Todos")         l=l.filter(a=>a.cond===filtroAparAtual);
   $("#tbAparelhos").innerHTML = l.map(a=>`<tr>
     <td><div class="prod-cel">${miniFoto(a)}<div>
