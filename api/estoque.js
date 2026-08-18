@@ -80,7 +80,7 @@ async function marcarVendido(id) {
 }
 
 async function editarProduto(id, campos) {
-  const permitido = ["preco", "observacao", "na_vitrine", "condicao", "bateria", "cor", "armazenamento", "quantidade", "avarias", "selos", "imei"];
+  const permitido = ["preco", "observacao", "na_vitrine", "condicao", "bateria", "cor", "armazenamento", "quantidade", "avarias", "selos", "imei", "custo_aquisicao"];
   const corpo = {};
   for (const k of permitido) if (campos[k] !== undefined) corpo[k] = campos[k];
   const r = await sb(`produtos?id=eq.${encodeURIComponent(id)}`, {

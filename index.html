@@ -487,6 +487,26 @@ tbody tr:last-child td{border-bottom:none}
 .campo input:focus,.campo select:focus{border-color:var(--ink);background:#0f0f0f}
 .modal-pe{display:flex;gap:10px;justify-content:flex-end;margin-top:26px}
 
+/* ---------- EDITAR APARELHO: foto, e listas livres (avaria/selo/cor/armaz.) ---------- */
+.edit-foto{display:flex;gap:14px;align-items:center}
+.edit-foto-prev{width:64px;height:84px;border-radius:10px;overflow:hidden;flex:none;
+  background:var(--plano);border:1px solid var(--linha);display:flex;align-items:center;justify-content:center}
+.edit-foto-prev img{width:100%;height:100%;object-fit:cover}
+.edit-foto-vazia{font-size:10px;color:var(--ink-3);text-align:center;padding:0 6px}
+.campo-inline{width:100%;background:var(--plano);border:1px solid var(--linha);border-radius:10px;
+  padding:9px 12px;color:var(--ink);font:inherit;font-size:12.5px;outline:none}
+.campo-inline:focus{border-color:var(--ink);background:#0f0f0f}
+.tags-extras{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.tag-extra{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:4px 9px;border-radius:980px;
+  border:1px solid var(--linha-forte);color:var(--ink-2);cursor:default}
+.tag-extra b{cursor:pointer;color:var(--ink-3);font-weight:700}
+.tag-extra b:hover{color:var(--critical)}
+.tag-extra-selo{border-color:var(--good);color:var(--good)}
+.add-extra{display:flex;gap:8px;margin-top:9px}
+.add-extra input{flex:1;background:var(--plano);border:1px solid var(--linha);border-radius:10px;
+  padding:9px 12px;color:var(--ink);font:inherit;font-size:12.5px;outline:none}
+.add-extra input:focus{border-color:var(--ink);background:#0f0f0f}
+
 /* ---------- ASSISTENTE DE ENTRADA / VENDA ---------- */
 .passo{margin-top:22px}
 .passo-n{display:flex;align-items:center;gap:9px;margin-bottom:11px}
@@ -559,6 +579,7 @@ tbody tr:last-child td{border-bottom:none}
 /* etiqueta de avaria na tabela */
 .tag-av{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:5px;
   border:1px solid var(--linha);color:var(--ink-2);margin:2px 3px 0 0;white-space:nowrap}
+.tag-selo{border-color:var(--good);color:var(--good)}
 .bat-cel{display:flex;align-items:center;gap:8px}
 .bat-barra{width:42px;height:5px;background:var(--trilho);border-radius:3px;overflow:hidden;flex:none}
 .bat-barra i{display:block;height:100%;border-radius:3px}
@@ -782,7 +803,7 @@ tbody tr:last-child td{border-bottom:none}
         <div class="tab-scroll">
           <table>
             <thead><tr>
-              <th>Aparelho</th><th>Condição</th><th>Bateria</th><th>Avarias</th><th>IMEI</th>
+              <th>Aparelho</th><th>Condição</th><th>Bateria</th><th>Avarias</th><th>Diferenciais</th><th>IMEI</th>
               <th class="num">Custo</th><th class="num">Venda</th><th class="num">Lucro</th><th></th>
             </tr></thead>
             <tbody id="tbAparelhos"></tbody>
@@ -1478,12 +1499,18 @@ function pintaAparelhos(){
          <span style="font-variant-numeric:tabular-nums">${a.bateria}%</span></div>`}</td>
     <td>${a.avarias.length ? a.avarias.map(v=>`<span class="tag-av">${v}</span>`).join("")
                            : `<span style="color:var(--ink-3);font-size:12px">sem avaria</span>`}</td>
+    <td>${(a.selos&&a.selos.length) ? a.selos.map(v=>`<span class="tag-av tag-selo">${v}</span>`).join("")
+                           : `<span style="color:var(--ink-3);font-size:12px">—</span>`}</td>
     <td style="color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:12px">${a.imei}</td>
     <td class="num" style="color:var(--ink-2)">${brl(a.custo)}</td>
     <td class="num forte">${brl(a.venda)}</td>
     <td class="num lucro">${brl(a.venda-a.custo)}</td>
-    <td><button class="btn btn-p btn-sm" data-vender="${a.id}">Vender</button></td></tr>`).join("")
-    || `<tr><td colspan="9" style="text-align:center;color:var(--ink-3);padding:36px">nenhum aparelho nesse filtro</td></tr>`;
+    <td style="white-space:nowrap;display:flex;gap:6px">
+      <button class="btn btn-s btn-sm" data-editar="${a.id}">Editar</button>
+      <button class="btn btn-s btn-sm" data-novacor="${a.id}">+ Cor</button>
+      <button class="btn btn-p btn-sm" data-vender="${a.id}">Vender</button>
+    </td></tr>`).join("")
+    || `<tr><td colspan="10" style="text-align:center;color:var(--ink-3);padding:36px">nenhum aparelho nesse filtro</td></tr>`;
 }
 $("#filtroApar").onclick = e => {
   const b=e.target.closest("[data-ap]"); if(!b) return;
@@ -1965,13 +1992,25 @@ function autocomplete(inputEl, listaEl, fonte, aoEscolher){
   });
 }
 
-function wizEntrada(){
+/* modeloFixo: usado pelo botão "+ Cor" de um aparelho já cadastrado — pula a
+   busca de modelo (passo 1) e vai direto pra memória/cor, pra cadastrar mais
+   uma peça do MESMO modelo (outra cor, outro armazenamento) sem redigitar
+   nada que já era sabido. Sem esse parâmetro, funciona como sempre funcionou
+   ("Dar entrada" do zero, buscando o modelo do começo). */
+function wizEntrada(modeloFixo){
   /* vendaManual: enquanto você não digitar um preço próprio, o campo acompanha o
      cálculo. Assim que digitar, o sistema para de sobrescrever o seu número. */
   const st = {modelo:null, arm:null, cor:null, cond:"Seminovo", bateria:92, avarias:[], selos:[],
               imei:"", custo:"", venda:null, vendaManual:false};
 
-  $("#modal").innerHTML = `
+  $("#modal").innerHTML = modeloFixo ? `
+    <h3>Nova peça — ${modeloFixo}</h3>
+    <div class="dsc">Outra cor ou armazenamento do mesmo modelo. O resto é igual ao cadastro normal.</div>
+    <div id="wResto"></div>
+    <div class="modal-pe">
+      <button class="btn btn-s" data-fechar>Cancelar</button>
+      <button class="btn btn-p" id="wSalvar" disabled style="opacity:.4">Salvar no estoque</button>
+    </div>` : `
     <h3>Dar entrada em aparelho</h3>
     <div class="dsc">Comece digitando o modelo. O resto o sistema já sugere.</div>
     <div class="passo">
@@ -1987,6 +2026,12 @@ function wizEntrada(){
       <button class="btn btn-p" id="wSalvar" disabled style="opacity:.4">Salvar no estoque</button>
     </div>`;
   $("#fundo").classList.add("on");
+
+  if(modeloFixo){
+    st.modelo = modeloFixo; st.arm = CATALOGO[modeloFixo].arm[0]; st.cor = CATALOGO[modeloFixo].cor[0];
+    montarResto();
+    return;
+  }
   setTimeout(()=>$("#wModelo").focus(),60);
 
   autocomplete($("#wModelo"), $("#wLista"),
@@ -2132,6 +2177,224 @@ function wizEntrada(){
 }
 
 /* ============================================================
+   EDITAR APARELHO JÁ CADASTRADO
+   ------------------------------------------------------------
+   Mesmos blocos visuais do "Dar entrada" (memória/cor, condição,
+   bateria/avarias, IMEI/custo, selos), só que pré-preenchidos com o que
+   o aparelho já tem, e o botão manda pra editar_produto em vez de
+   criar_produto. Preço aqui não é sugestão calculada — é o que já está
+   cadastrado, editável direto.
+   ============================================================ */
+function wizEditar(id){
+  const ap = aparelhos.find(x=>String(x.id)===String(id));
+  if(!ap) return;
+  const info = CATALOGO[ap.modelo];
+  const st = {arm:ap.arm, cor:ap.cor, cond:ap.cond, bateria:ap.bateria??92,
+              avarias:[...(ap.avarias||[])], selos:[...(ap.selos||[])],
+              imei:ap.imei||"", custo:String(ap.custo||""), venda:ap.venda};
+
+  /* avarias/selos: a lista fixa (AVARIAS/SELOS) é só sugestão de clique
+     rápido — o vendedor pode digitar qualquer texto próprio também. Um
+     item "extra" é qualquer coisa em st.avarias/st.selos que não bate com
+     nenhuma das fixas; aparece como chip removível abaixo do checklist. */
+  const chipsExtras = (lista, fixas) => lista.filter(x => !fixas.includes(x));
+
+  $("#modal").innerHTML = `
+    <h3>Editar — ${ap.modelo}</h3>
+    <div class="dsc">Muda só o que precisar. O resto continua como está.</div>
+    <div class="passo">
+      <div class="passo-n"><i>1</i><b>Foto do aparelho</b></div>
+      <div class="edit-foto">
+        <div class="edit-foto-prev" id="eFotoPrev"></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-s btn-sm" id="eFotoTirar" type="button">Tirar/trocar foto</button>
+          <button class="btn btn-s btn-sm" id="eFotoRemover" type="button" style="display:none">Remover foto</button>
+        </div>
+      </div>
+    </div>
+    <div class="passo">
+      <div class="passo-n"><i>2</i><b>Memória e cor</b><small>marca da lista, ou digita outra</small></div>
+      <div class="escolhas" id="eArm">${info.arm.map(a=>`<button class="esc ${a===st.arm?"on":""}" data-arm="${a}">${a}</button>`).join("")}</div>
+      <input id="eArmNovo" class="campo-inline" placeholder="Outro armazenamento… (ex.: 1TB)" autocomplete="off" style="margin-top:7px">
+      <div class="escolhas" style="margin-top:9px" id="eCor">${info.cor.map(c=>`<button class="esc ${c===st.cor?"on":""}" data-cor="${c}">${c}</button>`).join("")}</div>
+      <input id="eCorNova" class="campo-inline" placeholder="Outra cor… (ex.: Titânio Rosa)" autocomplete="off" style="margin-top:7px">
+    </div>
+    <div class="passo">
+      <div class="passo-n"><i>3</i><b>Condição</b></div>
+      <div class="escolhas" id="eCond">${COND.map(c=>`<button class="esc ${c===st.cond?"on":""}" data-cond="${c}">${c}</button>`).join("")}</div>
+    </div>
+    <div class="passo">
+      <div id="eUsado">
+        <div class="passo-n"><i>4</i><b>Saúde da bateria</b></div>
+        <div class="bat">
+          <input type="range" id="eBat" min="60" max="100" value="${st.bateria}">
+          <div class="bat-v" id="eBatV">${st.bateria}%</div>
+        </div>
+        <div class="passo-n" style="margin-top:22px"><i>5</i><b>Avarias</b><small>marca as comuns, ou escreve outra</small></div>
+        <div class="avarias" id="eAv">${AVARIAS.map(a=>
+          `<div class="av ${st.avarias.includes(a.k)?"on":""}" data-av="${a.k}"><i></i>${a.k}
+           <span style="margin-left:auto;color:var(--ink-3);font-size:11px">−${brl(a.d)}</span></div>`).join("")}</div>
+        <div class="tags-extras" id="eAvExtras"></div>
+        <div class="add-extra">
+          <input id="eAvNova" placeholder="Outra avaria… (ex.: risco na câmera)" autocomplete="off">
+          <button class="btn btn-s btn-sm" id="eAvAdd" type="button">Adicionar</button>
+        </div>
+      </div>
+    </div>
+    <div class="passo">
+      <div class="passo-n"><i>6</i><b>IMEI, custo e preço</b></div>
+      <div class="campo"><label>IMEI</label><input id="eImei" value="${st.imei}" autocomplete="off"></div>
+      <div class="campo"><label>Quanto pagou</label><input id="eCusto" value="${st.custo}" inputmode="numeric" autocomplete="off"></div>
+      <div class="campo"><label>Preço de venda</label><input id="eVenda" value="${st.venda}" inputmode="numeric" autocomplete="off"></div>
+    </div>
+    <div class="passo">
+      <div class="passo-n"><i>7</i><b>Selos extras</b><small>aparece como destaque na vitrine — marca os prontos, ou escreve outro</small></div>
+      <div class="avarias" id="eSelos">${SELOS.map(s=>
+        `<div class="av ${st.selos.includes(s)?"on":""}" data-selo="${s}"><i></i>${s}</div>`).join("")}</div>
+      <div class="tags-extras" id="eSelosExtras"></div>
+      <div class="add-extra">
+        <input id="eSeloNovo" placeholder="Outro selo… (ex.: Entrega grátis)" autocomplete="off">
+        <button class="btn btn-s btn-sm" id="eSeloAdd" type="button">Adicionar</button>
+      </div>
+    </div>
+    <div class="modal-pe">
+      <button class="btn btn-s" data-fechar>Cancelar</button>
+      <button class="btn btn-p" id="eSalvar">Salvar alterações</button>
+    </div>`;
+  $("#fundo").classList.add("on");
+
+  function aplicarCond(){
+    const lacrado = st.cond==="Novo (lacrado)";
+    $("#eUsado").style.display = lacrado ? "none" : "";
+    if(lacrado) { st.bateria=100; st.avarias=[]; pintaAvExtras(); }
+  }
+
+  /* ---- foto: mostra a atual (se tiver) e deixa trocar/remover na hora ---- */
+  function pintaFoto(){
+    const url = typeof fotoManual==="function" ? fotoManual(ap.id) : null;
+    $("#eFotoPrev").innerHTML = url
+      ? `<img src="${url}" alt="${ap.modelo}">`
+      : `<div class="edit-foto-vazia">sem foto ainda</div>`;
+    $("#eFotoRemover").style.display = url ? "" : "none";
+  }
+  pintaFoto();
+  $("#eFotoTirar").onclick = () => {
+    anexarFotoAoProduto(ap.id, res => {
+      if(!res.ok){ aviso(res.motivo); return; }
+      pintaFoto();
+      aviso("Foto salva.");
+    });
+  };
+  $("#eFotoRemover").onclick = async () => {
+    await definirFotoManual(ap.id, null);
+    pintaFoto();
+    aviso("Foto removida.");
+  };
+
+  /* ---- avarias: fixas + chips extras, com campo pra digitar uma nova ---- */
+  const AVARIAS_FIXAS = AVARIAS.map(a=>a.k);
+  function pintaAvExtras(){
+    const extras = chipsExtras(st.avarias, AVARIAS_FIXAS);
+    $("#eAvExtras").innerHTML = extras.map(v=>
+      `<span class="tag-extra" data-rm-av="${v}">${v} <b>×</b></span>`).join("");
+  }
+  pintaAvExtras();
+  function adicionarAvaria(){
+    const v = $("#eAvNova").value.trim();
+    if(!v || st.avarias.includes(v)) return;
+    st.avarias = [...st.avarias, v];
+    $("#eAvNova").value = "";
+    pintaAvExtras();
+  }
+  $("#eAvAdd").onclick = adicionarAvaria;
+  $("#eAvNova").onkeydown = e=>{ if(e.key==="Enter"){ e.preventDefault(); adicionarAvaria(); } };
+  $("#eAvExtras").onclick = e=>{
+    const b=e.target.closest("[data-rm-av]"); if(!b)return;
+    st.avarias = st.avarias.filter(x=>x!==b.dataset.rmAv);
+    pintaAvExtras();
+  };
+
+  /* ---- selos: mesmo padrão das avarias ---- */
+  function pintaSeloExtras(){
+    const extras = chipsExtras(st.selos, SELOS);
+    $("#eSelosExtras").innerHTML = extras.map(v=>
+      `<span class="tag-extra tag-extra-selo" data-rm-selo="${v}">${v} <b>×</b></span>`).join("");
+  }
+  pintaSeloExtras();
+  function adicionarSelo(){
+    const v = $("#eSeloNovo").value.trim();
+    if(!v || st.selos.includes(v)) return;
+    st.selos = [...st.selos, v];
+    $("#eSeloNovo").value = "";
+    pintaSeloExtras();
+  }
+  $("#eSeloAdd").onclick = adicionarSelo;
+  $("#eSeloNovo").onkeydown = e=>{ if(e.key==="Enter"){ e.preventDefault(); adicionarSelo(); } };
+  $("#eSelosExtras").onclick = e=>{
+    const b=e.target.closest("[data-rm-selo]"); if(!b)return;
+    st.selos = st.selos.filter(x=>x!==b.dataset.rmSelo);
+    pintaSeloExtras();
+  };
+
+  aplicarCond();
+
+  $("#eArm").onclick = e=>{const b=e.target.closest("[data-arm]"); if(!b)return; st.arm=b.dataset.arm;
+    $$("#eArm .esc").forEach(x=>x.classList.toggle("on",x===b)); $("#eArmNovo").value="";};
+  $("#eCor").onclick = e=>{const b=e.target.closest("[data-cor]"); if(!b)return; st.cor=b.dataset.cor;
+    $$("#eCor .esc").forEach(x=>x.classList.toggle("on",x===b)); $("#eCorNova").value="";};
+  /* digitar um valor próprio desmarca os botões da lista fixa — o texto
+     digitado manda, não precisa bater com nada que já existia. */
+  $("#eArmNovo").oninput = e=>{
+    st.arm = e.target.value.trim() || info.arm[0];
+    $$("#eArm .esc").forEach(x=>x.classList.toggle("on", !e.target.value.trim() && x.dataset.arm===st.arm));
+  };
+  $("#eCorNova").oninput = e=>{
+    st.cor = e.target.value.trim() || info.cor[0];
+    $$("#eCor .esc").forEach(x=>x.classList.toggle("on", !e.target.value.trim() && x.dataset.cor===st.cor));
+  };
+  $("#eCond").onclick = e=>{const b=e.target.closest("[data-cond]"); if(!b)return; st.cond=b.dataset.cond;
+    $$("#eCond .esc").forEach(x=>x.classList.toggle("on",x===b)); aplicarCond();};
+  $("#eBat").oninput = e=>{st.bateria=+e.target.value; $("#eBatV").textContent=st.bateria+"%";};
+  $("#eAv").onclick = e=>{const b=e.target.closest("[data-av]"); if(!b)return;
+    const k=b.dataset.av;
+    st.avarias = st.avarias.includes(k) ? st.avarias.filter(x=>x!==k) : [...st.avarias,k];
+    b.classList.toggle("on");};
+  $("#eImei").oninput = e=>st.imei=e.target.value;
+  $("#eCusto").oninput = e=>st.custo=e.target.value.replace(/\D/g,"");
+  $("#eVenda").oninput = e=>st.venda=+e.target.value.replace(/\D/g,"")||st.venda;
+  $("#eSelos").onclick = e=>{const b=e.target.closest("[data-selo]"); if(!b)return;
+    const s=b.dataset.selo;
+    st.selos = st.selos.includes(s) ? st.selos.filter(x=>x!==s) : [...st.selos,s];
+    b.classList.toggle("on");};
+
+  $("#eSalvar").onclick = async ()=>{
+    const btn=$("#eSalvar"); btn.disabled=true; btn.textContent="Salvando…";
+    try{
+      const r = await fetch("/api/estoque", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          acao:"editar_produto", id: ap.id,
+          campos: {
+            armazenamento: st.arm, cor: st.cor, condicao: st.cond, bateria: st.bateria,
+            imei: st.imei, avarias: [...st.avarias], selos: [...st.selos],
+            custo_aquisicao: +st.custo||0, preco: st.venda
+          }
+        })
+      });
+      const res = await r.json();
+      if(!res.ok) throw new Error(res.erro || "Não consegui salvar no banco.");
+      Object.assign(ap, { arm:st.arm, cor:st.cor, cond:st.cond, bateria:st.bateria,
+        imei:st.imei, avarias:[...st.avarias], selos:[...st.selos], custo:+st.custo||0, venda:st.venda });
+      fecharModal(); atualizarTudo();
+      aviso(`${ap.modelo} atualizado.`);
+    }catch(e){
+      btn.disabled=false; btn.textContent="Salvar alterações";
+      aviso(`Não deu pra salvar: ${e.message}`);
+    }
+  };
+}
+
+/* ============================================================
    ASSISTENTE DE VENDA
    ============================================================ */
 function wizVenda(idPre){
@@ -2270,6 +2533,10 @@ function atualizarTudo(){
 document.addEventListener("click",e=>{
   const v=e.target.closest("[data-vender]");
   if(v){ wizVenda(v.dataset.vender); return; }
+  const ed=e.target.closest("[data-editar]");
+  if(ed){ wizEditar(ed.dataset.editar); return; }
+  const nc=e.target.closest("[data-novacor]");
+  if(nc){ const ap=aparelhos.find(x=>String(x.id)===nc.dataset.novacor); if(ap) wizEntrada(ap.modelo); return; }
 });
 
 /* ============================================================
