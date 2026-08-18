@@ -16,17 +16,20 @@ const FOTO_QUALIDADE = 0.78;    // acima disso o arquivo cresce sem ganho visív
    ONDE A FOTO FICA GUARDADA
    ------------------------------------------------------------
    Não fica mais só no navegador — sobe pro banco de dados real (Supabase
-   Storage), por um "portão" no n8n que é o único que tem permissão de
-   escrever lá (o site só tem permissão de leitura, de propósito — ver
-   estoque.js). Assim a foto aparece em qualquer computador, não só no que
-   tirou.
+   Storage), por um "portão" que é o único que tem permissão de escrever lá
+   (o site só tem permissão de leitura, de propósito — ver estoque.js).
+   Assim a foto aparece em qualquer computador, não só no que tirou.
+
+   O portão é /api/foto (roda na Vercel, Node.js de verdade). Não usa mais
+   o gatilho do n8n pra isso: o sandbox de lá não reconhecia o Buffer da
+   imagem como binário de verdade e salvava a foto como texto quebrado.
 
    fotoManual(id) fica síncrono checando um Set carregado uma vez ao abrir
    a página (mesma ideia do FOTOS_EXISTENTES dos arquivos estáticos, só que
    buscado do bucket em vez de um arquivo gerado).
    ============================================================ */
 const SUPABASE_STORAGE_URL = "https://bzeceniidapsjvaudwwb.supabase.co/storage/v1/object/public/produtos-fotos/";
-const N8N_UPLOAD_FOTO_URL = "https://formacao-n8n.flnu5t.easypanel.host/webhook/upload-foto-gemeos";
+const UPLOAD_FOTO_URL = "/api/foto";
 
 /* guarda nome -> data da última atualização, não só o nome. É o que vira o
    "quebra-cache" da URL (?v=...) — sem isso, o navegador de quem já visitou
@@ -66,7 +69,7 @@ function fotoManual(id) {
  *  Devolve {ok, motivo} — mesmo formato de antes, pra não mudar quem chama. */
 async function definirFotoManual(id, dataUrl) {
   try {
-    const r = await fetch(N8N_UPLOAD_FOTO_URL, {
+    const r = await fetch(UPLOAD_FOTO_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(
