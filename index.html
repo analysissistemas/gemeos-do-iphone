@@ -580,6 +580,11 @@ tbody tr:last-child td{border-bottom:none}
 .tag-av{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:5px;
   border:1px solid var(--linha);color:var(--ink-2);margin:2px 3px 0 0;white-space:nowrap}
 .tag-selo{border-color:var(--good);color:var(--good)}
+.vitrine-badge{display:block;margin-top:4px;font-size:10px;padding:1px 6px;border-radius:5px;
+  border:1px solid transparent;cursor:pointer;font:inherit;letter-spacing:.01em}
+.vitrine-badge.on{color:var(--ink-3)}
+.vitrine-badge.on:hover{color:var(--good);border-color:var(--good)}
+.vitrine-badge.off{color:var(--warning);border-color:var(--warning);background:rgba(255,255,255,.03)}
 .bat-cel{display:flex;align-items:center;gap:8px}
 .bat-barra{width:42px;height:5px;background:var(--trilho);border-radius:3px;overflow:hidden;flex:none}
 .bat-barra i{display:block;height:100%;border-radius:3px}
@@ -1489,8 +1494,15 @@ function pintaAparelhos(){
   else if(filtroAparAtual==="Com diferencial") l=l.filter(a=>a.selos&&a.selos.length);
   else if(filtroAparAtual!=="Todos")         l=l.filter(a=>a.cond===filtroAparAtual);
   $("#tbAparelhos").innerHTML = l.map(a=>`<tr>
-    <td><div class="prod-cel">${miniFoto(a)}<div>
-      <div class="nm">${a.modelo}</div><div class="meta">${a.arm} · ${a.cor}</div></div></div></td>
+    <td><div class="prod-cel">
+      <a href="https://gemeos-do-iphone.vercel.app/vitrine?produto=${encodeURIComponent(a.id)}" target="_blank" rel="noopener" title="Ver como o cliente vê">${miniFoto(a)}</a>
+      <div>
+        <div class="nm">${a.modelo}</div><div class="meta">${a.arm} · ${a.cor}</div>
+        <button class="vitrine-badge ${a.naVitrine===false?"off":"on"}" data-toggle-vitrine="${a.id}"
+          title="Clique pra ${a.naVitrine===false?"mostrar":"esconder"} na vitrine do cliente">
+          ${a.naVitrine===false?"Oculto da vitrine":"Na vitrine"}
+        </button>
+      </div></div></td>
     <td style="color:var(--ink-2)">${a.cond}</td>
     <td>${a.cond==="Novo (lacrado)"
       ? `<span style="color:var(--ink-3)">lacrado</span>`
@@ -2538,7 +2550,31 @@ document.addEventListener("click",e=>{
   if(ed){ wizEditar(ed.dataset.editar); return; }
   const nc=e.target.closest("[data-novacor]");
   if(nc){ const ap=aparelhos.find(x=>String(x.id)===nc.dataset.novacor); if(ap) wizEntrada(ap.modelo); return; }
+  const tv=e.target.closest("[data-toggle-vitrine]");
+  if(tv){ alternarVitrine(tv.dataset.toggleVitrine); return; }
 });
+
+/* Esconde/mostra o aparelho na vitrine do cliente sem precisar abrir o
+   modal de edição inteiro — é uma ação rápida e comum (peça reservada,
+   foto ainda ruim, etc.), direto na tabela. */
+async function alternarVitrine(id){
+  const ap = aparelhos.find(x=>String(x.id)===String(id));
+  if(!ap) return;
+  const novoValor = ap.naVitrine===false; // vira o oposto do que está agora
+  try{
+    const r = await fetch("/api/estoque", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ acao:"editar_produto", id: ap.id, campos:{ na_vitrine: novoValor } })
+    });
+    const res = await r.json();
+    if(!res.ok) throw new Error(res.erro || "Não consegui salvar.");
+    ap.naVitrine = novoValor;
+    pintaAparelhos();
+    aviso(novoValor ? "Aparelho volta a aparecer na vitrine." : "Aparelho escondido da vitrine — continua no estoque interno.");
+  }catch(e){
+    aviso(`Não deu pra mudar: ${e.message}`);
+  }
+}
 
 /* ============================================================
    MODAIS DE CADASTRO
