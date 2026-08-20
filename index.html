@@ -2506,6 +2506,19 @@ function wizVenda(idPre){
     const a=st.ap;
     const btn=$("#vSalvar"); btn.disabled=true; btn.textContent="Confirmando…";
     try{
+      /* se o vendedor negociou um preço diferente do cadastrado, grava esse
+         valor de volta no produto ANTES de marcar como vendido — senão o
+         banco fica com o preço antigo e o histórico não bate com o que foi
+         cobrado de verdade */
+      if(st.preco !== a.venda){
+        const rPreco = await fetch("/api/estoque", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ acao:"editar_produto", id:a.id, campos:{preco:st.preco} })
+        });
+        const resPreco = await rPreco.json();
+        if(!resPreco.ok) throw new Error(resPreco.erro || "Não consegui atualizar o preço no banco.");
+        a.venda = st.preco;
+      }
       const r = await fetch("/api/estoque", {
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({ acao:"marcar_vendido", id:a.id })
