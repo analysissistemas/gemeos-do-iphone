@@ -9,14 +9,21 @@
 |---|---|
 | Conta | **analysissistemas** (a empresa, não a conta pessoal) |
 | Repositório | `analysissistemas/gemeos-do-iphone` |
-| Branch | **`vitrine-html`** |
+| Branch | **`main`** |
 
-**A branch `main` do mesmo repositório é OUTRO sistema**, feito em Next.js +
-Supabase pelo **Leo** (sócio do dono), com a IA de atendimento "Milton". Nunca
-enviar nada para `main`, nunca fazer merge das duas. São duas abordagens
-diferentes para a mesma loja, e a decisão de qual segue é dos sócios.
+**Corrigido em 2026-08-20: não existem dois sistemas.** Por um bom tempo este
+arquivo disse que `main` era "outro sistema, do Leo, em Next.js" e que o
+combinado era trabalhar em `vitrine-html`. Isso estava errado — as duas
+branches são o mesmo sistema em HTML puro (`vitrine.html`/`index.html`/
+`estoque.js`), com a mesma origem. Quem escreveu essa regra estava, na
+prática, já trabalhando direto em `main` sem perceber — por isso ela ficou
+mais avançada (Supabase real, upload de foto, editar aparelho, filtros) e é
+ela que está no ar em `gemeos-do-iphone.vercel.app`. `vitrine-html` ficou
+para trás, parada, e não representa o que está em produção. **A partir de
+agora, `main` é a branch de trabalho.** `vitrine-html` continua existindo no
+GitHub só por histórico — não usar, não mesclar, não tirar dado de lá.
 
-A branch local já se chama `vitrine-html` e rastreia a do GitHub, então
+A branch local já se chama `main` e rastreia a do GitHub, então
 `git push` simples basta.
 
 **Combinado atualizado em 2026-08-16: só commitar e dar `vercel --prod`
@@ -34,10 +41,8 @@ publicar algo ainda não verificado.
 Clonar em outra máquina:
 
 ```
-git clone -b vitrine-html https://github.com/analysissistemas/gemeos-do-iphone
+git clone https://github.com/analysissistemas/gemeos-do-iphone
 ```
-
-Sem o `-b`, vem o sistema do Leo.
 
 ## Trava: `vitrine.html` não se mexe sem autorização explícita
 
@@ -125,6 +130,15 @@ para tirar o aviso da tela; o alerta técnico continua escrito em `login.html`.
 - **Só o `.webp` vai para o GitHub.** Os PNG originais pesam 70 MB e estão no
   `.gitignore`; o site usa os webp (1,5 MB). Depois de acrescentar foto, rodar
   `python otimizar_fotos.py` **e** `python gerar_lista_fotos.py`.
+- **A confusão de branch de 16 a 20/08.** Este arquivo dizia "trabalhe em
+  `vitrine-html`, `main` é do Leo" enquanto o trabalho de verdade (Supabase
+  real, upload de foto, etc.) já estava acontecendo em `main`. Uma sessão
+  em `vitrine-html` reconstruiu do zero, hoje, uma versão pior do que já
+  existia em `main` — sem saber, porque o `git log` nunca foi conferido
+  antes de assumir qual branch era a "de verdade". Corrigido em 2026-08-20:
+  ver a mudança na seção anterior. **Lição: antes de confiar na tabela de
+  branch deste arquivo, rodar `git log --oneline` na branch e na `main` e
+  comparar — este arquivo pode estar desatualizado sobre isso de novo.**
 
 ## Como mexer
 
@@ -141,10 +155,10 @@ O site abre com dois cliques — não precisa de servidor.
 
 ## O que falta (em ordem de impacto)
 
-1. **Upload de foto pelo admin** — resolve PS5, Xbox, Starlink, iPhone antigo e
-   qualquer produto novo de uma vez. É a peça que destrava o resto.
-2. **Guardar os dados de verdade** — hoje o cadastro vive no navegador de cada
-   máquina (localStorage). Com servidor, vale para toda a equipe.
-3. Ordenar por preço e filtros suspensos no catálogo.
-4. Modo noturno na vitrine (o sistema já tem).
-5. Fotos de MacBook Air e Pro (só o Neo tem).
+Os dois itens que mais travavam (upload de foto pelo admin, guardar dado de
+verdade em vez de localStorage) **já estão feitos** — ver `api/foto.js`,
+`api/estoque.js` e `carregarEstoque()` em `estoque.js`. O que sobra:
+
+1. Ordenar por preço e filtros suspensos no catálogo.
+2. Modo noturno na vitrine (o sistema já tem).
+3. Fotos de MacBook Air e Pro (só o Neo tem).
