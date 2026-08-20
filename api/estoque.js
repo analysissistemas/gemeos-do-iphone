@@ -14,6 +14,21 @@
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const EMBEDDING_WEBHOOK = "https://formacao-n8n.flnu5t.easypanel.host/webhook/gerar-embedding-produto-gemeos-iphone";
+
+/** Dispara a geração do embedding (busca do Milton) sem travar criar/editar produto por causa disso. */
+async function dispararEmbedding(produto) {
+  if (!produto || !produto.id || !produto.content) return;
+  try {
+    await fetch(EMBEDDING_WEBHOOK, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: produto.id, content: produto.content })
+    });
+  } catch (e) {
+    // não deixa a falha do embedding quebrar a gravação do produto
+  }
+}
 
 async function sb(caminho, opcoes = {}) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${caminho}`, {
@@ -68,6 +83,7 @@ async function criarProduto(dados) {
     na_vitrine: dados.na_vitrine ?? true
   };
   const criado = await sb("produtos", { method: "POST", body: JSON.stringify([produto]) });
+  await dispararEmbedding(criado[0]);
   return criado[0];
 }
 
@@ -87,6 +103,7 @@ async function editarProduto(id, campos) {
     method: "PATCH",
     body: JSON.stringify(corpo)
   });
+  await dispararEmbedding(r[0]);
   return r[0];
 }
 
