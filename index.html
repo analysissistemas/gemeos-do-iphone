@@ -341,6 +341,14 @@ tbody tr:last-child td{border-bottom:none}
 .num{font-variant-numeric:tabular-nums;text-align:right}
 .forte{font-weight:600}
 
+/* coluna de ação (Editar/+Cor/Vender) grudada na borda direita — a tabela
+   tem colunas demais pra caber na tela toda, e sem isso o botão de editar
+   ficava fora da vista sem ninguém perceber que precisava rolar */
+.th-acoes, td.td-acoes{position:sticky;right:0;background:var(--cabecalho);backdrop-filter:blur(12px);
+  box-shadow:-8px 0 12px -8px rgba(0,0,0,.4)}
+.th-acoes{z-index:2}
+td.td-acoes{z-index:1}
+
 /* ---------- SELO DE STATUS (cor + rótulo, nunca cor sozinha) ---------- */
 .selo{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;letter-spacing:-.01em;
   padding:4px 10px;border-radius:980px;border:1px solid var(--linha);background:rgba(255,255,255,0.05);white-space:nowrap}
@@ -803,13 +811,14 @@ tbody tr:last-child td{border-bottom:none}
 
     <!-- APARELHOS: um por um, com IMEI, bateria e avaria -->
     <div id="blocoAparelhos">
+      <div class="filtros rev" id="filtroCatApar"></div>
       <div class="filtros rev" id="filtroApar"></div>
       <div class="tab-wrap rev">
         <div class="tab-scroll">
           <table>
             <thead><tr>
               <th>Aparelho</th><th>Condição</th><th>Bateria</th><th>Avarias</th><th>Diferenciais</th><th>IMEI</th>
-              <th class="num">Custo</th><th class="num">Venda</th><th class="num">Lucro</th><th></th>
+              <th class="num">Custo</th><th class="num">Venda</th><th class="num">Lucro</th><th class="th-acoes"></th>
             </tr></thead>
             <tbody id="tbAparelhos"></tbody>
           </table>
@@ -1482,13 +1491,28 @@ function anexar(id){
 
 /* --- TABELA DE APARELHOS --- */
 let filtroAparAtual="Todos";
+let filtroCatApar="Todas";
 function pintaFiltroApar(){
   $("#filtroApar").innerHTML=["Todos",...COND,"Com avaria","Bateria baixa","Com diferencial"].map(f=>
     `<button class="chip ${f===filtroAparAtual?"on":""}" data-ap="${f}">${f}</button>`).join("");
 }
+/* categoria já vem pronta em cada aparelho (o mesmo campo que a vitrine usa
+   pra montar as seções dela) — só mostra as que têm pelo menos 1 peça, e
+   com a contagem, pra não listar categoria vazia tipo "Motos elétricas"
+   (que é item por quantidade e nunca cai aqui). */
+function pintaFiltroCatApar(){
+  const contagem = {};
+  emEstoque().forEach(a=>{ contagem[a.categoria]=(contagem[a.categoria]||0)+1; });
+  const cats = Object.keys(contagem).sort((a,b)=>contagem[b]-contagem[a]);
+  $("#filtroCatApar").innerHTML = [
+    `<button class="chip ${filtroCatApar==="Todas"?"on":""}" data-catap="Todas">Todas (${emEstoque().length})</button>`,
+    ...cats.map(c=>`<button class="chip ${c===filtroCatApar?"on":""}" data-catap="${c}">${c} (${contagem[c]})</button>`)
+  ].join("");
+}
 function corBateria(b){ return b>=90?"var(--good)":b>=80?"var(--warning)":"var(--critical)"; }
 function pintaAparelhos(){
   let l=emEstoque();
+  if(filtroCatApar!=="Todas") l=l.filter(a=>a.categoria===filtroCatApar);
   if(filtroAparAtual==="Com avaria")        l=l.filter(a=>a.avarias.length);
   else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria!=null && a.bateria<85);
   else if(filtroAparAtual==="Com diferencial") l=l.filter(a=>a.selos&&a.selos.length);
@@ -1518,7 +1542,7 @@ function pintaAparelhos(){
     <td class="num" style="color:var(--ink-2)">${brl(a.custo)}</td>
     <td class="num forte">${brl(a.venda)}</td>
     <td class="num lucro">${brl(a.venda-a.custo)}</td>
-    <td style="white-space:nowrap;display:flex;gap:6px">
+    <td class="td-acoes" style="white-space:nowrap;display:flex;gap:6px">
       <button class="btn btn-s btn-sm" data-editar="${a.id}">Editar</button>
       <button class="btn btn-s btn-sm" data-novacor="${a.id}">+ Cor</button>
       <button class="btn btn-p btn-sm" data-vender="${a.id}">Vender</button>
@@ -1528,6 +1552,10 @@ function pintaAparelhos(){
 $("#filtroApar").onclick = e => {
   const b=e.target.closest("[data-ap]"); if(!b) return;
   filtroAparAtual=b.dataset.ap; pintaFiltroApar(); pintaAparelhos();
+};
+$("#filtroCatApar").onclick = e => {
+  const b=e.target.closest("[data-catap]"); if(!b) return;
+  filtroCatApar=b.dataset.catap; pintaFiltroCatApar(); pintaAparelhos();
 };
 
 let filtroEstAtual="Todos";
@@ -1612,7 +1640,7 @@ function pintaRoscas(){
 Promise.all([ESTOQUE_CARREGADO, FOTOS_LOJA_CARREGADO]).then(()=>{
   carregarEstoqueIndex();
   pintaKpiEstoque();
-  pintaFiltroApar(); pintaAparelhos();
+  pintaFiltroCatApar(); pintaFiltroApar(); pintaAparelhos();
   pintaRoscas();
   pintaFiltroEst(); pintaEstoque();
 });
@@ -2552,7 +2580,7 @@ function aviso(txt, acao){
 
 /* redesenha tudo que depende do estoque */
 function atualizarTudo(){
-  pintaKpiEstoque(); pintaAparelhos(); pintaRoscas(); pintaMovs();
+  pintaKpiEstoque(); pintaFiltroCatApar(); pintaAparelhos(); pintaRoscas(); pintaMovs();
   if(typeof pintaEstoque === "function") pintaEstoque();   // acessórios e motinhas
 }
 
