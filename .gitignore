@@ -1,0 +1,40 @@
+# pasta de referência: recortes do PDF do Behance usados só para desenhar a identidade.
+# São pesados (a página do Behance vira uma imagem de 2604x13676) e dá para gerar de novo
+# rodando os scripts _ref.py / _fatia.py em cima do PDF original.
+_ref/
+
+# scripts descartáveis usados uma vez para extrair a logo do PDF
+_ref.py
+_fatia.py
+_logo.py
+_check.py
+_extrai_logo.py
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# testes descartaveis de imagem
+_teste/
+
+_*.py
+_msg.txt
+
+# ---- fotos: so o .webp vai pro GitHub ----
+# Os PNG/JPG originais sao pesados (70 MB) e da para baixar de novo com
+# baixar_fotos_apple.py. O .webp e o que o site usa e pesa 1,5 MB no total.
+fotos/*.png
+fotos/*.jpg
+fotos/*.jpeg
+fotos/_baixa-resolucao/
+fotos/_nao-usadas/
+
+# video que nao foi escolhido
+video/iphone-air-hero.mp4
+.vercel
+
+# credenciais — nunca commitar (repositorio e publico no GitHub)
+.env
+.env.*
+!.env.example

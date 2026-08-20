@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Área do vendedor — Gêmeos do iPhone</title>
+<style>
+/* ============================================================
+   ENTRADA DA EQUIPE
+   ============================================================
+   ⚠️ AVISO IMPORTANTE, LEIA ANTES DE CONFIAR NISTO:
+   Esta tela é VISUAL. Ela não protege nada de verdade.
+
+   Sem servidor, a conferência da senha acontece no próprio navegador — quem
+   entender do assunto abre o código-fonte e vê tudo, ou simplesmente digita
+   o endereço do sistema direto e entra sem passar por aqui.
+
+   Serve para: você aprovar o desenho da tela, e evitar que alguém entre sem
+   querer pelo link do rodapé.
+   NÃO serve para: proteger dados de cliente, preço de custo ou lucro.
+
+   Para virar login de verdade precisa de servidor, igual foi feito no sistema
+   da Direction: senha com hash, sessão assinada e a checagem acontecendo no
+   servidor, não aqui.
+   ============================================================ */
+:root{
+  --escuro:#0b0b0c; --ink:#f5f5f7; --ink-2:#a1a1a6; --ink-3:#6e6e73;
+  --linha:rgba(255,255,255,.12); --linha-forte:rgba(255,255,255,.24);
+  --erro:#e06666;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100svh;background:var(--escuro);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden;
+}
+body::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(46% 38% at 20% 10%,rgba(255,255,255,.09),transparent 64%),
+    radial-gradient(40% 34% at 84% 82%,rgba(255,255,255,.06),transparent 66%);
+}
+.cartao{
+  position:relative;z-index:1;width:100%;max-width:400px;
+  background:rgba(255,255,255,.055);border:1px solid var(--linha);border-radius:24px;padding:38px 34px;
+  backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);
+  box-shadow:0 24px 70px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.11);
+}
+.cartao::after{content:"";position:absolute;top:0;left:16%;right:16%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent)}
+.logo{height:38px;width:auto;display:block;margin:0 auto 26px}
+h1{font-size:22px;font-weight:660;letter-spacing:-.025em;text-align:center}
+.sub{color:var(--ink-2);font-size:13.5px;text-align:center;margin-top:8px;line-height:1.5}
+.campo{margin-top:20px}
+label{display:block;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+input{
+  width:100%;background:rgba(0,0,0,.35);border:1px solid var(--linha);border-radius:12px;
+  padding:12px 14px;color:var(--ink);font:inherit;font-size:14px;outline:none;transition:.2s;
+}
+input:focus{border-color:var(--ink);background:rgba(0,0,0,.55)}
+input::placeholder{color:#5f5f65}
+.btn{
+  width:100%;margin-top:24px;padding:13px;border-radius:980px;border:none;cursor:pointer;
+  background:var(--ink);color:#000;font-size:14.5px;font-weight:660;font-family:inherit;transition:.2s;
+}
+.btn:hover{opacity:.88}
+.btn:active{transform:scale(.985)}
+.erro{
+  margin-top:16px;font-size:13px;color:var(--erro);text-align:center;line-height:1.5;
+  border:1px solid rgba(224,102,102,.35);background:rgba(224,102,102,.10);border-radius:11px;padding:10px 12px;
+  display:none;
+}
+.erro.on{display:block}
+.voltar{display:block;text-align:center;margin-top:22px;color:var(--ink-3);font-size:12.5px;text-decoration:none}
+.voltar:hover{color:var(--ink-2);text-decoration:underline;text-underline-offset:3px}
+.aviso{
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--linha);
+  font-size:11.5px;color:var(--ink-3);line-height:1.6;text-align:center;
+}
+.aviso b{color:var(--ink-2)}
+</style>
+</head>
+<body>
+  <main class="cartao">
+    <img src="logo-gemeos.png" alt="Gêmeos do iPhone" class="logo">
+    <h1>Área do vendedor</h1>
+    <p class="sub">Entre para ver estoque, vendas, assistência e o caixa da loja.</p>
+
+    <form id="form" autocomplete="off">
+      <div class="campo">
+        <label for="usuario">Usuário</label>
+        <input id="usuario" placeholder="seu nome de acesso" autocomplete="username" required>
+      </div>
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button class="btn" type="submit">Entrar no sistema</button>
+      <div class="erro" id="erro"></div>
+    </form>
+
+    <a class="voltar" href="vitrine.html">← Voltar para a loja</a>
+  </main>
+
+<script>
+/* ============================================================
+   ⚠️ Isto NÃO é segurança. Está aqui escrito às claras de propósito, para
+   ninguém confundir tela de login com proteção. Qualquer pessoa que abra o
+   código-fonte lê estes acessos, e quem digitar index.html direto entra sem
+   passar por esta tela.
+
+   Quando virar sistema de verdade, esta parte inteira sai e a conferência
+   passa a acontecer no servidor.
+   ============================================================ */
+const ACESSOS = [
+  {u:"gemeo1", s:"gemeos123", nome:"Gêmeo 1"},
+  {u:"gemeo2", s:"gemeos123", nome:"Gêmeo 2"},
+  {u:"admin",  s:"gemeos123", nome:"Administrador"}
+];
+
+const form  = document.getElementById("form");
+const erro  = document.getElementById("erro");
+
+form.addEventListener("submit", e=>{
+  e.preventDefault();
+  const u = document.getElementById("usuario").value.trim().toLowerCase();
+  const s = document.getElementById("senha").value;
+  const achou = ACESSOS.find(a => a.u === u && a.s === s);
+
+  if(!achou){
+    erro.textContent = "Usuário ou senha não conferem. Tente de novo.";
+    erro.classList.add("on");
+    document.getElementById("senha").value = "";
+    document.getElementById("senha").focus();
+    return;
+  }
+  erro.classList.remove("on");
+  try{ sessionStorage.setItem("gemeos-usuario", achou.nome); }catch(err){}
+  location.href = "index.html";
+});
+
+document.getElementById("usuario").focus();
+</script>
+</body>
+</html>

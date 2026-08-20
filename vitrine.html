@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gêmeos do iPhone — Celulares, acessórios e assistência em Carpina e Goiana</title>
+<meta name="description" content="Celulares lacrados e seminovos com bateria verificada, IMEI conferido e garantia. Acessórios, motinhas elétricas e assistência técnica própria. Carpina e Goiana, Pernambuco. Até 18x.">
+<style>
+/* ============================================================
+   VITRINE — a parte do CLIENTE.
+   NÃO existe custo, lucro nem margem neste arquivo. Não é questão de esconder
+   na tela: quem abrir o código-fonte também não acha. O preço mostrado vem do
+   estoque.js, que é onde VOCÊ ajusta pela área do vendedor.
+   ============================================================ */
+:root{
+  --tinta:#101828;          /* azul-petróleo quase preto, como a referência */
+  --tinta-2:#475467;
+  --tinta-3:#98a2b3;
+  --papel:#f4f6fa;          /* fundo claro das seções internas */
+  --papel-2:#ffffff;
+  --linha:#e4e8f0;
+  --preto:#000;
+  --escuro:#0b0b0c;
+  --linha-esc:rgba(255,255,255,.12);
+  --ink:#f5f5f7;
+  --ink-2:#a1a1a6;
+  --zap:#25D366;
+  --zap-esc:#1eb257;
+  --selo-semi:#c9f2d7;
+  --selo-semi-tx:#05612c;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--papel);color:var(--tinta);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--tinta);color:#fff}
+
+/* ---------- NAV EM PÍLULA ---------- */
+.nav{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:100;
+  width:min(1010px,calc(100% - 28px));display:flex;align-items:center;gap:10px;
+  padding:9px 10px 9px 22px;background:rgba(11,11,12,.9);
+  backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+  border:1px solid var(--linha-esc);border-radius:980px;box-shadow:0 12px 40px rgba(0,0,0,.28);
+}
+.nav img{height:22px;width:auto}
+.nav-links{display:flex;gap:2px;margin:0 auto}
+.nav-links a{padding:8px 15px;border-radius:980px;font-size:13.5px;color:var(--ink-2);transition:.2s;white-space:nowrap}
+.nav-links a:hover{background:rgba(255,255,255,.09);color:var(--ink)}
+.nav-links a.on{color:var(--ink);font-weight:600}
+.btn-topo{
+  display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--tinta);
+  padding:10px 18px;border-radius:980px;font-size:13.5px;font-weight:600;
+  border:none;cursor:pointer;font-family:inherit;transition:.2s;white-space:nowrap;
+}
+.btn-topo:hover{opacity:.88}
+.menu-mob{display:none;background:none;border:none;color:var(--ink);font-size:19px;cursor:pointer;padding:8px 12px}
+/* botão da equipe: presente mas sem competir com o "Fale Conosco", que é o
+   que o cliente precisa achar. Fica em contorno, não em cor cheia. */
+.btn-sistema{
+  display:inline-flex;align-items:center;gap:7px;color:var(--ink-2);font-size:13px;
+  border:1px solid var(--linha-esc);border-radius:980px;padding:9px 15px;transition:.2s;white-space:nowrap;
+}
+.btn-sistema:hover{color:var(--ink);border-color:rgba(255,255,255,.34);background:rgba(255,255,255,.08)}
+.btn-sistema svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round}
+.btn-sistema.logado{color:#8ee8ad;border-color:rgba(37,211,102,.45);background:rgba(37,211,102,.10)}
+@media(max-width:520px){ .btn-sistema span{display:none} .btn-sistema{padding:9px 11px} }
+
+/* ---------- HERO ---------- */
+.hero{position:relative;min-height:100svh;display:grid;place-items:center;text-align:center;overflow:hidden;background:var(--escuro)}
+.hero-fundo{position:absolute;inset:0;z-index:0;background:var(--escuro)}
+.hero-fundo img,
+.hero-fundo video{
+  width:100%;height:100%;
+  /* `cover` preenche a tela, e o object-position escolhe QUAL parte do vídeo
+     fica visível. 100% = mostra o pé do vídeo e corta todo o topo — que é
+     onde ficam os letreiros "iPhone" e "PRO". Baixar esse número faz o texto
+     voltar a aparecer; é o botão de ajuste fino do enquadramento. */
+  object-fit:cover;object-position:center 100%;
+  /* exposição baixa: o vídeo vira ambiente, não concorre com o texto.
+     brightness derruba a luz, contrast e saturate devolvem a cor que o
+     escurecimento rouba — sem isso o vídeo fica cinza e sujo. */
+  filter:brightness(.58) contrast(1.08) saturate(1.12);
+}
+/* duas camadas por cima: um véu parelho que garante o contraste mínimo do
+   texto, e um degradê que costura o fim do vídeo com o fundo da página.
+   O véu ficou mais leve junto com o vídeo mais claro — é o par que mantém
+   o texto legível sem apagar a cena. */
+.hero-fundo::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.18);z-index:1}
+.hero-fundo::after{content:"";position:absolute;inset:0;z-index:2;
+  background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.16) 40%,rgba(0,0,0,.55) 78%,var(--escuro) 100%)}
+/* sem foto ainda: brilho suave para não ficar um retângulo preto morto */
+.hero-fundo.sem::after{background:
+  radial-gradient(58% 46% at 50% 34%,rgba(255,255,255,.10),transparent 68%),
+  linear-gradient(180deg,transparent 60%,var(--escuro) 100%)}
+.hero-txt{position:relative;z-index:2;padding:130px 24px 96px;max-width:840px;color:var(--ink)}
+.hero-selo{display:inline-block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-2);border:1px solid var(--linha-esc);border-radius:980px;padding:7px 16px;margin-bottom:26px;
+  background:rgba(0,0,0,.4);backdrop-filter:blur(8px)}
+.hero h1{font-size:clamp(38px,6.6vw,80px);font-weight:700;letter-spacing:-.035em;line-height:1.03}
+.hero h1 em{font-style:normal;background:linear-gradient(180deg,#fff 30%,#8e8e93 120%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin-top:22px;font-size:clamp(15px,1.7vw,19px);color:var(--ink-2);line-height:1.55;max-width:560px;margin-inline:auto}
+.logo-hero{height:clamp(46px,7vw,80px);width:auto;margin:0 auto 26px;filter:drop-shadow(0 6px 22px rgba(0,0,0,.7))}
+.hero-acoes{margin-top:34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- OS "GÊMEOS" EM PARALLAX ----------
+   Dois aparelhos nas laterais, cada um numa velocidade diferente — é o que dá
+   a sensação de profundidade quando a página desce. */
+.gemeas{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+/* As fotos oficiais vêm com fundo transparente, então o aparelho flutua solto:
+   sem moldura, sem borda, sem cartão. A sombra vai no próprio contorno do
+   aparelho (drop-shadow), não numa caixa retangular em volta. */
+.fone{
+  position:absolute;top:50%;width:clamp(190px,21vw,340px);aspect-ratio:1/1;
+  will-change:transform;
+}
+.fone img{width:100%;height:100%;object-fit:contain;
+  filter:drop-shadow(0 30px 60px rgba(0,0,0,.9)) drop-shadow(0 0 30px rgba(255,255,255,.10))}
+.fone.esq{left:clamp(-40px,3vw,80px);transform:translateY(-50%) rotate(-9deg)}
+.fone.dir{right:clamp(-40px,3vw,80px);transform:translateY(-50%) rotate(9deg)}
+/* sem foto: contorno de aparelho, para não ficar um buraco */
+.fone.molde{background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.02));}
+.fone.molde::after{content:"";position:absolute;top:11px;left:50%;transform:translateX(-50%);
+  width:46px;height:7px;background:#000;border-radius:20px;opacity:.75}
+.btn-branco{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--tinta);
+  padding:13px 26px;border-radius:980px;font-size:14.5px;font-weight:640;border:none;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-branco:hover{opacity:.88}
+.btn-vidro{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.26);
+  background:rgba(255,255,255,.08);backdrop-filter:blur(10px);color:var(--ink);
+  padding:13px 26px;border-radius:980px;font-size:14.5px;font-weight:550;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-vidro:hover{background:rgba(255,255,255,.17)}
+
+/* ---------- FAIXA CORRENDO ---------- */
+.faixa{background:var(--escuro);border-bottom:1px solid var(--linha-esc);padding:22px 0;overflow:hidden}
+.faixa-int{display:flex;width:max-content;animation:corre 36s linear infinite}
+.faixa:hover .faixa-int{animation-play-state:paused}
+@keyframes corre{to{transform:translateX(-50%)}}
+.faixa-grupo{display:flex;align-items:center;gap:42px;padding-right:42px}
+.faixa-item{font-size:clamp(12.5px,1.4vw,16px);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap;color:var(--ink)}
+.faixa-pt{width:5px;height:5px;border-radius:50%;background:#5b5b60;flex:none}
+@media(prefers-reduced-motion:reduce){.faixa-int{animation:none}}
+
+/* ---------- SEÇÕES CLARAS ---------- */
+.secao{padding:96px 24px;max-width:1280px;margin:0 auto}
+.secao-cab{max-width:720px;margin-bottom:12px}
+.secao-cab.meio{text-align:center;margin-inline:auto}
+.etiqueta{display:inline-block;font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--tinta-2);background:#fff;border:1px solid var(--linha);border-radius:980px;padding:6px 15px;margin-bottom:18px}
+.secao-cab h2{font-size:clamp(32px,5vw,58px);font-weight:700;letter-spacing:-.035em;line-height:1.04}
+.secao-cab p{margin-top:14px;color:var(--tinta-2);font-size:16px;line-height:1.6}
+.contagem{font-size:13.5px;font-weight:600;color:var(--tinta-2);margin:26px 0 18px}
+
+/* ---------- FILTROS ---------- */
+.filtros{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px}
+.chip{padding:9px 17px;border-radius:980px;border:1px solid var(--linha);background:#fff;
+  color:var(--tinta-2);font-size:13px;cursor:pointer;font-family:inherit;transition:.18s}
+.chip:hover{border-color:var(--tinta-3);color:var(--tinta)}
+.chip.on{background:var(--tinta);color:#fff;border-color:var(--tinta);font-weight:600}
+
+/* ---------- CARD DE PRODUTO ---------- */
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:22px}
+.prod{background:#fff;border:1px solid var(--linha);border-radius:20px;overflow:hidden;
+  display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s}
+.prod:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(16,24,40,.13)}
+/* place-items:center + object-fit:contain deixa o aparelho centralizado e
+   inteiro, seja qual for a proporção da foto — as oficiais são quadradas,
+   as tiradas na loja não. */
+.prod-foto{aspect-ratio:1/1;background:linear-gradient(170deg,#fbfcfd,#eef1f6);
+  display:grid;place-items:center;position:relative;overflow:hidden;padding:18px}
+.prod-foto img{max-width:100%;max-height:100%;width:auto;height:auto;
+  object-fit:contain;margin:auto;
+  animation:trocaFoto .42s cubic-bezier(.16,1,.3,1)}
+/* a foto entra com um leve zoom e fade quando o cliente troca a cor —
+   deixa claro que a imagem mudou, em vez de piscar sem aviso */
+@keyframes trocaFoto{
+  from{opacity:0;transform:scale(1.06)}
+  to  {opacity:1;transform:scale(1)}
+}
+@media(prefers-reduced-motion:reduce){ .prod-foto img{animation:none} }
+.selo{position:absolute;top:12px;left:12px;z-index:2;font-size:10.5px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:980px}
+.selo.semi{background:var(--selo-semi);color:var(--selo-semi-tx)}
+.selo.lac{background:var(--tinta);color:#fff}
+.prod-corpo{padding:16px 17px 18px;display:flex;flex-direction:column;flex:1}
+.prod-nome{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.prod-spec{font-size:12.5px;color:var(--tinta-2);margin-top:4px}
+
+/* bolinhas de cor — a cor real de cada acabamento */
+.cores{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
+.cor{width:19px;height:19px;border-radius:50%;cursor:pointer;border:1px solid transparent;
+  padding:0;position:relative;transition:.18s;flex:none}
+.cor.claro{border-color:#d3d8e0}
+.cor.on{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--tinta)}
+.cor:hover{transform:scale(1.14)}
+
+.opcoes{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+.op{padding:5px 11px;border-radius:8px;border:1px solid var(--linha);background:#fff;
+  color:var(--tinta-2);font-size:11.5px;cursor:pointer;font-family:inherit;transition:.18s}
+.op:hover{border-color:var(--tinta-3)}
+.op.on{background:var(--tinta);color:#fff;border-color:var(--tinta);font-weight:640}
+.op.verde.on{background:var(--zap-esc);border-color:var(--zap-esc)}
+
+.checks{display:flex;gap:13px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--linha)}
+.check{font-size:11.5px;color:var(--tinta-2);display:flex;align-items:center;gap:5px}
+.ic-check{width:13px;height:13px;stroke:var(--selo-semi-tx);stroke-width:2.4;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic-alerta{width:13px;height:13px;stroke:#b26b00;stroke-width:1.7;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;flex:none}
+.check.alerta{color:#8a5200}
+
+/* ---------- BUSCA DO CATÁLOGO ---------- */
+.busca-wrap{margin-top:34px}
+.busca-campo{
+  display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--linha);
+  border-radius:980px;padding:13px 20px;max-width:620px;transition:.2s;
+}
+.busca-campo:focus-within{border-color:var(--tinta);box-shadow:0 0 0 4px rgba(16,24,40,.07)}
+.busca-campo svg{width:17px;height:17px;stroke:var(--tinta-3);stroke-width:1.9;fill:none;
+  stroke-linecap:round;flex:none}
+.busca-campo input{flex:1;border:none;outline:none;background:none;font:inherit;font-size:14.5px;color:var(--tinta)}
+.busca-campo input::placeholder{color:var(--tinta-3)}
+.busca-campo input::-webkit-search-cancel-button{display:none}
+.busca-campo button{border:none;background:none;color:var(--tinta-3);cursor:pointer;font-size:15px;
+  padding:2px 4px;line-height:1}
+.busca-campo button:hover{color:var(--tinta)}
+.busca-resumo{margin-top:12px;font-size:13.5px;color:var(--tinta-2);min-height:20px}
+.busca-resumo b{color:var(--tinta)}
+
+/* ---------- ATALHOS DE CATEGORIA ---------- */
+.atalhos{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:38px}
+.atalho{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:20px 18px;
+  display:flex;flex-direction:column;gap:5px;transition:.25s}
+.atalho:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(16,24,40,.12);border-color:var(--tinta-3)}
+.atalho-n{font-size:15.5px;font-weight:680;letter-spacing:-.02em}
+.atalho-q{font-size:12.5px;color:var(--tinta-2)}
+
+.prod-preco{margin-top:auto;padding-top:15px}
+.preco{font-size:24px;font-weight:720;letter-spacing:-.035em}
+.parc{font-size:12px;color:var(--tinta-2);margin-top:3px}
+.btn-consultar{
+  margin-top:13px;width:100%;padding:11px;border-radius:980px;border:none;cursor:pointer;
+  background:var(--zap);color:#053d1c;font-size:13px;font-weight:700;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s;
+}
+.btn-consultar:hover{background:var(--zap-esc);color:#fff}
+.vazio{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--tinta-3)}
+.ver-mais{display:flex;justify-content:center;margin-top:40px}
+.btn-preto{display:inline-flex;align-items:center;gap:9px;background:var(--tinta);color:#fff;
+  padding:13px 28px;border-radius:980px;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-preto:hover{opacity:.88}
+
+/* ---------- CONFIANÇA ---------- */
+.faixa-clara{background:#fff;border-block:1px solid var(--linha)}
+.confia{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.confia-c{background:var(--papel);border:1px solid var(--linha);border-radius:18px;padding:26px}
+/* Ícones de traço em vez de emoji: emoji muda de desenho em cada aparelho
+   (Android, iPhone e Windows mostram diferente) e deixa a loja com cara de
+   conversa, não de comércio. SVG fica igual em todo lugar. */
+.confia-ic{display:block;margin-bottom:14px;color:var(--tinta)}
+.confia-ic svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.6;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+.confia-c h3{font-size:17px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.confia-c p{font-size:13.5px;color:var(--tinta-2);line-height:1.6}
+
+/* ---------- FAQ ---------- */
+.faq{max-width:820px;margin:0 auto}
+.faq details{background:#fff;border:1px solid var(--linha);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.faq summary{padding:18px 46px 18px 20px;cursor:pointer;font-size:15.5px;font-weight:620;
+  letter-spacing:-.015em;list-style:none;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:20px;top:50%;transform:translateY(-50%);
+  font-size:21px;font-weight:300;color:var(--tinta-3);transition:transform .25s}
+.faq details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+.faq p{padding:0 20px 20px;color:var(--tinta-2);font-size:14.5px;line-height:1.65}
+
+/* ---------- RODAPÉ ---------- */
+.rodape{background:var(--escuro);color:var(--ink);padding:56px 24px 34px}
+.rodape-topo{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+  padding-bottom:32px;border-bottom:1px solid var(--linha-esc)}
+.rodape-topo img{height:38px}
+.rodape-topo p{color:var(--ink-2);font-size:13.5px;line-height:1.6;max-width:330px}
+.rodape-topo .btn-consultar{width:auto;padding:12px 22px;margin:0 0 0 auto}
+.rodape-cols{max-width:1280px;margin:0 auto;padding-top:32px;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:28px}
+.rodape-cols h4{font-size:13.5px;font-weight:650;margin-bottom:14px}
+.rodape-cols a,.rodape-cols span{display:block;color:var(--ink-2);font-size:13px;line-height:2}
+.rodape-cols a:hover{color:var(--ink)}
+.rodape-fim{max-width:1280px;margin:32px auto 0;padding-top:22px;border-top:1px solid var(--linha-esc);
+  color:#6b6b70;font-size:12px;text-align:center;line-height:1.7}
+/* entrada da equipe: discreta de propósito — o cliente não precisa disso em destaque */
+.link-vendedor{display:inline-flex;align-items:center;gap:7px;color:#7c7c82;font-size:12px;
+  border:1px solid var(--linha-esc);border-radius:980px;padding:7px 15px;transition:.2s}
+.link-vendedor:hover{color:var(--ink);border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.05)}
+.link-vendedor svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round}
+
+/* ---------- BOTÃO FLUTUANTE ---------- */
+.zap-flut{position:fixed;right:20px;bottom:20px;z-index:150;width:54px;height:54px;border-radius:50%;
+  background:var(--zap);color:#053d1c;display:grid;place-items:center;border:none;cursor:pointer;
+  box-shadow:0 10px 30px rgba(37,211,102,.45);transition:transform .25s}
+.zap-flut:hover{transform:scale(1.09)}
+.zap-flut svg{width:28px;height:28px}
+
+/* seletor temporário de vídeo — sai quando o dono decidir */
+.escolha-video{
+  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:5;
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:980px;
+  background:rgba(0,0,0,.62);backdrop-filter:blur(16px);border:1px solid var(--linha-esc);
+}
+.escolha-video span{font-size:11.5px;color:var(--ink-2);padding-left:8px}
+.escolha-video button{
+  border:1px solid var(--linha-esc);background:transparent;color:var(--ink-2);
+  font-size:12px;padding:6px 13px;border-radius:980px;cursor:pointer;font-family:inherit;transition:.2s;
+}
+.escolha-video button:hover{color:var(--ink);border-color:rgba(255,255,255,.35)}
+.escolha-video button.on{background:#fff;color:var(--tinta);border-color:#fff;font-weight:640}
+
+/* ---------- REVELAÇÃO ---------- */
+.rev{opacity:0;transform:translateY(26px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
+.rev.vis{opacity:1;transform:none}
+
+/* ---------- ENQUADRAMENTO DO VÍDEO POR TAMANHO DE TELA ----------
+   O corte certo depende do formato da tela. Em monitor largo sobra altura e o
+   texto do vídeo tende a aparecer; no celular, em pé, sobra largura. Por isso
+   o ponto de corte muda em vez de ser um só para todos. */
+/* No celular, em pé, sobra MUITA altura para um vídeo deitado: o `cover`
+   amplia pela altura e o letreiro do topo volta a caber na tela. Por isso o
+   corte fica colado no pé do vídeo (100%) e a escala sobe um pouco, para o
+   aparelho continuar grande sem trazer o texto de volta. */
+@media(min-width:1400px){ .hero-fundo video{object-position:center 100%} }
+@media(max-width:900px){
+  .hero-fundo video{object-position:center 100%;transform:scale(1.35);transform-origin:center bottom}
+}
+@media(max-width:560px){
+  .hero-fundo video{transform:scale(1.7);transform-origin:center bottom}
+  .escolha-video{bottom:14px;padding:6px 8px;flex-wrap:wrap;justify-content:center;
+    max-width:calc(100% - 28px)}
+  .escolha-video span{display:none}
+}
+
+@media(max-width:860px){
+  .nav-links{display:none}
+  .nav-links.abre{display:flex;position:absolute;top:calc(100% + 10px);left:0;right:0;flex-direction:column;
+    background:rgba(11,11,12,.97);border:1px solid var(--linha-esc);border-radius:20px;padding:10px}
+  .menu-mob{display:block}
+  .nav{padding-right:14px}
+  .secao{padding:70px 20px}
+  .rodape-topo .btn-consultar{margin:0}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <a href="#topo"><img src="logo-gemeos.png" alt="Gêmeos do iPhone"></a>
+  <div class="nav-links" id="links">
+    <a href="#topo" class="on">Home</a>
+    <a href="#catalogo">Catálogo</a>
+    <a href="#garantia">Garantia</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <button class="menu-mob" id="menuMob" aria-label="Abrir menu">☰</button>
+  <!-- entrada da equipe: discreta, mas achável. O texto muda se já houver sessão. -->
+  <a class="btn-sistema" id="btSistema" href="login.html" title="Acesso da equipe">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="8.5" width="12" height="8" rx="2"/><path d="M7 8.5V6a3 3 0 0 1 6 0v2.5"/></svg>
+    <span id="txtSistema">Sistema</span>
+  </a>
+  <button class="btn-topo" data-zap="Olá! Vim pelo site e queria falar com vocês.">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
+    Fale Conosco
+  </button>
+</nav>
+
+<header class="hero" id="topo">
+  <div class="hero-fundo" id="heroFundo">
+    <!-- muted + playsinline sao obrigatorios: sem os dois, o celular recusa
+         tocar sozinho e o fundo fica preto. autoplay so vale com muted. -->
+    <video id="heroVideo" autoplay muted loop playsinline preload="auto"
+           poster="fotos/iphone-17-pro-laranja-cosmico.png"
+           onerror="this.parentElement.classList.add('sem');this.remove()"></video>
+  </div>
+
+  <!-- Os aparelhos das laterais sairam: com o video de fundo eles competiam
+       com a cena e poluiam o topo. Quem faz o parallax agora e o video. -->
+
+  <div class="hero-txt" id="heroTxt">
+    <span class="hero-selo">Carpina · Goiana — Pernambuco</span>
+    <img src="logo-gemeos.png" alt="Gêmeos do iPhone" class="logo-hero">
+    <!-- frase do próprio material da loja: cobre celular, acessório, motinha e
+         a assistência, sem prometer que só trabalhamos com Apple -->
+    <h1>Pra tudo tem<br><em>solução.</em></h1>
+    <p>iPhone e Android, lacrados e seminovos. Acessórios, motinhas elétricas
+       e assistência técnica própria. Bateria verificada, IMEI conferido e
+       garantia por escrito.</p>
+    <div class="hero-acoes">
+      <a href="#catalogo" class="btn-branco">Ver catálogo →</a>
+      <button class="btn-vidro" data-zap="Olá! Queria saber o que tem disponível hoje.">Falar no WhatsApp</button>
+    </div>
+  </div>
+</header>
+
+<div class="faixa"><div class="faixa-int" id="faixa"></div></div>
+
+<!-- ================= CATÁLOGO ================= -->
+<section class="secao" id="catalogo" style="padding-bottom:24px">
+  <div class="secao-cab meio rev">
+    <span class="etiqueta">Catálogo</span>
+    <h2>Qual produto você procura?</h2>
+    <p>Escolha abaixo e confira nossas opções com garantia, bateria verificada
+       e IMEI conferido.</p>
+  </div>
+  <div class="busca-wrap rev">
+    <div class="busca-campo">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m17 17-3.5-3.5"/></svg>
+      <input id="buscaCat" type="search" autocomplete="off"
+             placeholder="Buscar modelo, cor ou memória — ex.: 15 pro, azul, 256GB">
+      <button id="limparBusca" aria-label="Limpar busca" hidden>✕</button>
+    </div>
+    <div class="busca-resumo" id="buscaResumo"></div>
+  </div>
+  <div class="atalhos rev" id="atalhos"></div>
+</section>
+
+<!-- cada linha da loja vira uma seção própria, montada pelo script -->
+<div id="secoes"></div>
+
+<!-- ================= GARANTIA ================= -->
+<div class="faixa-clara">
+<section class="secao" id="garantia">
+  <div class="secao-cab meio rev">
+    <span class="etiqueta">Por que confiar</span>
+    <h2>Nada de surpresa depois da compra.</h2>
+    <p>O que a gente confere em todo aparelho antes de colocar à venda.</p>
+  </div>
+  <div class="confia rev" style="margin-top:44px">
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2.5"/><path d="M21 10.5v3"/><path d="M5.5 12h5M8 9.5v5"/></svg></span><h3>Bateria verificada</h3>
+      <p>A saúde real da bateria está escrita no anúncio, igual aparece nos Ajustes do iPhone.
+         Abaixo de 85%, a gente avisa antes.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></span><h3>IMEI conferido</h3>
+      <p>Procedência checada — sem bloqueio, sem pendência, sem iCloud preso.
+         Você confere o IMEI na hora, com a gente do lado.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 3.5h6v2.5H9z"/><path d="M9 11h6M9 15h4"/></svg></span><h3>Avarias declaradas</h3>
+      <p>Risco na tela, marca na lateral, vidro trincado: se tem, está escrito.
+         Preferimos vender menos a vender escondendo.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.7 7 9.5 4.1-1.8 7-5.3 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>Garantia por escrito</h3>
+      <p>90 dias nos seminovos e 1 ano Apple nos lacrados, no papel, com o
+         comprovante assinado que você leva.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 15h3"/></svg></span><h3>Até 18x no cartão</h3>
+      <p>Também aceitamos Pix, dinheiro e carnê da loja. A gente monta a condição
+         que cabe no seu bolso.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><path d="M15.5 3.5a5 5 0 0 0-5.9 6.5L3.5 16.1a2 2 0 1 0 2.8 2.8l6.1-6.1a5 5 0 0 0 6.5-5.9L16 10l-2.5-.5L13 7l3.5-3.5Z"/></svg></span><h3>Assistência própria</h3>
+      <p>Deu problema? A bancada é nossa. Tela, bateria, conector — resolvemos aqui,
+         sem mandar seu aparelho para fora.</p></div>
+  </div>
+</section>
+</div>
+
+<!-- ================= FAQ ================= -->
+<section class="secao" id="faq">
+  <div class="secao-cab meio rev">
+    <span class="etiqueta">FAQ</span>
+    <h2>Perguntas que sempre fazem</h2>
+  </div>
+  <div class="faq rev" style="margin-top:44px">
+    <details open><summary>Qual a diferença entre lacrado, vitrine e seminovo?</summary>
+      <p><b>Lacrado</b> é novo, na caixa, nunca aberto — bateria 100% e garantia Apple de 1 ano.
+      <b>Vitrine</b> foi aberto para mostruário, praticamente sem uso. <b>Seminovo</b> já teve dono;
+      a saúde da bateria e as marcas de uso vêm escritas em cada anúncio.</p></details>
+    <details><summary>Vocês aceitam meu aparelho usado na troca?</summary>
+      <p>Aceitamos. Traga o seu que a gente avalia na hora, na sua frente, e o valor entra como
+      desconto no novo. A avaliação leva em conta modelo, memória, saúde da bateria e estado.</p></details>
+    <details><summary>Como funciona a garantia?</summary>
+      <p>Seminovos e de vitrine têm <b>90 dias</b> de garantia da loja. Lacrados têm <b>1 ano</b> de
+      garantia Apple. Cobre defeito de funcionamento — não cobre queda, líquido ou mau uso.
+      Tudo fica escrito no comprovante.</p></details>
+    <details><summary>Posso parcelar?</summary>
+      <p>Sim, em até 18x no cartão. Também trabalhamos com Pix, dinheiro e carnê da loja.
+      Chama no WhatsApp que a gente simula a parcela do aparelho que você quiser.</p></details>
+    <details><summary>Vocês entregam?</summary>
+      <p>Atendemos Carpina e Goiana, em Pernambuco. Combine no WhatsApp que a gente acerta a
+      melhor forma para você.</p></details>
+    <details><summary>E se o aparelho der problema?</summary>
+      <p>A assistência é nossa, na própria loja. Você traz o aparelho, a gente avalia e resolve —
+      dentro da garantia, sem custo.</p></details>
+  </div>
+</section>
+
+<!-- ================= RODAPÉ ================= -->
+<footer class="rodape">
+  <div class="rodape-topo">
+    <img src="logo-gemeos.png" alt="Gêmeos do iPhone">
+    <p>Vendemos lacrados e seminovos revisados pela nossa equipe técnica.
+       Aceitamos seu usado como forma de pagamento.</p>
+    <button class="btn-consultar" data-zap="Olá! Quero garantir meu iPhone.">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
+      Garantir meu iPhone
+    </button>
+  </div>
+  <div class="rodape-cols">
+    <div><h4>Categorias</h4>
+      <a href="#catalogo">iPhones</a><a href="#catalogo">Acessórios</a>
+      <a href="#catalogo">Motinhas elétricas</a><a href="#garantia">Assistência técnica</a></div>
+    <div><h4>Links rápidos</h4>
+      <a href="#topo">Home</a><a href="#catalogo">Catálogo</a>
+      <a href="#garantia">Garantia</a><a href="#faq">FAQ</a></div>
+    <div><h4>Contato</h4>
+      <a href="#" data-zap="Olá! Vim pelo site.">WhatsApp</a>
+      <span id="foneRodape"></span></div>
+    <div><h4>Onde estamos</h4>
+      <span>Carpina — PE</span><span>Goiana — PE</span></div>
+  </div>
+  <div class="rodape-fim">
+    © 2026 Gêmeos do iPhone. Todos os direitos reservados.<br>
+    Protótipo com dados de exemplo — preços, fotos e disponibilidade ainda não são reais.
+    <div style="margin-top:16px">
+      <a class="link-vendedor" href="login.html">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="8.5" width="12" height="8" rx="2"/><path d="M7 8.5V6a3 3 0 0 1 6 0v2.5"/></svg>
+        Área do vendedor
+      </a>
+    </div>
+  </div>
+</footer>
+
+<button class="zap-flut" data-zap="Olá! Vim pelo site." aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.06c-.25.69-1.45 1.32-2 1.4-.51.08-1.16.11-1.87-.12-.43-.14-.98-.32-1.69-.63-2.97-1.28-4.91-4.27-5.06-4.47-.15-.2-1.21-1.61-1.21-3.07 0-1.46.77-2.18 1.04-2.48.27-.3.59-.37.79-.37s.39 0 .56.01c.18.01.42-.7.8.61.4.94 1.36 3.25 1.48 3.48.12.24.2.51.04.81-.16.3-.24.49-.47.75-.24.26-.5.58-.71.78-.24.23-.48.49-.21.96.27.47 1.2 1.98 2.58 3.21 1.77 1.58 3.27 2.07 3.73 2.3.46.23.73.2 1-.12.27-.32 1.15-1.34 1.46-1.8.31-.46.62-.38 1.04-.23.42.15 2.67 1.26 3.13 1.49.46.23.77.35.88.54.11.19.11 1.11-.14 1.8Z"/></svg>
+</button>
+
+<!-- O ?v= força o navegador a buscar a versão nova em vez de usar a guardada.
+     Suba o número sempre que mexer nestes arquivos, senão você (e o cliente)
+     continuam vendo a versão antiga sem entender por quê. -->
+<script src="cores-apple.js?v=5"></script>
+<script src="fotos-disponiveis.js?v=5"></script>
+<!-- antes do estoque.js: é daqui que sai fotoDoProduto -->
+<script src="foto-produto.js?v=5"></script>
+<script src="estoque.js?v=5"></script>
+<script>
+/* ============================================================
+   Número que recebe as mensagens do site.
+   Formato: 55 (Brasil) + DDD + número, só dígitos.
+   Hoje é o celular do dono; quando a loja tiver uma linha própria,
+   troque só esta linha.
+   ============================================================ */
+const WHATSAPP = "5581993116436";
+
+const $ = s => document.querySelector(s);
+const brl  = n => "R$ " + n.toLocaleString("pt-BR",{maximumFractionDigits:0});
+const brlc = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function abrirZap(msg){
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`,"_blank","noopener");
+}
+document.addEventListener("click", e=>{
+  const b = e.target.closest("[data-zap]"); if(!b) return;
+  e.preventDefault(); abrirZap(b.dataset.zap);
+});
+$("#foneRodape").textContent =
+  "+" + WHATSAPP.replace(/^(\d\d)(\d\d)(\d{5})(\d{4})$/,"$1 ($2) $3-$4");
+
+/* ---------- LIGAÇÃO COM O SISTEMA DO VENDEDOR ----------
+   Se já existe sessão aberta, o botão vira "Voltar ao sistema" e pula o login.
+   sessionStorage (e não localStorage) de propósito: fechou o navegador, caiu a
+   sessão — o mínimo que uma tela de acesso deve fazer num computador de loja,
+   onde várias pessoas usam a mesma máquina. */
+(function(){
+  let quem = null;
+  try{ quem = sessionStorage.getItem("gemeos-usuario"); }catch(e){}
+  const bt = $("#btSistema"), tx = $("#txtSistema");
+  if(quem && bt){
+    bt.href = "index.html";
+    bt.classList.add("logado");
+    tx.textContent = "Voltar ao sistema";
+    bt.title = `Conectado como ${quem}`;
+  }
+})();
+
+/* ---------- FAIXA ---------- */
+const FRASES=["Produtos de qualidade","Aparelho testado","Bateria verificada","IMEI conferido",
+              "Lacrado ou seminovo","Garantia por escrito","Até 18x no cartão","Assistência própria"];
+const g = `<div class="faixa-grupo">${FRASES.map(f=>
+  `<span class="faixa-item">${f}</span><span class="faixa-pt"></span>`).join("")}</div>`;
+$("#faixa").innerHTML = g + g;    // duplicado: é o que faz o loop não ter emenda
+
+/* ============================================================
+   CATÁLOGO
+   As opções que o cliente escolhe (cor, memória, condição) ficam guardadas
+   POR CARD, para ele poder mexer em vários antes de chamar no WhatsApp.
+   ============================================================ */
+const escolha = {};    // id do produto -> {cor, arm, cond}
+const limites = {};    // categoria -> quantos cards mostrar
+
+function esc(a){
+  if(!escolha[a.id]) escolha[a.id] = {cor:a.cor, arm:a.arm, cond:a.cond};
+  return escolha[a.id];
+}
+/* opção diferente da que a peça tem muda o preço em degraus.
+   O degrau é proporcional ao preço: 8% por passo — em iPhone dá uns R$300,
+   em acessório dá uns trocados, que é o certo. */
+function precoEscolhido(a){
+  const e = esc(a), vars = opcoesDe(a).vars;
+  const passo = vars.indexOf(e.arm) - vars.indexOf(a.arm);
+  const p = precoDe(a);
+  return Math.max(20, Math.round((p + passo*p*0.08)/10)*10);
+}
+/* Ordem de busca da foto:
+   1) o mapa FOTOS (modelo+cor, depois só modelo)
+   2) o arquivo por convenção de nome, para as fotos que a loja for
+      acrescentando na pasta depois, sem mexer em código
+   3) o contorno desenhado
+   Nunca mostra foto de um modelo em anúncio de outro. */
+function fotoDupla(a){
+  const e = esc(a);
+  /* A foto tirada na loja ganha de tudo: é a peça que o cliente vai receber,
+     e não a foto de fábrica de um aparelho perfeito. */
+  const propria = fotoManual(a.id);
+  if(propria) return `<img src="${propria}" alt="${a.modelo}" loading="lazy">`;
+  const mapeada = fotoDe(a.modelo, e.cor);
+  /* ordem: o mapa explícito, depois os nomes por convenção (png e jpg,
+     com cor e sem cor). O que não existir dispara onerror e passa ao próximo. */
+  const fila = (mapeada ? [mapeada] : []).concat(fotosPorNome(a.modelo, e.cor));
+  return `<img src="${fila[0]}" alt="${a.modelo} ${e.cor}" loading="lazy"
+    data-alt='${JSON.stringify(fila.slice(1))}'
+    onerror="tentarProxima(this)">`;
+}
+/* troca para o próximo caminho da lista; acabando a lista, desenha o contorno */
+function tentarProxima(img){
+  let restantes = [];
+  try{ restantes = JSON.parse(img.dataset.alt || "[]"); }catch(e){}
+  if(restantes.length){
+    img.src = restantes.shift();
+    img.dataset.alt = JSON.stringify(restantes);
+  } else {
+    img.replaceWith(molde());
+  }
+}
+function molde(){
+  const d = document.createElement("div");
+  d.innerHTML = `<svg viewBox="0 0 60 110" width="62" height="114" fill="none" aria-hidden="true">
+    <rect x="1.5" y="1.5" width="57" height="107" rx="12" stroke="#c3cad6" stroke-width="2"/>
+    <rect x="21" y="7" width="18" height="3.4" rx="1.7" fill="#c3cad6"/></svg>`;
+  return d.firstElementChild;
+}
+const CHECK = `<svg class="ic-check" viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10.5 4 4 8-9"/></svg>`;
+const ALERTA = `<svg class="ic-alerta" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3 2 17h16L10 3Z"/><path d="M10 8.5v4M10 15h.01"/></svg>`;
+
+function card(a){
+  const e = esc(a), o = opcoesDe(a);
+  const lac = e.cond==="Novo (lacrado)";
+  const p = precoEscolhido(a);
+  const temBateria = a.bateria !== null && !a.porQuantidade;
+  const varUnica = o.vars.length === 1 && o.vars[0] === "Única";
+  return `<article class="prod" data-id="${a.id}">
+    <div class="prod-foto">
+      <span class="selo ${lac?"lac":"semi"}">${lac?"Lacrado":e.cond}</span>
+      ${fotoDupla(a)}
+    </div>
+    <div class="prod-corpo">
+      <h3 class="prod-nome">${a.modelo}</h3>
+      <div class="prod-spec">${varUnica?e.cor:`${e.arm} • ${e.cor}`}${
+        temBateria && !lac ? ` • bateria ${a.bateria}%` : ""}</div>
+
+      ${o.cores.length>1 ? `<div class="cores">
+        ${o.cores.map(c=>`<button class="cor ${corPrecisaBorda(c)?"claro":""} ${c===e.cor?"on":""}"
+          style="background:${corHex(c)}" data-cor="${c}" title="${c}" aria-label="${c}"></button>`).join("")}
+      </div>` : ""}
+
+      ${!varUnica ? `<div class="opcoes">
+        ${o.vars.map(m=>`<button class="op ${m===e.arm?"on":""}" data-arm="${m}">${m}</button>`).join("")}
+      </div>` : ""}
+
+      ${a.porQuantidade ? "" : `<div class="opcoes">
+        ${["Seminovo","Novo (lacrado)"].map(c=>`<button class="op verde ${c===e.cond?"on":""}"
+          data-cond="${c}">${c==="Novo (lacrado)"?"Lacrado":"Seminovo"}</button>`).join("")}
+      </div>`}
+
+      <div class="checks">
+        ${temBateria ? `<span class="check">${CHECK} Bateria verificada</span>` : ""}
+        <span class="check">${CHECK} Garantia</span>
+        ${a.avarias.length ? `<span class="check alerta">${ALERTA} ${a.avarias.length} detalhe${a.avarias.length>1?"s":""}</span>` : ""}
+      </div>
+
+      <div class="prod-preco">
+        <div class="preco">${brl(p)}</div>
+        <div class="parc">ou 18x de ${brlc(p/18)}</div>
+        <button class="btn-consultar" data-consultar="${a.id}">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
+          Consultar disponibilidade
+        </button>
+      </div>
+    </div>
+  </article>`;
+}
+
+const idSecao = n => "cat-" + semAcento(n);
+
+/* atalhos do topo — a grade "qual produto você procura" da referência */
+$("#atalhos").innerHTML = CATEGORIAS.map(c=>{
+  const n = paraVitrine(c.nome).length;
+  return `<a class="atalho" href="#${idSecao(c.nome)}">
+    <span class="atalho-n">${c.titulo}</span>
+    <span class="atalho-q">${n} ${n===1?"item":"itens"}</span></a>`;
+}).join("");
+
+/* ---------- BUSCA ----------
+   Compara sem acento e sem maiúscula, então "titanio" acha "Titânio" e
+   "15 PRO" acha "iPhone 15 Pro". Procura no modelo, na cor, na memória e na
+   condição de uma vez só — o cliente não precisa saber em qual campo digitar. */
+let termo = "";
+const normal = s => (s||"").toString().normalize("NFD")
+  .replace(/[̀-ͯ]/g,"").toLowerCase();
+function combina(p){
+  if(!termo) return true;
+  const e = esc(p);
+  const alvo = normal(`${p.modelo} ${e.cor} ${e.arm} ${e.cond} ${p.categoria}`);
+  /* cada palavra digitada precisa aparecer: "15 pro" acha o 15 Pro,
+     e não tudo que tem 15 OU pro */
+  return normal(termo).split(/\s+/).filter(Boolean).every(t => alvo.includes(t));
+}
+
+function pinta(){
+  $("#secoes").innerHTML = CATEGORIAS.map(c=>{
+    /* Quem tem foto aparece primeiro. Não é maquiagem: vitrine boa mostra
+       primeiro o que está bem apresentado, e o resto continua logo abaixo,
+       com o contorno, sem fingir ser outro modelo. */
+    const temFoto = p => (fotoManual(p.id) || fotoDe(p.modelo, esc(p).cor)) ? 0 : 1;
+    const l = paraVitrine(c.nome).filter(combina).slice().sort((a,b)=>temFoto(a)-temFoto(b));
+    if(!l.length) return "";
+    const lim = limites[c.nome] || 8;
+    return `<div class="${CATEGORIAS.indexOf(c)%2 ? "faixa-clara" : ""}">
+      <section class="secao" id="${idSecao(c.nome)}">
+        <div class="secao-cab rev">
+          <h2>${c.titulo}</h2>
+          <p>${c.sub}</p>
+        </div>
+        <div class="contagem">${l.length} ${l.length===1?"produto encontrado":"produtos encontrados"}</div>
+        <div class="grade">${l.slice(0,lim).map(card).join("")}</div>
+        ${l.length>lim ? `<div class="ver-mais rev">
+          <button class="btn-preto" data-mais="${c.nome}">Ver mais ${c.titulo} →</button></div>` : ""}
+      </section></div>`;
+  }).join("");
+
+  const achados = CATEGORIAS.reduce((s,c)=>s + paraVitrine(c.nome).filter(combina).length, 0);
+  const res = $("#buscaResumo");
+  if(res){
+    res.innerHTML = !termo ? ""
+      : achados ? `<b>${achados}</b> ${achados===1?"produto encontrado":"produtos encontrados"} para "<b>${termo}</b>"`
+                : `Nada encontrado para "<b>${termo}</b>". Chama no WhatsApp que a gente procura pra você.`;
+  }
+  revelar();
+}
+pinta();
+
+/* busca ao digitar, com uma pausa curta para não redesenhar a cada tecla */
+(function(){
+  const campo = $("#buscaCat"), limpar = $("#limparBusca");
+  if(!campo) return;
+  let timer;
+  campo.addEventListener("input", ()=>{
+    clearTimeout(timer);
+    timer = setTimeout(()=>{
+      termo = campo.value.trim();
+      limpar.hidden = !termo;
+      Object.keys(limites).forEach(k=>delete limites[k]);   // busca nova recomeça a contagem
+      pinta();
+    }, 180);
+  });
+  limpar.onclick = ()=>{ campo.value=""; termo=""; limpar.hidden=true; pinta(); campo.focus(); };
+})();
+
+document.addEventListener("click", e=>{
+  const bMais = e.target.closest("[data-mais]");
+  if(bMais){ const c=bMais.dataset.mais; limites[c]=(limites[c]||8)+8; pinta(); return; }
+
+  const cartao = e.target.closest(".prod");
+  if(!cartao) return;
+  const a = PRODUTOS.find(x=>x.id===+cartao.dataset.id);
+  if(!a) return;
+
+  const bc = e.target.closest("[data-cor]");
+  const bm = e.target.closest("[data-arm]");
+  const bd = e.target.closest("[data-cond]");
+  if(bc || bm || bd){
+    const el = esc(a);
+    if(bc) el.cor  = bc.dataset.cor;
+    if(bm) el.arm  = bm.dataset.arm;
+    if(bd) el.cond = bd.dataset.cond;
+    cartao.outerHTML = card(a);       // redesenha só este card
+    return;
+  }
+
+  const bz = e.target.closest("[data-consultar]");
+  if(bz){
+    const el = esc(a), lac = el.cond==="Novo (lacrado)";
+    const igual = el.cor===a.cor && el.arm===a.arm && el.cond===a.cond;
+    /* Sem emoji, de propósito: emoji ocupa 4 bytes e é o primeiro a quebrar
+       quando a mensagem passa por um sistema que não trata bem a codificação —
+       foi o que aconteceu, chegava tudo como "?". O negrito aqui é o do
+       próprio WhatsApp (*texto entre asteriscos*), que é só ASCII e sempre
+       chega inteiro — além de ficar com cara de loja, não de conversa. */
+    const linhas = [
+      "Olá! Tenho interesse neste aparelho do site:", "",
+      `*${a.modelo}*`,
+      `${el.arm} - ${el.cor}`,
+      el.cond,
+      lac ? "Bateria 100% (lacrado)" : `Bateria ${a.bateria}%`,
+      a.avarias.length ? `Avarias: ${a.avarias.join(", ")}` : "Sem avarias",
+      "",
+      /* travessão e ponto-do-meio trocados por hífen: são caracteres de vários
+         bytes e já perdemos emoji por codificação uma vez. Hífen é ASCII puro
+         e chega inteiro em qualquer aparelho. */
+      `*${brl(precoEscolhido(a))}* - ou 18x de ${brlc(precoEscolhido(a)/18)}`,
+      "",
+      igual ? "Ainda está disponível?" : "Vocês têm nessa configuração?"
+    ];
+    abrirZap(linhas.join("\n"));
+  }
+});
+
+/* ---------- MENU NO CELULAR ---------- */
+$("#menuMob").onclick = ()=> $("#links").classList.toggle("abre");
+$("#links").onclick   = ()=> $("#links").classList.remove("abre");
+
+/* ---------- VÍDEO DE FUNDO ----------
+   Pausa quando o hero sai da tela: vídeo rodando fora de vista só gasta
+   bateria do celular do cliente. E respeita quem pediu menos animação
+   no sistema — nesse caso nem toca. */
+(function(){
+  const v = $("#heroVideo");
+  if(!v) return;
+
+  /* Vídeo escolhido pelo dono: iPhone 17 Pro. O do iPhone Air continua na
+     pasta video/ — para trocar, basta mudar o nome do arquivo aqui. */
+  v.src = "video/iphone-17-pro-hero.mp4";
+  v.load();
+
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ v.pause(); return; }
+
+  /* Toca UMA vez e congela no último quadro — pedido do dono. Vídeo em loop
+     no topo cansa e rouba atenção do que importa, que é o catálogo.
+     removeAttribute em vez de loop=false porque o atributo vem no HTML. */
+  v.removeAttribute("loop");
+  v.loop = false;
+
+  /* Só toca quando o topo está à vista. Não recomeça sozinho: se ja terminou,
+     fica parado no último quadro em vez de reiniciar a cada rolagem. */
+  const io = new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting && !v.ended) v.play().catch(()=>{});  // catch: navegador pode recusar sem gesto
+    else if(!e.isIntersecting) v.pause();
+  }), {threshold:0.05});
+  io.observe(v);
+})();
+
+/* ---------- PARALLAX DO HERO ----------
+   Cada camada anda numa fração do scroll: fundo devagar, aparelhos médio,
+   texto rápido. O requestAnimationFrame evita recalcular a cada pixel rolado. */
+const pxFundo = $("#heroFundo"), pxTxt = $("#heroTxt");
+const pxE = $("#foneE"), pxD = $("#foneD");
+let travado = false;
+function parallax(){
+  const y = scrollY;
+  if(y > innerHeight * 1.2) return;          // fora do hero, não gasta trabalho
+  if(pxFundo) pxFundo.style.transform = `translate3d(0,${y*0.26}px,0)`;
+  if(pxTxt){ pxTxt.style.transform = `translate3d(0,${y*0.40}px,0)`;
+             pxTxt.style.opacity = Math.max(0, 1 - y/520); }
+  if(pxE) pxE.style.transform = `translateY(calc(-50% + ${y*0.58}px)) rotate(${-9+y*0.012}deg)`;
+  if(pxD) pxD.style.transform = `translateY(calc(-50% + ${y*0.46}px)) rotate(${9-y*0.012}deg)`;
+}
+addEventListener("scroll", ()=>{
+  if(!travado){ requestAnimationFrame(()=>{ parallax(); travado=false; }); travado=true; }
+}, {passive:true});
+parallax();
+
+/* ---------- REVELAÇÃO ---------- */
+const obs = new IntersectionObserver(es=>es.forEach(x=>{
+  if(x.isIntersecting){ x.target.classList.add("vis"); obs.unobserve(x.target); }
+}), {threshold:.1, rootMargin:"0px 0px -50px 0px"});
+function revelar(){
+  requestAnimationFrame(()=>{
+    document.querySelectorAll(".rev:not(.vis)").forEach(r=>{
+      if(r.getBoundingClientRect().top < window.innerHeight - 50) r.classList.add("vis");
+      else obs.observe(r);
+    });
+  });
+}
+revelar();
+
+/* ---------- LINK ATIVO ---------- */
+const secs = ["topo","catalogo","garantia","faq"];
+addEventListener("scroll", ()=>{
+  let atual = "topo";
+  secs.forEach(s=>{ const el=document.getElementById(s);
+    if(el && el.getBoundingClientRect().top <= 140) atual = s; });
+  document.querySelectorAll("#links a").forEach(a=>
+    a.classList.toggle("on", a.getAttribute("href")==="#"+atual));
+}, {passive:true});
+</script>
+</body>
+</html>
