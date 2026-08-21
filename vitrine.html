@@ -640,8 +640,9 @@ function precoEscolhido(a){
 function fotoDupla(a){
   const e = esc(a);
   /* A foto tirada na loja ganha de tudo: é a peça que o cliente vai receber,
-     e não a foto de fábrica de um aparelho perfeito. */
-  const propria = fotoManual(a.id);
+     e não a foto de fábrica de um aparelho perfeito. Por modelo+cor (não
+     pelo ID da peça): a mesma foto vale pra qualquer unidade dessa cor. */
+  const propria = fotoManual(chaveFotoLoja(a.modelo, e.cor));
   /* sem loading="lazy" aqui: são poucas fotos (tiradas na loja), e o
      carregamento tardio às vezes nunca dispara — vale mais garantir que
      apareça do que economizar essa carga. */
@@ -854,7 +855,7 @@ function pinta(){
     /* Quem tem foto aparece primeiro. Não é maquiagem: vitrine boa mostra
        primeiro o que está bem apresentado, e o resto continua logo abaixo,
        com o contorno, sem fingir ser outro modelo. */
-    const temFoto = p => (fotoManual(p.id) || fotoDe(p.modelo, esc(p).cor)) ? 0 : 1;
+    const temFoto = p => (fotoManual(chaveFotoLoja(p.modelo, esc(p).cor)) || fotoDe(p.modelo, esc(p).cor)) ? 0 : 1;
     const l = paraVitrine(c.nome).filter(combina).slice().sort((a,b)=>{
       if(ordem==="menor") return precoEscolhido(a)-precoEscolhido(b);
       if(ordem==="maior") return precoEscolhido(b)-precoEscolhido(a);

@@ -20,12 +20,15 @@ module.exports = async (req, res) => {
     return;
   }
   try {
-    const { produto_id, imagem_base64, remover } = req.body || {};
-    if (!produto_id) {
-      res.status(400).json({ ok: false, erro: "produto_id obrigatório." });
+    /* chave: modelo+cor (ex. "iphone-13-pro-max-dourado"), não o id da peça
+       física — uma foto serve pra qualquer unidade daquela cor do modelo.
+       Calculada em chaveFotoLoja() (estoque.js), a mesma nos dois lados. */
+    const { chave, imagem_base64, remover } = req.body || {};
+    if (!chave) {
+      res.status(400).json({ ok: false, erro: "chave obrigatória." });
       return;
     }
-    const path = `${produto_id}.jpg`;
+    const path = `${chave}.jpg`;
     const headers = {
       apikey: SERVICE_KEY,
       Authorization: `Bearer ${SERVICE_KEY}`

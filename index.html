@@ -1422,11 +1422,12 @@ $("#abaEst").onclick = e => {
    Clicar abre a câmera (no celular) ou o seletor de arquivo (no computador).
    Com foto já anexada, o clique troca; o × ao lado remove.
    A foto tirada aqui ganha da oficial e aparece na vitrine do cliente. */
-/* Aparelho tem `id` numérico; acessório e motinha não têm, porque são
-   controlados por quantidade. Para esses a chave é o nome do produto — assim
-   a foto de um não sobrescreve a do outro. */
+/* Aparelho (peça única) usa modelo+cor como chave da foto — ver
+   chaveFotoLoja() em estoque.js — assim toda peça Dourado usa a mesma
+   foto, em vez de cada IMEI precisar da sua própria. Acessório e motinha
+   não têm cor relevante do mesmo jeito, então usam o nome do produto. */
 function chaveFoto(p){
-  return p.id !== undefined ? String(p.id) : "ac-" + (p.nome || p.modelo || "");
+  return p.id !== undefined ? chaveFotoLoja(p.modelo, p.cor) : "ac-" + (p.nome || p.modelo || "");
 }
 function nomeDoProduto(p){ return p.modelo || p.nome || "produto"; }
 
@@ -1449,8 +1450,8 @@ document.addEventListener("click", e => {
 
   /* já tem foto da loja? oferece trocar ou remover antes de abrir a câmera */
   if(fotoManual(id)){
-    const item = aparelhos.find(p => String(p.id) === id)
-              || estoque.find(p => "ac-" + p.nome === id);
+    const item = aparelhos.find(p => chaveFoto(p) === id)
+              || estoque.find(p => chaveFoto(p) === id);
     $("#modal").innerHTML = `
       <h3>Foto de ${item ? nomeDoProduto(item) : "produto"}</h3>
       <div class="dsc">Esta é a foto que o cliente vê na loja.</div>
@@ -2333,9 +2334,12 @@ function wizEditar(id){
     if(lacrado) { st.bateria=100; st.avarias=[]; pintaAvExtras(); }
   }
 
-  /* ---- foto: mostra a atual (se tiver) e deixa trocar/remover na hora ---- */
+  /* ---- foto: mostra a atual (se tiver) e deixa trocar/remover na hora ----
+     Chave é modelo+cor (chaveFotoLoja), não o IMEI/id da peça — por isso
+     usa st.cor (a cor selecionada agora), não ap.cor. Se trocar a cor no
+     passo 2, a prévia troca junto pra mostrar a foto certa daquela cor. */
   function pintaFoto(){
-    const url = typeof fotoManual==="function" ? fotoManual(ap.id) : null;
+    const url = typeof fotoManual==="function" ? fotoManual(chaveFotoLoja(ap.modelo, st.cor)) : null;
     $("#eFotoPrev").innerHTML = url
       ? `<img src="${url}" alt="${ap.modelo}">`
       : `<div class="edit-foto-vazia">sem foto ainda</div>`;
@@ -2343,14 +2347,14 @@ function wizEditar(id){
   }
   pintaFoto();
   $("#eFotoTirar").onclick = () => {
-    anexarFotoAoProduto(ap.id, res => {
+    anexarFotoAoProduto(chaveFotoLoja(ap.modelo, st.cor), res => {
       if(!res.ok){ aviso(res.motivo); return; }
       pintaFoto();
-      aviso("Foto salva.");
+      aviso(`Foto salva para ${ap.modelo} ${st.cor} — vale para qualquer unidade dessa cor.`);
     });
   };
   $("#eFotoRemover").onclick = async () => {
-    await definirFotoManual(ap.id, null);
+    await definirFotoManual(chaveFotoLoja(ap.modelo, st.cor), null);
     pintaFoto();
     aviso("Foto removida.");
   };
@@ -2405,7 +2409,7 @@ function wizEditar(id){
   $("#eArm").onclick = e=>{const b=e.target.closest("[data-arm]"); if(!b)return; st.arm=b.dataset.arm;
     $$("#eArm .esc").forEach(x=>x.classList.toggle("on",x===b)); $("#eArmNovo").value="";};
   $("#eCor").onclick = e=>{const b=e.target.closest("[data-cor]"); if(!b)return; st.cor=b.dataset.cor;
-    $$("#eCor .esc").forEach(x=>x.classList.toggle("on",x===b)); $("#eCorNova").value="";};
+    $$("#eCor .esc").forEach(x=>x.classList.toggle("on",x===b)); $("#eCorNova").value=""; pintaFoto();};
   /* digitar um valor próprio desmarca os botões da lista fixa — o texto
      digitado manda, não precisa bater com nada que já existia. */
   $("#eArmNovo").oninput = e=>{
@@ -2415,6 +2419,7 @@ function wizEditar(id){
   $("#eCorNova").oninput = e=>{
     st.cor = e.target.value.trim() || info.cor[0];
     $$("#eCor .esc").forEach(x=>x.classList.toggle("on", !e.target.value.trim() && x.dataset.cor===st.cor));
+    pintaFoto();
   };
   $("#eCond").onclick = e=>{const b=e.target.closest("[data-cond]"); if(!b)return; st.cond=b.dataset.cond;
     $$("#eCond .esc").forEach(x=>x.classList.toggle("on",x===b)); aplicarCond();};

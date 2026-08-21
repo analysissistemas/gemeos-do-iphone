@@ -273,6 +273,16 @@ function corSemTraducao(cor) {
   return (cor || "").replace(/\s*\([^)]*\)\s*$/, "").trim();
 }
 
+/* chave da FOTO TIRADA NA LOJA (a que o admin sobe pelo painel): por
+   modelo+cor, não por peça física. Assim toda unidade Dourado do mesmo
+   modelo usa a mesma foto — e a cor aparece com foto mesmo quando não tem
+   nenhuma peça real daquela cor em estoque (a tal "prateleira completa"). */
+function chaveFotoLoja(modelo, cor) {
+  const m = semAcento(modelo);
+  const c = semAcento(corSemTraducao(cor));
+  return c ? `${m}-${c}` : m;
+}
+
 /** Foto do produto, na ordem: mapa explícito (modelo+cor), mapa por modelo,
  *  e por fim o arquivo por convenção de nome — desde que ele realmente exista
  *  (conferido em FOTOS_EXISTENTES, gerado por gerar_lista_fotos.py).

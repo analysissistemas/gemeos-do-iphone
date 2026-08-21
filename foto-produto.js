@@ -57,31 +57,32 @@ async function _carregarFotosLoja() {
    foto" no primeiro desenho, mesmo pra produto que já tem foto. */
 const FOTOS_LOJA_CARREGADO = _carregarFotosLoja();
 
-/** Foto que a loja tirou deste produto, ou null. Síncrono — consulta o Set
- *  carregado por FOTOS_LOJA_CARREGADO, não faz rede a cada chamada. */
-function fotoManual(id) {
-  const nome = id + ".jpg";
+/** Foto que a loja tirou desta CHAVE (modelo+cor — ver chaveFotoLoja() em
+ *  estoque.js), ou null. Síncrono — consulta o Set carregado por
+ *  FOTOS_LOJA_CARREGADO, não faz rede a cada chamada. */
+function fotoManual(chave) {
+  const nome = chave + ".jpg";
   if (!_fotosLojaSet.has(nome)) return null;
   const v = _fotosLojaVersao.get(nome) || Date.now();
   return SUPABASE_STORAGE_URL + nome + "?v=" + v;
 }
 /** Sobe (ou remove, se dataUrl for null) a foto no banco de verdade.
  *  Devolve {ok, motivo} — mesmo formato de antes, pra não mudar quem chama. */
-async function definirFotoManual(id, dataUrl) {
+async function definirFotoManual(chave, dataUrl) {
   try {
     const r = await fetch(UPLOAD_FOTO_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(
         dataUrl === null || dataUrl === undefined
-          ? { produto_id: id, remover: true }
-          : { produto_id: id, imagem_base64: dataUrl }
+          ? { chave, remover: true }
+          : { chave, imagem_base64: dataUrl }
       )
     });
     const res = await r.json();
     if (!res.ok) return { ok: false, motivo: res.erro || "Não consegui salvar a foto." };
     // atualiza o Set local pra refletir na hora, sem esperar recarregar a página
-    const nome = id + ".jpg";
+    const nome = chave + ".jpg";
     if (dataUrl === null || dataUrl === undefined) {
       _fotosLojaSet.delete(nome);
       _fotosLojaVersao.delete(nome);
@@ -102,7 +103,7 @@ function resumoFotosManuais() {
  *  O `typeof` protege o index.html, que não carrega estoque.js diretamente
  *  no card — lá só existe a foto tirada na loja. */
 function fotoDoProduto(p) {
-  const propria = fotoManual(p.id);
+  const propria = fotoManual(chaveFotoLoja(p.modelo, p.cor));
   if (propria) return propria;
   if (typeof fotoDe === "function") return fotoDe(p.modelo, p.cor);
   return null;
@@ -164,12 +165,12 @@ function escolherFoto(aoEscolher) {
 }
 
 /** Fluxo completo: escolher → reduzir → subir. Chama `aoTerminar(resultado)`. */
-function anexarFotoAoProduto(id, aoTerminar) {
+function anexarFotoAoProduto(chave, aoTerminar) {
   escolherFoto(async arquivo => {
     try {
       const r = await prepararFoto(arquivo);
       const kbDepois = Math.round(r.dataUrl.length * 0.75 / 1024);
-      const salvou = await definirFotoManual(id, r.dataUrl);
+      const salvou = await definirFotoManual(chave, r.dataUrl);
       if (!salvou.ok) {
         aoTerminar({ ok: false, motivo: salvou.motivo });
         return;
