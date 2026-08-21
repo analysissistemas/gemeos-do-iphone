@@ -94,10 +94,13 @@ MODELOS = {
     "iPhone 11 Pro": ("iphone-11-pro", ["2019"], {
         "Prata": "silver", "Dourado": "gold", "Verde-meia-noite": "midnight-green"}),
 
-    "iPhone 13": ("iphone-13", ["202207", "202209", "202108"], {
+    # Verde/Vermelho TENTADO E FALHOU (2026-08-21): so as 4 cores de lancamento
+    # respondem (com data "2021", so o ano) -- Verde e Vermelho vieram numa
+    # atualizacao de meio de ciclo em 2022 e nao acharam data/nome que funcione.
+    "iPhone 13": ("iphone-13", ["2021", "202207", "202209", "202108"], {
         "Rosa": "pink", "Azul": "blue", "Meia-noite": "midnight",
         "Estelar": "starlight", "Verde": "green", "Vermelho": "red"}),
-    "iPhone 13 mini": ("iphone-13-mini", ["202207", "202209", "202108"], {
+    "iPhone 13 mini": ("iphone-13-mini", ["2021", "202207", "202209", "202108"], {
         "Rosa": "pink", "Azul": "blue", "Meia-noite": "midnight", "Estelar": "starlight"}),
 
     # ⚠️ TENTADO E FALHOU (2026-08-21): iPhone 13 Pro / 13 Pro Max, mesmo

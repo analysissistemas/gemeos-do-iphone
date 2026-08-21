@@ -226,9 +226,18 @@ const CORES_OFICIAIS_IPHONE = {
 function opcoesDe(p) {
   const oficial = CORES_OFICIAIS_IPHONE[p.modelo];
   if (oficial) {
+    /* só entra no seletor a cor que tem foto de verdade (da loja ou oficial
+       da Apple) — cor sem foto nenhuma não aparece mais como opção. Se por
+       acaso NENHUMA cor tiver foto ainda, cai de volta pra lista oficial
+       inteira, pra nunca deixar o seletor vazio. */
+    const temFotoDaCor = c => !!(
+      (typeof fotoManual === "function" && fotoManual(chaveFotoLoja(p.modelo, c))) ||
+      (typeof fotoDe === "function" && fotoDe(p.modelo, c))
+    );
+    const coresComFoto = oficial.cor.filter(temFotoDaCor);
     return {
       vars: oficial.arm.length ? oficial.arm : (p.arm ? [p.arm] : ["Única"]),
-      cores: oficial.cor.length ? oficial.cor : (p.cor ? [p.cor] : [])
+      cores: coresComFoto.length ? coresComFoto : (oficial.cor.length ? oficial.cor : (p.cor ? [p.cor] : []))
     };
   }
   const irmaos = PRODUTOS.filter(x => x.modeloId === p.modeloId && !x.vendido);
