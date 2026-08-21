@@ -88,6 +88,14 @@ MODELOS = {
         "Estelar": "starlight", "Verde": "green", "Vermelho": "red"}),
     "iPhone 13 mini": ("iphone-13-mini", ["202207", "202209", "202108"], {
         "Rosa": "pink", "Azul": "blue", "Meia-noite": "midnight", "Estelar": "starlight"}),
+
+    # ⚠️ TENTADO E FALHOU (2026-08-20): nenhuma data/padrao respondeu pra
+    # nenhuma cor. iPhone 12 Pro saiu de linha faz tempo (a Apple parou de
+    # vender em set/2021) e parece que o CDN da Apple removeu a imagem
+    # junto — mesma situacao do Apple Watch, so que por outro motivo.
+    # Caminho que resolve: foto tirada na loja, pelo cadastro do admin.
+    "iPhone 12 Pro": ("iphone-12-pro", ["202010", "202011", "202009", "2020"], {
+        "Grafite": "graphite", "Prata": "silver", "Dourado": "gold", "Azul-pacífico": "pacificblue"}),
 }
 
 # os dois jeitos que a Apple nomeia o arquivo

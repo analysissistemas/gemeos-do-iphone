@@ -190,7 +190,7 @@ const CORES_OFICIAIS_IPHONE = {
   "iPhone 11 Pro Max":{arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"]},
   "iPhone 12 mini":   {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"]},
   "iPhone 12":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"]},
-  "iPhone 12 Pro":    {arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"]},
+  "iPhone 12 Pro":    {arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico","Verde"]},
   "iPhone 12 Pro Max":{arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"]},
   "iPhone 13 mini":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"]},
   "iPhone 13":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"]},
