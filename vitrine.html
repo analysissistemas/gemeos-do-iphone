@@ -675,19 +675,6 @@ function molde(){
 const CHECK = `<svg class="ic-check" viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10.5 4 4 8-9"/></svg>`;
 const ALERTA = `<svg class="ic-alerta" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3 2 17h16L10 3Z"/><path d="M10 8.5v4M10 15h.01"/></svg>`;
 
-/* Tira "Chip A13 Bionic" e "6.5''" do texto livre da ficha técnica do
-   modelo (ex.: "Lançado em 2019. Chip A13 Bionic, tela Super Retina XDR
-   de 6.5'', câmera tripla 12MP."). Não tem RAM cadastrada em lugar
-   nenhum — não escrevo isso pra não inventar dado. */
-function chipDe(fichaTecnica){
-  const m = (fichaTecnica||"").match(/Chip ([^,\.]+)/);
-  return m ? m[1].trim() : null;
-}
-function telaDe(fichaTecnica){
-  const m = (fichaTecnica||"").match(/de (\d+(?:[.,]\d+)?)\s*''/);
-  return m ? m[1].replace(",",".") + "\"" : null;
-}
-
 function card(a){
   const e = esc(a), o = opcoesDe(a);
   const lac = e.cond==="Novo (lacrado)";
@@ -712,8 +699,6 @@ function card(a){
       <a href="?produto=${encodeURIComponent(a.id)}" style="color:inherit"><h3 class="prod-nome">${a.modelo}</h3></a>
       <div class="prod-spec">${[
         !varUnica ? e.arm : null,
-        chipDe(a.fichaTecnica),
-        telaDe(a.fichaTecnica),
         e.cor,
         (temBateria && !lac) ? `bateria ${a.bateria}%` : null
       ].filter(Boolean).join(" • ")}</div>
@@ -737,7 +722,7 @@ function card(a){
         ${(a.imei && !hipotetico) ? `<span class="check">${CHECK} IMEI conferido</span>` : ""}
         <span class="check">${CHECK} Garantia</span>
         ${!hipotetico ? (a.selos||[]).map(s=>`<span class="check">${CHECK} ${s}</span>`).join("") : ""}
-        ${(!hipotetico && a.avarias.length) ? `<span class="check alerta">${ALERTA} ${a.avarias.length} detalhe${a.avarias.length>1?"s":""}</span>` : ""}
+        ${(!hipotetico && a.avarias.length) ? `<span class="check alerta">${ALERTA} ${a.avarias.join(", ")}</span>` : ""}
         ${hipotetico ? `<span class="check alerta">${ALERTA} Confirmamos essa cor/memória com você no WhatsApp</span>` : ""}
       </div>
 
@@ -817,6 +802,14 @@ let modeloExatoTravado = null;
    no meio da grade, é uma página só daquele aparelho. */
 let produtoAlvoTravado = null;
 let ordem = "relevancia"; // relevancia | menor | maior — ver #ordemFiltro
+
+/* ordem de lançamento dos iPhones (mais velho -> mais novo), pra ordenar a
+   vitrine com o mais novo primeiro. Vem da mesma lista oficial de cores/
+   armazenamento (CORES_OFICIAIS_IPHONE, em estoque.js) — não duplica nada,
+   só lê a ordem das chaves. Categorias sem essa lista (Xiaomi, iPad etc.)
+   não têm como ordenar por geração, então ficam como estavam. */
+const ORDEM_IPHONE = Object.keys(CORES_OFICIAIS_IPHONE);
+function indiceGeracao(modelo){ return ORDEM_IPHONE.indexOf(modelo); }
 const normal = s => (s||"").toString().normalize("NFD")
   .replace(/[̀-ͯ]/g,"").toLowerCase();
 function combina(p){
@@ -865,6 +858,8 @@ function pinta(){
     const l = paraVitrine(c.nome).filter(combina).slice().sort((a,b)=>{
       if(ordem==="menor") return precoEscolhido(a)-precoEscolhido(b);
       if(ordem==="maior") return precoEscolhido(b)-precoEscolhido(a);
+      const ia = indiceGeracao(a.modelo), ib = indiceGeracao(b.modelo);
+      if(ia!==-1 && ib!==-1 && ia!==ib) return ib-ia; // mais novo (índice maior) primeiro
       return temFoto(a)-temFoto(b);
     });
     if(!l.length) return "";

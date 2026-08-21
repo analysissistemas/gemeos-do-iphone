@@ -89,6 +89,13 @@ MODELOS = {
     "iPhone 13 mini": ("iphone-13-mini", ["202207", "202209", "202108"], {
         "Rosa": "pink", "Azul": "blue", "Meia-noite": "midnight", "Estelar": "starlight"}),
 
+    # ⚠️ TENTADO E FALHOU (2026-08-21): iPhone 13 Pro / 13 Pro Max, mesmo
+    # problema do 12 Pro — saiu de linha em set/2023 e a Apple parece ter
+    # removido a imagem do CDN. Testado com iphone-13-pro(-max), varias
+    # cores (graphite/silver/gold/sierrablue/alpinegreen) e datas (2021,
+    # 202109 a 202203), com e sem "-finish-", sem "fmt=png-alpha": sempre 404.
+    # Caminho que resolve: foto tirada na loja, pelo cadastro do admin.
+
     # Diferente do 12 Pro (abaixo): o iPhone 12 "normal" ainda responde no CDN.
     # Data e so o ano, sem mes — e o Roxo (lancado depois, abr/2021) pede
     # "2021" em vez de "2020"; por isso as duas datas na lista.
