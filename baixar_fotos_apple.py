@@ -70,6 +70,10 @@ MODELOS = {
     "iPhone 15": ("iphone-15", ["202309"], {
         "Preto": "black", "Azul": "blue", "Verde": "green", "Amarelo": "yellow", "Rosa": "pink"}),
 
+    # ⚠️ TENTADO E FALHOU (2026-08-21): mesmo caso do 12 Pro/13 Pro/13 Pro
+    # Max -- saiu de linha em set/2023 e a Apple parece ter removido a
+    # imagem. Testado com "202209"/"2022"/"202210", com e sem "-finish-":
+    # sempre 404. Caminho: foto tirada na loja.
     "iPhone 14 Pro Max": ("iphone-14-pro-max", ["202209"], {
         "Roxo-profundo": "deeppurple", "Dourado": "gold",
         "Prata": "silver", "Preto-espacial": "spaceblack"}),
