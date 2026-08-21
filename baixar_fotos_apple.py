@@ -89,6 +89,13 @@ MODELOS = {
     "iPhone 13 mini": ("iphone-13-mini", ["202207", "202209", "202108"], {
         "Rosa": "pink", "Azul": "blue", "Meia-noite": "midnight", "Estelar": "starlight"}),
 
+    # Diferente do 12 Pro (abaixo): o iPhone 12 "normal" ainda responde no CDN.
+    # Data e so o ano, sem mes — e o Roxo (lancado depois, abr/2021) pede
+    # "2021" em vez de "2020"; por isso as duas datas na lista.
+    "iPhone 12": ("iphone-12", ["2020", "2021"], {
+        "Preto": "black", "Branco": "white", "Verde": "green",
+        "Azul": "blue", "Vermelho": "red", "Roxo": "purple"}),
+
     # ⚠️ TENTADO E FALHOU (2026-08-20): nenhuma data/padrao respondeu pra
     # nenhuma cor. iPhone 12 Pro saiu de linha faz tempo (a Apple parou de
     # vender em set/2021) e parece que o CDN da Apple removeu a imagem
