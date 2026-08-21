@@ -83,6 +83,17 @@ MODELOS = {
         "Azul": "blue", "Roxo": "purple", "Meia-noite": "midnight",
         "Estelar": "starlight", "Vermelho": "red"}),
 
+    # ⚠️ iPhone 11 "normal" TENTADO E FALHOU (2026-08-21): nenhuma cor/data
+    # respondeu (testado black/white/green/yellow/purple/red, 2019 a 2020,
+    # com e sem "-finish-"). Saiu de linha em set/2023 -- CDN parece ter
+    # removido, igual o 12 Pro. Caminho: foto tirada na loja.
+    # iPhone 11 Pro/Pro Max: 3 das 4 cores respondem (falta Cinza-espacial/
+    # spacegray, testado varias grafias sem sucesso) -- melhor que nada.
+    "iPhone 11 Pro Max": ("iphone-11-pro-max", ["2019"], {
+        "Prata": "silver", "Dourado": "gold", "Verde-meia-noite": "midnight-green"}),
+    "iPhone 11 Pro": ("iphone-11-pro", ["2019"], {
+        "Prata": "silver", "Dourado": "gold", "Verde-meia-noite": "midnight-green"}),
+
     "iPhone 13": ("iphone-13", ["202207", "202209", "202108"], {
         "Rosa": "pink", "Azul": "blue", "Meia-noite": "midnight",
         "Estelar": "starlight", "Verde": "green", "Vermelho": "red"}),
