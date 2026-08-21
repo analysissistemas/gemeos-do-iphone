@@ -2102,10 +2102,20 @@ function wizEntrada(modeloFixo){
             <div class="bat-v" id="wBatV">${st.bateria}%</div>
             <span class="bat-sel" id="wBatSel"></span>
           </div>
-          <div class="passo-n" style="margin-top:22px"><i>5</i><b>Tem alguma avaria?</b><small>cada uma abate do preço</small></div>
-          <div class="avarias" id="wAv">${AVARIAS.map(a=>
-            `<div class="av ${st.avarias.includes(a.k)?"on":""}" data-av="${a.k}"><i></i>${a.k}
-             <span style="margin-left:auto;color:var(--ink-3);font-size:11px">−${brl(a.d)}</span></div>`).join("")}</div>
+          <div class="passo-n" style="margin-top:22px"><i>5</i><b>Tem algum defeito?</b><small>marca só se tiver — abate do preço</small></div>
+          <div class="escolhas" id="wTemAv">
+            <button class="esc ${st.avarias.length?"":"on"}" data-temav="nao">Não, está tudo certo</button>
+            <button class="esc ${st.avarias.length?"on":""}" data-temav="sim">Sim, tem defeito</button>
+          </div>
+          <div id="wAvBloco" style="display:${st.avarias.length?"":"none"};margin-top:12px">
+            <div class="avarias" id="wAv">${AVARIAS.map(a=>
+              `<div class="av ${st.avarias.includes(a.k)?"on":""}" data-av="${a.k}"><i></i>${a.k}
+               <span style="margin-left:auto;color:var(--ink-3);font-size:11px">−${brl(a.d)}</span></div>`).join("")}</div>
+            <div class="add-extra" style="margin-top:8px">
+              <input id="wAvNova" placeholder="Outro defeito… (ex.: risco na câmera)" autocomplete="off">
+              <button class="btn btn-s btn-sm" id="wAvAdd" type="button">Adicionar</button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="passo">
@@ -2114,9 +2124,12 @@ function wizEntrada(modeloFixo){
         <div class="campo"><label>Quanto você pagou nesse aparelho</label><input id="wCusto" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"></div>
       </div>
       <div class="passo">
-        <div class="passo-n"><i>7</i><b>Selos extras</b><small>opcional — aparece como destaque na vitrine</small></div>
-        <div class="avarias" id="wSelos">${SELOS.map(s=>
-          `<div class="av ${st.selos.includes(s)?"on":""}" data-selo="${s}"><i></i>${s}</div>`).join("")}</div>
+        <button class="btn btn-s btn-sm" id="wMostrarSelos" type="button" style="display:${st.selos.length?"none":""}">+ Adicionar destaque (opcional)</button>
+        <div id="wSelosBloco" style="display:${st.selos.length?"":"none"}">
+          <div class="passo-n"><b>Selos extras</b><small>aparece como destaque na vitrine</small></div>
+          <div class="avarias" id="wSelos">${SELOS.map(s=>
+            `<div class="av ${st.selos.includes(s)?"on":""}" data-selo="${s}"><i></i>${s}</div>`).join("")}</div>
+        </div>
       </div>
       <div class="resumo" id="wResumo"></div>`;
     aplicarCond(); atualizarResumo();
@@ -2128,12 +2141,22 @@ function wizEntrada(modeloFixo){
     $("#wCond").onclick = e=>{const b=e.target.closest("[data-cond]"); if(!b)return; st.cond=b.dataset.cond;
       $$("#wCond .esc").forEach(x=>x.classList.toggle("on",x===b)); aplicarCond(); atualizarResumo();};
     $("#wBat").oninput  = e=>{st.bateria=+e.target.value; $("#wBatV").textContent=st.bateria+"%"; atualizarResumo();};
+    $("#wTemAv").onclick = e=>{const b=e.target.closest("[data-temav]"); if(!b)return;
+      $$("#wTemAv .esc").forEach(x=>x.classList.toggle("on",x===b));
+      const mostrar = b.dataset.temav==="sim";
+      $("#wAvBloco").style.display = mostrar ? "" : "none";
+      if(!mostrar){ st.avarias=[]; $$("#wAv .av").forEach(x=>x.classList.remove("on")); atualizarResumo(); }};
     $("#wAv").onclick   = e=>{const b=e.target.closest("[data-av]"); if(!b)return;
       const k=b.dataset.av;
       st.avarias = st.avarias.includes(k) ? st.avarias.filter(x=>x!==k) : [...st.avarias,k];
       b.classList.toggle("on"); atualizarResumo();};
+    $("#wAvAdd").onclick = ()=>{
+      const v=$("#wAvNova").value.trim(); if(!v||st.avarias.includes(v))return;
+      st.avarias=[...st.avarias,v]; $("#wAvNova").value=""; atualizarResumo();};
+    $("#wAvNova").onkeydown = e=>{ if(e.key==="Enter"){ e.preventDefault(); $("#wAvAdd").click(); } };
     $("#wImei").oninput = e=>{st.imei=e.target.value; travarSalvar();};
     $("#wCusto").oninput= e=>{st.custo=e.target.value.replace(/\D/g,""); atualizarResumo(); travarSalvar();};
+    $("#wMostrarSelos").onclick = ()=>{ $("#wSelosBloco").style.display=""; $("#wMostrarSelos").style.display="none"; };
     $("#wSelos").onclick = e=>{const b=e.target.closest("[data-selo]"); if(!b)return;
       const s=b.dataset.selo;
       st.selos = st.selos.includes(s) ? st.selos.filter(x=>x!==s) : [...st.selos,s];
