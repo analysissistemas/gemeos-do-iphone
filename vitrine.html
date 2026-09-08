@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gêmeos do iPhone — Celulares, acessórios e assistência em Carpina e Goiana</title>
-<meta name="description" content="Celulares lacrados e seminovos com bateria verificada, IMEI conferido e garantia. Acessórios, motinhas elétricas e assistência técnica própria. Carpina e Goiana, Pernambuco. Até 18x.">
+<title>Gêmeos Motors — Motos elétricas em Goiana e Carpina, Pernambuco</title>
+<meta name="description" content="Moto elétrica sem CNH, sem emplacamento e sem IPVA. Carrega na tomada de casa. Goiana e Carpina, Pernambuco. Zero km e seminovas, com garantia e assistência própria. Até 18x.">
 <style>
 /* ============================================================
    VITRINE — a parte do CLIENTE.
@@ -13,21 +13,26 @@
    estoque.js, que é onde VOCÊ ajusta pela área do vendedor.
    ============================================================ */
 :root{
-  --tinta:#101828;          /* azul-petróleo quase preto, como a referência */
-  --tinta-2:#475467;
-  --tinta-3:#98a2b3;
-  --papel:#f4f6fa;          /* fundo claro das seções internas */
+  /* Amarelo e preto: a identidade da própria loja, tirada da logo
+     (#A MELHOR DA REGIÃO — GÊMEOS MOTORS). O amarelo é acento, nunca fundo de
+     texto longo — amarelo em bloco cansa a vista e derruba o contraste. */
+  --marca:#f2c518;          /* o amarelo da logo */
+  --marca-esc:#d4a800;      /* o mesmo amarelo escurecido, para texto sobre claro */
+  --tinta:#14150f;          /* preto levemente quente, combina com o amarelo */
+  --tinta-2:#4a4c45;
+  --tinta-3:#95978d;
+  --papel:#f6f6f3;          /* fundo claro das seções internas */
   --papel-2:#ffffff;
-  --linha:#e4e8f0;
+  --linha:#e6e6df;
   --preto:#000;
-  --escuro:#0b0b0c;
+  --escuro:#0b0b0a;
   --linha-esc:rgba(255,255,255,.12);
-  --ink:#f5f5f7;
-  --ink-2:#a1a1a6;
+  --ink:#f7f7f4;
+  --ink-2:#a4a49c;
   --zap:#25D366;
   --zap-esc:#1eb257;
-  --selo-semi:#c9f2d7;
-  --selo-semi-tx:#05612c;
+  --selo-semi:#fdf0c0;      /* selo da seminova: amarelo claro */
+  --selo-semi-tx:#6b5200;
   --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -76,7 +81,7 @@ a{color:inherit;text-decoration:none}
   width:100%;height:100%;
   /* `cover` preenche a tela, e o object-position escolhe QUAL parte do vídeo
      fica visível. 100% = mostra o pé do vídeo e corta todo o topo — que é
-     onde ficam os letreiros "iPhone" e "PRO". Baixar esse número faz o texto
+     onde ficam os letreiros da moto. Baixar esse número faz o texto
      voltar a aparecer; é o botão de ajuste fino do enquadramento. */
   object-fit:cover;object-position:center 100%;
   /* exposição baixa: o vídeo vira ambiente, não concorre com o texto.
@@ -107,12 +112,12 @@ a{color:inherit;text-decoration:none}
 .hero-acoes{margin-top:34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 /* ---------- OS "GÊMEOS" EM PARALLAX ----------
-   Dois aparelhos nas laterais, cada um numa velocidade diferente — é o que dá
+   Duas camadas nas laterais, cada uma numa velocidade diferente — é o que dá
    a sensação de profundidade quando a página desce. */
 .gemeas{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-/* As fotos oficiais vêm com fundo transparente, então o aparelho flutua solto:
+/* As fotos oficiais vêm com fundo branco limpo, então a moto flutua solta:
    sem moldura, sem borda, sem cartão. A sombra vai no próprio contorno do
-   aparelho (drop-shadow), não numa caixa retangular em volta. */
+   moto (drop-shadow), não numa caixa retangular em volta. */
 .fone{
   position:absolute;top:50%;width:clamp(190px,21vw,340px);aspect-ratio:1/1;
   will-change:transform;
@@ -121,7 +126,7 @@ a{color:inherit;text-decoration:none}
   filter:drop-shadow(0 30px 60px rgba(0,0,0,.9)) drop-shadow(0 0 30px rgba(255,255,255,.10))}
 .fone.esq{left:clamp(-40px,3vw,80px);transform:translateY(-50%) rotate(-9deg)}
 .fone.dir{right:clamp(-40px,3vw,80px);transform:translateY(-50%) rotate(9deg)}
-/* sem foto: contorno de aparelho, para não ficar um buraco */
+/* sem foto: contorno de moto, para não ficar um buraco */
 .fone.molde{background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.02));}
 .fone.molde::after{content:"";position:absolute;top:11px;left:50%;transform:translateX(-50%);
   width:46px;height:7px;background:#000;border-radius:20px;opacity:.75}
@@ -165,7 +170,7 @@ a{color:inherit;text-decoration:none}
 .prod{background:#fff;border:1px solid var(--linha);border-radius:20px;overflow:hidden;
   display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s}
 .prod:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(16,24,40,.13)}
-/* place-items:center + object-fit:contain deixa o aparelho centralizado e
+/* place-items:center + object-fit:contain deixa a moto centralizada e
    inteiro, seja qual for a proporção da foto — as oficiais são quadradas,
    as tiradas na loja não. */
 .prod-foto{aspect-ratio:1/1;background:linear-gradient(170deg,#fbfcfd,#eef1f6);
@@ -183,10 +188,24 @@ a{color:inherit;text-decoration:none}
 .selo{position:absolute;top:12px;left:12px;z-index:2;font-size:10.5px;font-weight:700;
   letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:980px}
 .selo.semi{background:var(--selo-semi);color:var(--selo-semi-tx)}
-.selo.lac{background:var(--tinta);color:#fff}
+.selo.lac{background:var(--marca);color:var(--tinta)}
 .prod-corpo{padding:16px 17px 18px;display:flex;flex-direction:column;flex:1}
 .prod-nome{font-size:17px;font-weight:700;letter-spacing:-.02em}
 .prod-spec{font-size:12.5px;color:var(--tinta-2);margin-top:4px}
+/* ---------- FICHA TÉCNICA NO CARD ----------
+   Motor, autonomia, velocidade, bateria e recarga são as cinco perguntas que
+   o cliente faz antes de qualquer outra. Ficam no card, não escondidas atrás
+   de um clique: quem tem que pedir a ficha no WhatsApp costuma desistir antes.
+   O número em negrito e a palavra em cinza — o olho pega o número primeiro. */
+.ficha{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
+.ficha-i{font-size:11px;color:var(--tinta-2);background:var(--papel);
+  border:1px solid var(--linha);border-radius:7px;padding:4px 8px;line-height:1.35}
+.ficha-i b{color:var(--tinta);font-weight:680}
+/* aviso de moto que ainda vai chegar: amarelo da marca, sem parecer erro */
+.reserva{display:flex;align-items:flex-start;gap:7px;margin-top:12px;
+  font-size:11.5px;line-height:1.45;color:#6b5200;background:#fdf6da;
+  border:1px solid #f0e2a8;border-radius:9px;padding:8px 10px}
+.reserva svg{flex:none;margin-top:1px}
 
 /* bolinhas de cor — a cor real de cada acabamento */
 .cores{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
@@ -328,7 +347,7 @@ a{color:inherit;text-decoration:none}
 /* No celular, em pé, sobra MUITA altura para um vídeo deitado: o `cover`
    amplia pela altura e o letreiro do topo volta a caber na tela. Por isso o
    corte fica colado no pé do vídeo (100%) e a escala sobe um pouco, para o
-   aparelho continuar grande sem trazer o texto de volta. */
+   vídeo continuar grande sem trazer o texto de volta. */
 @media(min-width:1400px){ .hero-fundo video{object-position:center 100%} }
 @media(max-width:900px){
   .hero-fundo video{object-position:center 100%;transform:scale(1.35);transform-origin:center bottom}
@@ -354,7 +373,7 @@ a{color:inherit;text-decoration:none}
 <body>
 
 <nav class="nav" id="nav">
-  <a href="#topo"><img src="logo-gemeos.png" alt="Gêmeos do iPhone"></a>
+  <a href="#topo"><img src="fotos/logo-gemeos-motors.webp" alt="Gêmeos Motors"></a>
   <div class="nav-links" id="links">
     <a href="#topo" class="on">Home</a>
     <a href="#catalogo">Catálogo</a>
@@ -367,7 +386,7 @@ a{color:inherit;text-decoration:none}
     <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="8.5" width="12" height="8" rx="2"/><path d="M7 8.5V6a3 3 0 0 1 6 0v2.5"/></svg>
     <span id="txtSistema">Sistema</span>
   </a>
-  <button class="btn-topo" data-zap="Olá! Vim pelo site e queria falar com vocês.">
+  <button class="btn-topo" data-zap="Olá! Vim pelo site da Gêmeos Motors e quero falar com um consultor.">
     <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
     Fale Conosco
   </button>
@@ -378,25 +397,26 @@ a{color:inherit;text-decoration:none}
     <!-- muted + playsinline sao obrigatorios: sem os dois, o celular recusa
          tocar sozinho e o fundo fica preto. autoplay so vale com muted. -->
     <video id="heroVideo" autoplay muted loop playsinline preload="auto"
-           poster="fotos/iphone-17-pro-laranja-cosmico.png"
+           poster="fotos/loja/loja-02.webp"
            onerror="this.parentElement.classList.add('sem');this.remove()"></video>
   </div>
 
-  <!-- Os aparelhos das laterais sairam: com o video de fundo eles competiam
-       com a cena e poluiam o topo. Quem faz o parallax agora e o video. -->
+  <!-- Nada nas laterais: com o video das motos na rua ao fundo, qualquer
+       recorte competia com a cena. Quem faz o parallax agora e o video. -->
 
   <div class="hero-txt" id="heroTxt">
-    <span class="hero-selo">Carpina · Goiana — Pernambuco</span>
-    <img src="logo-gemeos.png" alt="Gêmeos do iPhone" class="logo-hero">
-    <!-- frase do próprio material da loja: cobre celular, acessório, motinha e
-         a assistência, sem prometer que só trabalhamos com Apple -->
-    <h1>Pra tudo tem<br><em>solução.</em></h1>
-    <p>iPhone e Android, lacrados e seminovos. Acessórios, motinhas elétricas
-       e assistência técnica própria. Bateria verificada, IMEI conferido e
-       garantia por escrito.</p>
+    <span class="hero-selo">Goiana · Carpina — Pernambuco</span>
+    <img src="fotos/logo-gemeos-motors.webp" alt="Gêmeos Motors" class="logo-hero">
+    <!-- O que a loja mais repete no material dela: as motos estao eletrizando
+         o Nordeste. A promessa forte vem logo abaixo, porque e ela que faz o
+         cliente parar de rolar: nao precisa de CNH, nao paga IPVA. -->
+    <h1>A tropa<br><em>chegou.</em></h1>
+    <p>Moto elétrica sem CNH, sem emplacamento e sem IPVA. Você carrega na
+       tomada de casa e roda o dia todo por centavos. Zero km e seminovas,
+       com garantia por escrito e assistência própria.</p>
     <div class="hero-acoes">
-      <a href="#catalogo" class="btn-branco">Ver catálogo →</a>
-      <button class="btn-vidro" data-zap="Olá! Queria saber o que tem disponível hoje.">Falar no WhatsApp</button>
+      <a href="#catalogo" class="btn-branco">Ver as motos →</a>
+      <button class="btn-vidro" data-zap="Olá! Vim pelo site da Gêmeos Motors e quero falar com um consultor.">Falar no WhatsApp</button>
     </div>
   </div>
 </header>
@@ -407,15 +427,15 @@ a{color:inherit;text-decoration:none}
 <section class="secao" id="catalogo" style="padding-bottom:24px">
   <div class="secao-cab meio rev">
     <span class="etiqueta">Catálogo</span>
-    <h2>Qual produto você procura?</h2>
-    <p>Escolha abaixo e confira nossas opções com garantia, bateria verificada
-       e IMEI conferido.</p>
+    <h2>Qual moto você procura?</h2>
+    <p>Escolha abaixo e veja a ficha técnica completa: motor, autonomia,
+       bateria e tempo de recarga de cada uma.</p>
   </div>
   <div class="busca-wrap rev">
     <div class="busca-campo">
       <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m17 17-3.5-3.5"/></svg>
       <input id="buscaCat" type="search" autocomplete="off"
-             placeholder="Buscar modelo, cor ou memória — ex.: 15 pro, azul, 256GB">
+             placeholder="Buscar modelo, cor ou ficha — ex.: tank, 1000w, 70 km">
       <button id="limparBusca" aria-label="Limpar busca" hidden>✕</button>
     </div>
     <div class="busca-resumo" id="buscaResumo"></div>
@@ -426,33 +446,33 @@ a{color:inherit;text-decoration:none}
 <!-- cada linha da loja vira uma seção própria, montada pelo script -->
 <div id="secoes"></div>
 
-<!-- ================= GARANTIA ================= -->
+<!-- ================= POR QUE ELÉTRICA ================= -->
 <div class="faixa-clara">
 <section class="secao" id="garantia">
   <div class="secao-cab meio rev">
-    <span class="etiqueta">Por que confiar</span>
-    <h2>Nada de surpresa depois da compra.</h2>
-    <p>O que a gente confere em todo aparelho antes de colocar à venda.</p>
+    <span class="etiqueta">Por que elétrica</span>
+    <h2>O que você deixa de pagar todo ano.</h2>
+    <p>A conta que faz o cliente decidir — e o que a gente garante depois da venda.</p>
   </div>
   <div class="confia rev" style="margin-top:44px">
-    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2.5"/><path d="M21 10.5v3"/><path d="M5.5 12h5M8 9.5v5"/></svg></span><h3>Bateria verificada</h3>
-      <p>A saúde real da bateria está escrita no anúncio, igual aparece nos Ajustes do iPhone.
-         Abaixo de 85%, a gente avisa antes.</p></div>
-    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></span><h3>IMEI conferido</h3>
-      <p>Procedência checada — sem bloqueio, sem pendência, sem iCloud preso.
-         Você confere o IMEI na hora, com a gente do lado.</p></div>
-    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 3.5h6v2.5H9z"/><path d="M9 11h6M9 15h4"/></svg></span><h3>Avarias declaradas</h3>
-      <p>Risco na tela, marca na lateral, vidro trincado: se tem, está escrito.
-         Preferimos vender menos a vender escondendo.</p></div>
-    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.7 7 9.5 4.1-1.8 7-5.3 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>Garantia por escrito</h3>
-      <p>90 dias nos seminovos e 1 ano Apple nos lacrados, no papel, com o
-         comprovante assinado que você leva.</p></div>
-    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 15h3"/></svg></span><h3>Até 18x no cartão</h3>
-      <p>Também aceitamos Pix, dinheiro e carnê da loja. A gente monta a condição
-         que cabe no seu bolso.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2.5"/><path d="M7 9h6M7 13h4"/><path d="m17 8 4 8"/></svg></span><h3>Não precisa de CNH</h3>
+      <p>Ciclomotor elétrico até 32 km/h não exige habilitação. Você sai da loja
+         dirigindo, sem depender de autoescola nem de fila no Detran.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 18v2M17 18v2"/><path d="m4 10 16 0"/><path d="m6 6 12 12" stroke-linecap="round"/></svg></span><h3>Não paga emplacamento</h3>
+      <p>Sem placa, sem licenciamento, sem vistoria todo ano. O que você gastaria
+         só no emplacamento já paga a recarga de muitos meses.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.7 7 9.5 4.1-1.8 7-5.3 7-9.5V6l-7-3Z"/><path d="m9.5 12 5-4M9.5 8l5 4"/></svg></span><h3>Não paga IPVA</h3>
+      <p>Nem IPVA, nem DPVAT, nem seguro obrigatório. Todo ano que passa, é
+         dinheiro que fica no seu bolso em vez de ir para o imposto.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span><h3>Recarrega na tomada</h3>
+      <p>Tomada comum de casa, sem posto e sem gasolina. Uma carga completa custa
+         centavos e a moto roda o dia inteiro de entrega ou de trabalho.</p></div>
+    <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 3.5h6v2.5H9z"/><path d="m9.5 13 2 2 3.5-4"/></svg></span><h3>Garantia por escrito</h3>
+      <p>Garantia de fábrica na zero km e da loja na seminova, no papel, com o
+         comprovante assinado que você leva. Sem promessa de boca.</p></div>
     <div class="confia-c"><span class="confia-ic"><svg viewBox="0 0 24 24"><path d="M15.5 3.5a5 5 0 0 0-5.9 6.5L3.5 16.1a2 2 0 1 0 2.8 2.8l6.1-6.1a5 5 0 0 0 6.5-5.9L16 10l-2.5-.5L13 7l3.5-3.5Z"/></svg></span><h3>Assistência própria</h3>
-      <p>Deu problema? A bancada é nossa. Tela, bateria, conector — resolvemos aqui,
-         sem mandar seu aparelho para fora.</p></div>
+      <p>Deu problema? A bancada é nossa. Bateria, motor, freio, chicote —
+         resolvemos aqui, sem mandar sua moto para fora do estado.</p></div>
   </div>
 </section>
 </div>
@@ -464,56 +484,64 @@ a{color:inherit;text-decoration:none}
     <h2>Perguntas que sempre fazem</h2>
   </div>
   <div class="faq rev" style="margin-top:44px">
-    <details open><summary>Qual a diferença entre lacrado, vitrine e seminovo?</summary>
-      <p><b>Lacrado</b> é novo, na caixa, nunca aberto — bateria 100% e garantia Apple de 1 ano.
-      <b>Vitrine</b> foi aberto para mostruário, praticamente sem uso. <b>Seminovo</b> já teve dono;
-      a saúde da bateria e as marcas de uso vêm escritas em cada anúncio.</p></details>
-    <details><summary>Vocês aceitam meu aparelho usado na troca?</summary>
-      <p>Aceitamos. Traga o seu que a gente avalia na hora, na sua frente, e o valor entra como
-      desconto no novo. A avaliação leva em conta modelo, memória, saúde da bateria e estado.</p></details>
-    <details><summary>Como funciona a garantia?</summary>
-      <p>Seminovos e de vitrine têm <b>90 dias</b> de garantia da loja. Lacrados têm <b>1 ano</b> de
-      garantia Apple. Cobre defeito de funcionamento — não cobre queda, líquido ou mau uso.
-      Tudo fica escrito no comprovante.</p></details>
+    <details open><summary>Precisa mesmo de CNH para andar?</summary>
+      <p>Não. Os modelos que a gente vende são <b>ciclomotores elétricos até 32 km/h</b>,
+      que não exigem habilitação. Mesmo assim a orientação vale sempre: capacete na cabeça,
+      respeito à sinalização e nada de andar na calçada.</p></details>
+    <details><summary>Quanto custa carregar? Quanto tempo dura a bateria?</summary>
+      <p>Uma carga completa sai por centavos na tomada comum de casa. O tempo de recarga e a
+      autonomia mudam de modelo para modelo — estão escritos na ficha técnica de cada moto
+      aqui no site, sem letra miúda. A bateria de lítio dura anos e é substituível.</p></details>
+    <details><summary>Qual a diferença entre zero km, vitrine e seminova?</summary>
+      <p><b>Zero km</b> é nova, sem uso, com garantia de fábrica. <b>Vitrine</b> ficou em
+      exposição na loja e rodou pouquíssimo. <b>Seminova</b> já teve dono; a quilometragem e
+      as marcas de uso vêm escritas em cada anúncio, sem esconder nada.</p></details>
     <details><summary>Posso parcelar?</summary>
       <p>Sim, em até 18x no cartão. Também trabalhamos com Pix, dinheiro e carnê da loja.
-      Chama no WhatsApp que a gente simula a parcela do aparelho que você quiser.</p></details>
+      Chama no WhatsApp que a gente simula a parcela da moto que você quiser.</p></details>
+    <details><summary>E a manutenção? Onde faço revisão?</summary>
+      <p>Na própria loja. A assistência é nossa e a moto elétrica dá muito menos trabalho que
+      a de gasolina: não tem óleo, nem vela, nem correia, nem embreagem. O que pede atenção é
+      freio, pneu e bateria.</p></details>
     <details><summary>Vocês entregam?</summary>
-      <p>Atendemos Carpina e Goiana, em Pernambuco. Combine no WhatsApp que a gente acerta a
-      melhor forma para você.</p></details>
-    <details><summary>E se o aparelho der problema?</summary>
-      <p>A assistência é nossa, na própria loja. Você traz o aparelho, a gente avalia e resolve —
-      dentro da garantia, sem custo.</p></details>
+      <p>Atendemos Goiana e Carpina, em Pernambuco, e a região toda. Combine no WhatsApp que a
+      gente acerta a melhor forma de a moto chegar até você.</p></details>
+    <details><summary>Aceitam minha moto usada na troca?</summary>
+      <p>Aceitamos. Traga a sua que a gente avalia na hora, na sua frente, e o valor entra como
+      desconto na nova. A avaliação leva em conta modelo, quilometragem, estado da bateria e
+      da lataria.</p></details>
   </div>
 </section>
 
 <!-- ================= RODAPÉ ================= -->
 <footer class="rodape">
   <div class="rodape-topo">
-    <img src="logo-gemeos.png" alt="Gêmeos do iPhone">
-    <p>Vendemos lacrados e seminovos revisados pela nossa equipe técnica.
-       Aceitamos seu usado como forma de pagamento.</p>
-    <button class="btn-consultar" data-zap="Olá! Quero garantir meu iPhone.">
+    <img src="fotos/logo-gemeos-motors.webp" alt="Gêmeos Motors">
+    <p>Motos elétricas zero km e seminovas, revisadas pela nossa equipe técnica.
+       Aceitamos sua moto usada como forma de pagamento.</p>
+    <button class="btn-consultar" data-zap="Olá! Quero garantir minha moto elétrica.">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
-      Garantir meu iPhone
+      Garantir minha moto
     </button>
   </div>
   <div class="rodape-cols">
     <div><h4>Categorias</h4>
-      <a href="#catalogo">iPhones</a><a href="#catalogo">Acessórios</a>
-      <a href="#catalogo">Motinhas elétricas</a><a href="#garantia">Assistência técnica</a></div>
+      <a href="#catalogo">Motos elétricas</a><a href="#catalogo">Triciclos</a>
+      <a href="#catalogo">Acessórios</a><a href="#garantia">Assistência técnica</a></div>
     <div><h4>Links rápidos</h4>
       <a href="#topo">Home</a><a href="#catalogo">Catálogo</a>
       <a href="#garantia">Garantia</a><a href="#faq">FAQ</a></div>
     <div><h4>Contato</h4>
-      <a href="#" data-zap="Olá! Vim pelo site.">WhatsApp</a>
+      <a href="#" data-zap="Olá! Vim pelo site da Gêmeos Motors e quero falar com um consultor.">WhatsApp</a>
       <span id="foneRodape"></span></div>
     <div><h4>Onde estamos</h4>
-      <span>Carpina — PE</span><span>Goiana — PE</span></div>
+      <span>Goiana — PE</span><span>Carpina — PE</span>
+      <a href="https://www.instagram.com/gemeosmotors_goiana/" target="_blank" rel="noopener">@gemeosmotors_goiana</a></div>
   </div>
   <div class="rodape-fim">
-    © 2026 Gêmeos do iPhone. Todos os direitos reservados.<br>
-    Protótipo com dados de exemplo — preços, fotos e disponibilidade ainda não são reais.
+    © 2026 Gêmeos Motors. Todos os direitos reservados.<br>
+    Modelos, preços e ficha técnica são os da loja. A quantidade em estoque ainda é de
+    exemplo — confirme a disponibilidade no WhatsApp.
     <div style="margin-top:16px">
       <a class="link-vendedor" href="login.html">
         <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="8.5" width="12" height="8" rx="2"/><path d="M7 8.5V6a3 3 0 0 1 6 0v2.5"/></svg>
@@ -523,18 +551,18 @@ a{color:inherit;text-decoration:none}
   </div>
 </footer>
 
-<button class="zap-flut" data-zap="Olá! Vim pelo site." aria-label="Falar no WhatsApp">
+<button class="zap-flut" data-zap="Olá! Vim pelo site da Gêmeos Motors e quero falar com um consultor." aria-label="Falar no WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.06c-.25.69-1.45 1.32-2 1.4-.51.08-1.16.11-1.87-.12-.43-.14-.98-.32-1.69-.63-2.97-1.28-4.91-4.27-5.06-4.47-.15-.2-1.21-1.61-1.21-3.07 0-1.46.77-2.18 1.04-2.48.27-.3.59-.37.79-.37s.39 0 .56.01c.18.01.42-.7.8.61.4.94 1.36 3.25 1.48 3.48.12.24.2.51.04.81-.16.3-.24.49-.47.75-.24.26-.5.58-.71.78-.24.23-.48.49-.21.96.27.47 1.2 1.98 2.58 3.21 1.77 1.58 3.27 2.07 3.73 2.3.46.23.73.2 1-.12.27-.32 1.15-1.34 1.46-1.8.31-.46.62-.38 1.04-.23.42.15 2.67 1.26 3.13 1.49.46.23.77.35.88.54.11.19.11 1.11-.14 1.8Z"/></svg>
 </button>
 
 <!-- O ?v= força o navegador a buscar a versão nova em vez de usar a guardada.
      Suba o número sempre que mexer nestes arquivos, senão você (e o cliente)
      continuam vendo a versão antiga sem entender por quê. -->
-<script src="cores-apple.js?v=5"></script>
-<script src="fotos-disponiveis.js?v=5"></script>
+<script src="cores-motos.js?v=6"></script>
+<script src="fotos-disponiveis.js?v=6"></script>
 <!-- antes do estoque.js: é daqui que sai fotoDoProduto -->
-<script src="foto-produto.js?v=5"></script>
-<script src="estoque.js?v=5"></script>
+<script src="foto-produto.js?v=6"></script>
+<script src="estoque.js?v=6"></script>
 <script>
 /* ============================================================
    Número que recebe as mensagens do site.
@@ -542,7 +570,7 @@ a{color:inherit;text-decoration:none}
    Hoje é o celular do dono; quando a loja tiver uma linha própria,
    troque só esta linha.
    ============================================================ */
-const WHATSAPP = "5581993116436";
+const WHATSAPP = "5581993869767";
 
 const $ = s => document.querySelector(s);
 const brl  = n => "R$ " + n.toLocaleString("pt-BR",{maximumFractionDigits:0});
@@ -576,15 +604,15 @@ $("#foneRodape").textContent =
 })();
 
 /* ---------- FAIXA ---------- */
-const FRASES=["Produtos de qualidade","Aparelho testado","Bateria verificada","IMEI conferido",
-              "Lacrado ou seminovo","Garantia por escrito","Até 18x no cartão","Assistência própria"];
+const FRASES=["Não precisa de CNH","Não paga IPVA","Não paga emplacamento","Recarrega na tomada",
+              "Zero km ou seminova","Garantia por escrito","Até 18x no cartão","Assistência própria"];
 const g = `<div class="faixa-grupo">${FRASES.map(f=>
   `<span class="faixa-item">${f}</span><span class="faixa-pt"></span>`).join("")}</div>`;
 $("#faixa").innerHTML = g + g;    // duplicado: é o que faz o loop não ter emenda
 
 /* ============================================================
    CATÁLOGO
-   As opções que o cliente escolhe (cor, memória, condição) ficam guardadas
+   As opções que o cliente escolhe (cor, condição) ficam guardadas
    POR CARD, para ele poder mexer em vários antes de chamar no WhatsApp.
    ============================================================ */
 const escolha = {};    // id do produto -> {cor, arm, cond}
@@ -595,8 +623,9 @@ function esc(a){
   return escolha[a.id];
 }
 /* opção diferente da que a peça tem muda o preço em degraus.
-   O degrau é proporcional ao preço: 8% por passo — em iPhone dá uns R$300,
-   em acessório dá uns trocados, que é o certo. */
+   O degrau é proporcional ao preço: 8% por passo. Hoje toda moto tem versão
+   "Única", então o degrau fica em zero — a regra existe para o dia em que
+   um modelo vier com duas capacidades de bateria. */
 function precoEscolhido(a){
   const e = esc(a), vars = opcoesDe(a).vars;
   const passo = vars.indexOf(e.arm) - vars.indexOf(a.arm);
@@ -612,7 +641,7 @@ function precoEscolhido(a){
 function fotoDupla(a){
   const e = esc(a);
   /* A foto tirada na loja ganha de tudo: é a peça que o cliente vai receber,
-     e não a foto de fábrica de um aparelho perfeito. */
+     e não a foto de fábrica de uma moto perfeita. */
   const propria = fotoManual(a.id);
   if(propria) return `<img src="${propria}" alt="${a.modelo}" loading="lazy">`;
   const mapeada = fotoDe(a.modelo, e.cor);
@@ -636,9 +665,13 @@ function tentarProxima(img){
 }
 function molde(){
   const d = document.createElement("div");
-  d.innerHTML = `<svg viewBox="0 0 60 110" width="62" height="114" fill="none" aria-hidden="true">
-    <rect x="1.5" y="1.5" width="57" height="107" rx="12" stroke="#c3cad6" stroke-width="2"/>
-    <rect x="21" y="7" width="18" height="3.4" rx="1.7" fill="#c3cad6"/></svg>`;
+  /* contorno de moto, não de celular: duas rodas, guidão e banco. É o que
+     aparece no lugar da foto enquanto a loja não fotografou aquele modelo. */
+  d.innerHTML = `<svg viewBox="0 0 120 80" width="132" height="88" fill="none" aria-hidden="true"
+      stroke="#c9cabf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="26" cy="58" r="15"/><circle cx="94" cy="58" r="15"/>
+    <path d="M26 58 46 34h26l12 24"/><path d="M46 34h30"/>
+    <path d="M72 34 78 20h12"/><path d="M84 20h12"/></svg>`;
   return d.firstElementChild;
 }
 const CHECK = `<svg class="ic-check" viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10.5 4 4 8-9"/></svg>`;
@@ -646,46 +679,53 @@ const ALERTA = `<svg class="ic-alerta" viewBox="0 0 20 20" aria-hidden="true"><p
 
 function card(a){
   const e = esc(a), o = opcoesDe(a);
-  const lac = e.cond==="Novo (lacrado)";
+  const zero = e.cond==="Zero km";
   const p = precoEscolhido(a);
-  const temBateria = a.bateria !== null && !a.porQuantidade;
-  const varUnica = o.vars.length === 1 && o.vars[0] === "Única";
+  const temKm = a.km !== null && !a.porQuantidade;
+  const f = a.ficha;
   return `<article class="prod" data-id="${a.id}">
     <div class="prod-foto">
-      <span class="selo ${lac?"lac":"semi"}">${lac?"Lacrado":e.cond}</span>
+      <span class="selo ${zero?"lac":"semi"}">${zero?"Zero km":e.cond}</span>
       ${fotoDupla(a)}
     </div>
     <div class="prod-corpo">
       <h3 class="prod-nome">${a.modelo}</h3>
-      <div class="prod-spec">${varUnica?e.cor:`${e.arm} • ${e.cor}`}${
-        temBateria && !lac ? ` • bateria ${a.bateria}%` : ""}</div>
+      <div class="prod-spec">${e.cor}${
+        temKm && !zero ? ` • ${a.km.toLocaleString("pt-BR")} km rodados` : ""}</div>
+
+      ${f ? `<div class="ficha">
+        <span class="ficha-i"><b>${f.motor}</b> motor</span>
+        <span class="ficha-i"><b>${f.autonomia}</b> de autonomia</span>
+        <span class="ficha-i"><b>${f.velocidade}</b></span>
+        <span class="ficha-i">Bateria ${f.bateria}</span>
+        <span class="ficha-i">Recarga ${f.recarga}</span>
+      </div>` : ""}
 
       ${o.cores.length>1 ? `<div class="cores">
         ${o.cores.map(c=>`<button class="cor ${corPrecisaBorda(c)?"claro":""} ${c===e.cor?"on":""}"
           style="background:${corHex(c)}" data-cor="${c}" title="${c}" aria-label="${c}"></button>`).join("")}
       </div>` : ""}
 
-      ${!varUnica ? `<div class="opcoes">
-        ${o.vars.map(m=>`<button class="op ${m===e.arm?"on":""}" data-arm="${m}">${m}</button>`).join("")}
-      </div>` : ""}
-
       ${a.porQuantidade ? "" : `<div class="opcoes">
-        ${["Seminovo","Novo (lacrado)"].map(c=>`<button class="op verde ${c===e.cond?"on":""}"
-          data-cond="${c}">${c==="Novo (lacrado)"?"Lacrado":"Seminovo"}</button>`).join("")}
+        ${["Seminova","Zero km"].map(c=>`<button class="op verde ${c===e.cond?"on":""}"
+          data-cond="${c}">${c}</button>`).join("")}
       </div>`}
 
       <div class="checks">
-        ${temBateria ? `<span class="check">${CHECK} Bateria verificada</span>` : ""}
+        ${f ? `<span class="check">${CHECK} Sem CNH</span>
+               <span class="check">${CHECK} Sem IPVA</span>` : ""}
         <span class="check">${CHECK} Garantia</span>
         ${a.avarias.length ? `<span class="check alerta">${ALERTA} ${a.avarias.length} detalhe${a.avarias.length>1?"s":""}</span>` : ""}
       </div>
+
+      ${a.reserva ? `<div class="reserva">${ALERTA} Chega na ${a.disponivelEm}. Dá para reservar a sua agora.</div>` : ""}
 
       <div class="prod-preco">
         <div class="preco">${brl(p)}</div>
         <div class="parc">ou 18x de ${brlc(p/18)}</div>
         <button class="btn-consultar" data-consultar="${a.id}">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
-          Consultar disponibilidade
+          ${a.reserva ? "Reservar agora" : "Quero essa moto"}
         </button>
       </div>
     </div>
@@ -704,8 +744,8 @@ $("#atalhos").innerHTML = CATEGORIAS.map(c=>{
 
 /* ---------- BUSCA ----------
    Compara sem acento e sem maiúscula, então "titanio" acha "Titânio" e
-   "15 PRO" acha "iPhone 15 Pro". Procura no modelo, na cor, na memória e na
-   condição de uma vez só — o cliente não precisa saber em qual campo digitar. */
+   "tank" acha "TANK AG11". Procura no modelo, na cor e na condição de uma
+   vez só — o cliente não precisa saber em qual campo digitar. */
 let termo = "";
 const normal = s => (s||"").toString().normalize("NFD")
   .replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -791,27 +831,34 @@ document.addEventListener("click", e=>{
 
   const bz = e.target.closest("[data-consultar]");
   if(bz){
-    const el = esc(a), lac = el.cond==="Novo (lacrado)";
-    const igual = el.cor===a.cor && el.arm===a.arm && el.cond===a.cond;
+    const el = esc(a), zero = el.cond==="Zero km";
+    const igual = el.cor===a.cor && el.cond===a.cond;
     /* Sem emoji, de propósito: emoji ocupa 4 bytes e é o primeiro a quebrar
        quando a mensagem passa por um sistema que não trata bem a codificação —
        foi o que aconteceu, chegava tudo como "?". O negrito aqui é o do
        próprio WhatsApp (*texto entre asteriscos*), que é só ASCII e sempre
        chega inteiro — além de ficar com cara de loja, não de conversa. */
+    const f = a.ficha;
     const linhas = [
-      "Olá! Tenho interesse neste aparelho do site:", "",
+      a.reserva ? "Olá! Quero reservar esta moto do site:"
+                : "Olá! Tenho interesse nesta moto do site:", "",
       `*${a.modelo}*`,
-      `${el.arm} - ${el.cor}`,
+      el.cor,
       el.cond,
-      lac ? "Bateria 100% (lacrado)" : `Bateria ${a.bateria}%`,
-      a.avarias.length ? `Avarias: ${a.avarias.join(", ")}` : "Sem avarias",
+      zero ? "Zero km, sem uso" : `${a.km.toLocaleString("pt-BR")} km rodados`,
+      a.avarias.length ? `Detalhes: ${a.avarias.join(", ")}` : "Sem avarias",
+      /* a ficha vai junto: e o que o cliente ia perguntar na primeira
+         mensagem de qualquer jeito, e ja chega respondido */
+      ...(f ? ["", `Motor ${f.motor} - autonomia ${f.autonomia}`,
+                   `Bateria ${f.bateria} - recarga ${f.recarga}`] : []),
       "",
       /* travessão e ponto-do-meio trocados por hífen: são caracteres de vários
          bytes e já perdemos emoji por codificação uma vez. Hífen é ASCII puro
          e chega inteiro em qualquer aparelho. */
       `*${brl(precoEscolhido(a))}* - ou 18x de ${brlc(precoEscolhido(a)/18)}`,
       "",
-      igual ? "Ainda está disponível?" : "Vocês têm nessa configuração?"
+      a.reserva ? "Como faço para reservar?"
+                : (igual ? "Ainda está disponível?" : "Vocês têm nessa cor?")
     ];
     abrirZap(linhas.join("\n"));
   }
@@ -829,9 +876,9 @@ $("#links").onclick   = ()=> $("#links").classList.remove("abre");
   const v = $("#heroVideo");
   if(!v) return;
 
-  /* Vídeo escolhido pelo dono: iPhone 17 Pro. O do iPhone Air continua na
-     pasta video/ — para trocar, basta mudar o nome do arquivo aqui. */
-  v.src = "video/iphone-17-pro-hero.mp4";
+  /* Vídeo da própria loja: "a tropa chegou", as motos na rua.
+     Para trocar, basta mudar o nome do arquivo aqui. */
+  v.src = "video/gemeos-motors-hero.mp4";
   v.load();
 
   if(matchMedia("(prefers-reduced-motion: reduce)").matches){ v.pause(); return; }
@@ -852,7 +899,7 @@ $("#links").onclick   = ()=> $("#links").classList.remove("abre");
 })();
 
 /* ---------- PARALLAX DO HERO ----------
-   Cada camada anda numa fração do scroll: fundo devagar, aparelhos médio,
+   Cada camada anda numa fração do scroll: fundo devagar,
    texto rápido. O requestAnimationFrame evita recalcular a cada pixel rolado. */
 const pxFundo = $("#heroFundo"), pxTxt = $("#heroTxt");
 const pxE = $("#foneE"), pxD = $("#foneD");

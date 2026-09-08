@@ -22,16 +22,26 @@ _*.py
 _msg.txt
 
 # ---- fotos: so o .webp vai pro GitHub ----
-# Os PNG/JPG originais sao pesados (70 MB) e da para baixar de novo com
-# baixar_fotos_apple.py. O .webp e o que o site usa e pesa 1,5 MB no total.
+# Os PNG/JPG originais sao pesados e da para baixar de novo do site da loja
+# (baixar_fotos_motos.py). O .webp e o que o site usa e pesa ~1,2 MB no total.
 fotos/*.png
 fotos/*.jpg
 fotos/*.jpeg
+fotos/motos/*.png
+fotos/motos/*.jpg
+fotos/motos/*.jpeg
+fotos/loja/*.png
+fotos/loja/*.jpg
+fotos/loja/*.jpeg
 fotos/_baixa-resolucao/
 fotos/_nao-usadas/
+# arquivo morto do sistema antigo de celular. Continua no GitHub, na branch
+# celulares-apple e no repositorio proprio — aqui so ocupa espaco.
+fotos/_apple/
 
-# video que nao foi escolhido
+# videos do sistema antigo de celular
 video/iphone-air-hero.mp4
+video/iphone-17-pro-hero.mp4
 .vercel
 
 # credenciais — nunca commitar (repositorio e publico no GitHub)

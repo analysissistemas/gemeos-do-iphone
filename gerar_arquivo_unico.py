@@ -1,7 +1,7 @@
 """
 Gera uma versão do sistema em UM ARQUIVO SÓ, pronta pra enviar por WhatsApp/e-mail.
 
-Por que existe: o index.html normal chama a logo de fora (logo-gemeos.png). Se você
+Por que existe: o index.html normal chama a logo de fora (fotos/logo-gemeos-motors.webp). Se você
 mandar só o .html pra alguém, a logo chega quebrada. Este script troca o caminho da
 imagem pela imagem inteira embutida no próprio arquivo (base64), então o resultado é
 autossuficiente: abre em qualquer computador ou celular, sem pasta, sem internet.
@@ -18,7 +18,7 @@ RAIZ = pathlib.Path(__file__).parent
 HTML = RAIZ / "index.html"
 # branca (usada no tema escuro) e preta (usada no tema claro) — as duas precisam
 # ir embutidas, senão o sistema fica sem logo em um dos dois temas
-LOGOS = ["logo-gemeos.png", "logo-gemeos-preta.png"]
+LOGOS = ["fotos/logo-gemeos-motors.webp"]
 
 # Área de Trabalho — funciona mesmo com OneDrive redirecionando a pasta
 desktop = pathlib.Path(os.path.join(os.environ["USERPROFILE"], "Desktop"))

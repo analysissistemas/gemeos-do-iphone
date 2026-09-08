@@ -1,7 +1,7 @@
 """
 Deixa as fotos leves sem perder qualidade na tela.
 
-O problema: as fotos baixadas da Apple vêm em PNG de 1200x1200, com 0,5 a 1,8 MB
+O problema: as fotos das motos vêm em PNG de mais de 1000px, com 1 a 2 MB
 cada. No catálogo elas aparecem com cerca de 300 pixels. Ou seja, o cliente
 baixa 1,8 MB para ver uma imagem de 300px — no celular, na rede da rua, isso é
 a diferença entre a loja abrir rápido ou o cliente desistir.
@@ -22,8 +22,9 @@ QUALIDADE = 82             # acima disso o ganho de tamanho não compensa
 
 
 def otimizar(caminho):
-    nome, ext = os.path.splitext(os.path.basename(caminho))
-    destino = os.path.join(PASTA, nome + ".webp")
+    # o .webp fica AO LADO do original, dentro da mesma subpasta (motos/, loja/),
+    # porque e por esse caminho que o site procura a foto
+    destino = os.path.splitext(caminho)[0] + ".webp"
     if os.path.exists(destino):
         return None
 
@@ -42,10 +43,17 @@ def otimizar(caminho):
 def main():
     antes = depois = 0
     feitos = 0
-    for arq in sorted(os.listdir(PASTA)):
-        if not arq.lower().endswith((".png", ".jpg", ".jpeg")):
-            continue
-        origem = os.path.join(PASTA, arq)
+    # percorre fotos/ e as subpastas (motos/, loja/). Pastas com _ na frente sao
+    # arquivo morto (ex.: _apple, do sistema antigo de celular) e ficam de fora.
+    origens = []
+    for raiz, dirs, arquivos in os.walk(PASTA):
+        dirs[:] = [d for d in dirs if not d.startswith("_")]
+        for f in sorted(arquivos):
+            if f.lower().endswith((".png", ".jpg", ".jpeg")):
+                origens.append(os.path.join(raiz, f))
+
+    for origem in sorted(origens):
+        arq = os.path.relpath(origem, PASTA).replace(os.sep, "/")
         if not os.path.isfile(origem):
             continue
         tam_antes = os.path.getsize(origem)

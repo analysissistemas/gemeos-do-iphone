@@ -1,14 +1,20 @@
-# Gêmeos do iPhone — Sistema da loja
+# Gêmeos Motors — Sistema da loja
 
-Sistema de gestão da **Gêmeos do iPhone** (Carpina e Goiana, Pernambuco):
-venda de iPhones lacrados e seminovos, motinhas elétricas, acessórios e
-assistência técnica.
+Sistema de gestão da **Gêmeos Motors** (Goiana e Carpina, Pernambuco):
+venda de **motos e triciclos elétricos**, acessórios e assistência técnica
+própria.
+
+> **Antes era a Gêmeos Motors.** Em 08/09/2026 os donos passaram o sistema
+> para a loja de moto elétrica. O sistema de celular está guardado inteiro na
+> branch `celulares-apple` — nada foi perdido.
 
 > **Estado atual: protótipo visual.** Todas as telas existem e funcionam de
-> navegar, mas os dados são **simulados** — inventados pelo próprio arquivo
-> quando você abre. Nada está conectado ao Kommo, ao WhatsApp nem a um banco
-> de dados ainda. Serve para você ver o sistema de pé e decidir o que muda
-> antes de valer a pena programar o funcionamento de verdade.
+> navegar. Os **modelos, preços e ficha técnica são reais** (vieram do site
+> gemeosmotors.com.br), mas o estoque, os clientes e o caixa são **simulados** —
+> inventados pelo próprio arquivo quando você abre. Nada está conectado ao
+> Kommo, ao WhatsApp nem a um banco de dados ainda. Serve para você ver o
+> sistema de pé e decidir o que muda antes de valer a pena programar o
+> funcionamento de verdade.
 
 ## Continuar em outro computador
 
@@ -37,7 +43,7 @@ Acessos de teste: usuário `admin`, `gemeo1` ou `gemeo2`, senha `gemeos123`.
 
 **3. Só se for mexer nos scripts**
 
-Os arquivos `.py` (baixar fotos, otimizar, gerar Excel e a apresentação)
+Os arquivos `.py` (baixar as fotos das motos, otimizar, gerar Excel e a apresentação)
 precisam de **Python**. Instale de python.org marcando *Add Python to PATH*,
 e depois:
 
@@ -54,7 +60,7 @@ O site em si NÃO precisa de Python — só os scripts de apoio.
 | `fotos/*.png` e `*.jpg` | Pesam 70 MB; o site usa os `.webp`, que pesam 1,5 MB | `python baixar_fotos_apple.py` |
 | `video/iphone-air-hero.mp4` | Vídeo que não foi escolhido | Está no histórico, se precisar |
 
-**As 81 fotos `.webp` e o vídeo do iPhone 17 Pro VÊM junto** — o site funciona
+**As 17 fotos `.webp` e o vídeo da loja VÊM junto** — o site funciona
 completo assim que você abrir, sem baixar mais nada.
 
 ## Como abrir
@@ -71,7 +77,7 @@ a logo chega quebrada. Para gerar uma versão de **arquivo único**:
 python gerar_arquivo_unico.py
 ```
 
-Ele cria `Gemeos do iPhone - Sistema.html` na sua Área de Trabalho, com a logo
+Ele cria `Gemeos Motors - Sistema.html` na sua Área de Trabalho, com a logo
 embutida dentro do próprio arquivo. Esse dá para mandar por WhatsApp ou e-mail
 que abre em qualquer celular ou computador.
 
@@ -82,8 +88,8 @@ que abre em qualquer celular ou computador.
 | **Visão Geral** | Resumo do dia: receita, aparelhos vendidos, o que está travado |
 | **Funil de Vendas** | Cada negócio, da primeira mensagem no WhatsApp até a venda fechada |
 | **Clientes (CRM)** | Quem já comprou, quem está negociando, quem tem parcela atrasada |
-| **Estoque** | iPhone 7 até 18 Pro Max, motinhas elétricas e acessórios; lacrado x seminovo |
-| **Entradas e Saídas** | Todo aparelho que entra ou sai, com IMEI e forma de pagamento |
+| **Estoque** | As 8 motos e o triciclo, mais acessórios; zero km x seminova |
+| **Entradas e Saídas** | Toda moto que entra ou sai, com chassi e forma de pagamento |
 | **Assistência Técnica** | Ordem de serviço: da bancada até a entrega, com orçamento e garantia |
 | **Financeiro** | Recebido, a receber, atrasado, e as parcelas em aberto |
 
@@ -105,7 +111,8 @@ comprovante pronto para imprimir ou salvar em PDF.
     (`.mk-f`, `.mk-s`, `.mk-stop`…). Se alguém escrever `fill="#f5f5f7"` direto
     numa barra, ela vira branca no branco e some. É a regra mais fácil de
     quebrar sem perceber aqui.
-- **Referências:** o site da Apple (tipografia grande, respiro, preto absoluto,
+- **Referências:** a identidade da própria loja (amarelo e preto da logo) e o
+  site da Apple (tipografia grande, respiro, preto absoluto,
   parallax) e dois painéis do Pinterest escolhidos pelo dono — um dashboard
   claro com mini-gráficos nos indicadores, e o visual de vidro fosco do
   Apple Vision Pro (painéis translúcidos com profundidade).

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gêmeos do iPhone — Sistema</title>
+<title>Gêmeos Motors — Sistema</title>
 <style>
 /* ============================================================
    GÊMEOS DO IPHONE — protótipo visual
@@ -247,7 +247,7 @@ img.logo-claro{display:none}
 .hero p{margin-top:20px;font-size:clamp(15px,1.5vw,20px);color:var(--ink-2);letter-spacing:-.01em;max-width:620px;margin-left:auto;margin-right:auto;line-height:1.5}
 .hero-acao{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
-/* silhuetas de iPhone em parallax (as "gêmeas") */
+/* silhuetas em parallax (as "gêmeas") */
 .gemeas{position:absolute;inset:0;z-index:1;pointer-events:none}
 .fone{
   position:absolute;top:50%;width:150px;height:310px;border-radius:26px;
@@ -592,15 +592,15 @@ tbody tr:last-child td{border-bottom:none}
 <!-- ================= NAV ================= -->
 <nav class="nav">
   <div class="marca">
-    <img src="logo-gemeos.png"       alt="Gêmeos do iPhone" class="logo-nav logo-escuro">
-    <img src="logo-gemeos-preta.png" alt="Gêmeos do iPhone" class="logo-nav logo-claro">
+    <img src="fotos/logo-gemeos-motors.webp"       alt="Gêmeos Motors" class="logo-nav logo-escuro">
+    <img src="fotos/logo-gemeos-motors.webp" alt="Gêmeos Motors" class="logo-nav logo-claro">
   </div>
   <div class="nav-sep"></div>
   <span class="nav-ctx" id="navCtx">Visão Geral</span>
   <div class="nav-dir">
     <div class="busca">
       <span style="color:var(--ink-3);font-size:12px">⌕</span>
-      <input placeholder="Buscar cliente, IMEI, aparelho…" id="buscaGlobal">
+      <input placeholder="Buscar cliente, chassi, moto…" id="buscaGlobal">
     </div>
     <a class="btn-loja" href="vitrine.html" title="Abrir a loja que o cliente vê">
       <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7h14l-1 9.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 4 16.5L3 7Z"/><path d="M7 7V5.5a3 3 0 0 1 6 0V7"/></svg>
@@ -644,8 +644,8 @@ tbody tr:last-child td{border-bottom:none}
       <div class="fone dir" id="pxD"></div>
     </div>
     <div class="hero-txt" id="pxTxt">
-      <img src="logo-gemeos.png"       alt="Gêmeos do iPhone" class="logo-hero logo-escuro">
-      <img src="logo-gemeos-preta.png" alt="Gêmeos do iPhone" class="logo-hero logo-claro">
+      <img src="fotos/logo-gemeos-motors.webp"       alt="Gêmeos Motors" class="logo-hero logo-escuro">
+      <img src="fotos/logo-gemeos-motors.webp" alt="Gêmeos Motors" class="logo-hero logo-claro">
       <h1>Dois olhos<br>no seu negócio.</h1>
       <p>CRM, funil de vendas, estoque e caixa da loja — em um só lugar, em tempo real.
       Carpina e Goiana, Pernambuco.</p>
@@ -677,13 +677,13 @@ tbody tr:last-child td{border-bottom:none}
       <div class="card">
         <div class="cab" style="margin-bottom:18px">
           <div><h2 style="font-size:19px;letter-spacing:-.02em">Receita dos últimos 12 meses</h2>
-          <div class="sub" style="font-size:12.5px">Valor recebido, já descontada a entrada de aparelhos usados</div></div>
+          <div class="sub" style="font-size:12.5px">Valor recebido, já descontada a entrada de motos usadas</div></div>
         </div>
         <div class="viz" id="vizReceita"></div>
       </div>
       <div class="card">
         <div class="cab" style="margin-bottom:18px">
-          <div><h2 style="font-size:19px;letter-spacing:-.02em">Aparelhos vendidos por modelo</h2>
+          <div><h2 style="font-size:19px;letter-spacing:-.02em">Motos vendidas por modelo</h2>
           <div class="sub" style="font-size:12.5px">Top 8 do mês, em unidades</div></div>
         </div>
         <div class="viz" id="vizModelos"></div>
@@ -738,7 +738,7 @@ tbody tr:last-child td{border-bottom:none}
       <div class="tab-scroll">
         <table>
           <thead><tr>
-            <th>Cliente</th><th>Contato</th><th>Situação</th><th>Último aparelho</th>
+            <th>Cliente</th><th>Contato</th><th>Situação</th><th>Última moto</th>
             <th class="num">Compras</th><th class="num">Total gasto</th><th>Última compra</th><th></th>
           </tr></thead>
           <tbody id="tbClientes"></tbody>
@@ -752,7 +752,7 @@ tbody tr:last-child td{border-bottom:none}
 <section class="tela" id="tela-estoque">
   <div class="pad">
     <div class="cab rev">
-      <div><h2>Estoque</h2><div class="sub">iPhones, motinhas elétricas e acessórios</div></div>
+      <div><h2>Estoque</h2><div class="sub">Motos elétricas, triciclos e acessórios</div></div>
       <div class="dir">
         <button class="btn btn-s btn-sm" data-modal="item">Cadastrar item que não temos</button>
         <button class="btn btn-p btn-sm" data-modal="entrada">+ Dar entrada</button>
@@ -767,22 +767,22 @@ tbody tr:last-child td{border-bottom:none}
         <div class="viz" id="vizRosca"></div>
       </div>
       <div class="card">
-        <div style="font-size:19px;font-weight:650;letter-spacing:-.02em">Lacrado x Seminovo</div>
-        <div class="sub" style="font-size:12.5px;color:var(--ink-2);margin:6px 0 4px">Unidades de iPhone em estoque por condição</div>
+        <div style="font-size:19px;font-weight:650;letter-spacing:-.02em">Zero km x Seminova</div>
+        <div class="sub" style="font-size:12.5px;color:var(--ink-2);margin:6px 0 4px">Motos em estoque por condição</div>
         <div class="viz" id="vizCondicao"></div>
       </div>
     </div>
 
     <div class="filtros rev" id="abaEst"></div>
 
-    <!-- APARELHOS: um por um, com IMEI, bateria e avaria -->
+    <!-- MOTOS: uma por uma, com chassi, quilometragem e avaria -->
     <div id="blocoAparelhos">
       <div class="filtros rev" id="filtroApar"></div>
       <div class="tab-wrap rev">
         <div class="tab-scroll">
           <table>
             <thead><tr>
-              <th>Aparelho</th><th>Condição</th><th>Bateria</th><th>Avarias</th><th>IMEI</th>
+              <th>Moto</th><th>Condição</th><th>Rodagem</th><th>Avarias</th><th>Chassi</th>
               <th class="num">Custo</th><th class="num">Venda</th><th class="num">Lucro</th><th></th>
             </tr></thead>
             <tbody id="tbAparelhos"></tbody>
@@ -813,7 +813,7 @@ tbody tr:last-child td{border-bottom:none}
 <section class="tela" id="tela-movimentacoes">
   <div class="pad">
     <div class="cab rev">
-      <div><h2>Entradas e saídas</h2><div class="sub">Todo aparelho que entra ou sai da loja, com IMEI</div></div>
+      <div><h2>Entradas e saídas</h2><div class="sub">Toda moto que entra ou sai da loja, com chassi</div></div>
       <div class="dir">
         <button class="btn btn-s btn-sm" data-modal="entrada">Registrar entrada</button>
         <button class="btn btn-p btn-sm" data-modal="saida">Registrar saída</button>
@@ -824,7 +824,7 @@ tbody tr:last-child td{border-bottom:none}
       <div class="tab-scroll">
         <table>
           <thead><tr>
-            <th>Data</th><th>Tipo</th><th>Aparelho</th><th>IMEI</th><th>Cliente / Origem</th>
+            <th>Data</th><th>Tipo</th><th>Moto</th><th>Chassi</th><th>Cliente / Origem</th>
             <th class="num">Valor</th><th>Forma</th><th>Quem</th><th></th>
           </tr></thead>
           <tbody id="tbMov"></tbody>
@@ -838,7 +838,7 @@ tbody tr:last-child td{border-bottom:none}
 <section class="tela" id="tela-assistencia">
   <div class="pad">
     <div class="cab rev">
-      <div><h2>Assistência técnica</h2><div class="sub">Cada aparelho que entra pra conserto, da bancada até a entrega</div></div>
+      <div><h2>Assistência técnica</h2><div class="sub">Cada moto que entra pra conserto, da bancada até a entrega</div></div>
       <div class="dir">
         <button class="btn btn-s btn-sm" data-modal="orcamento">Fazer orçamento</button>
         <button class="btn btn-p btn-sm" data-modal="os">+ Nova ordem de serviço</button>
@@ -848,8 +848,8 @@ tbody tr:last-child td{border-bottom:none}
     <div class="grid g4 rev" id="kpiOS" style="margin-bottom:26px"></div>
 
     <div class="card rev" style="margin-bottom:26px">
-      <div style="font-size:19px;font-weight:650;letter-spacing:-.02em">Onde cada aparelho está</div>
-      <div class="sub" style="font-size:12.5px;color:var(--ink-2);margin:6px 0 22px">Quantos aparelhos parados em cada etapa do conserto</div>
+      <div style="font-size:19px;font-weight:650;letter-spacing:-.02em">Onde cada moto está</div>
+      <div class="sub" style="font-size:12.5px;color:var(--ink-2);margin:6px 0 22px">Quantas motos paradas em cada etapa do conserto</div>
       <div class="funil" id="etapasOS"></div>
     </div>
 
@@ -858,7 +858,7 @@ tbody tr:last-child td{border-bottom:none}
       <div class="tab-scroll">
         <table>
           <thead><tr>
-            <th>OS</th><th>Cliente</th><th>Aparelho</th><th>Defeito</th><th>Etapa</th>
+            <th>OS</th><th>Cliente</th><th>Moto</th><th>Defeito</th><th>Etapa</th>
             <th class="num">Orçamento</th><th>Entrada</th><th>Prazo</th><th>Técnico</th><th></th>
           </tr></thead>
           <tbody id="tbOS"></tbody>
@@ -927,23 +927,15 @@ const ent  = (a,b) => Math.floor(rnd()*(b-a+1))+a;
 const brl  = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:0});
 const brlc = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-const MODELOS = [
-  "iPhone 7","iPhone 7 Plus","iPhone 8","iPhone 8 Plus","iPhone X","iPhone XR","iPhone XS","iPhone XS Max",
-  "iPhone 11","iPhone 11 Pro","iPhone 11 Pro Max","iPhone 12","iPhone 12 mini","iPhone 12 Pro","iPhone 12 Pro Max",
-  "iPhone 13","iPhone 13 mini","iPhone 13 Pro","iPhone 13 Pro Max","iPhone 14","iPhone 14 Plus","iPhone 14 Pro",
-  "iPhone 14 Pro Max","iPhone 15","iPhone 15 Plus","iPhone 15 Pro","iPhone 15 Pro Max","iPhone 16","iPhone 16 Plus",
-  "iPhone 16 Pro","iPhone 16 Pro Max","iPhone 17","iPhone 17 Pro","iPhone 17 Pro Max","iPhone 18","iPhone 18 Pro",
-  "iPhone 18 Pro Max"
-];
-const MOTOS = ["Motinha Elétrica Kids 6V","Motinha Elétrica Kids 12V","Scooter Elétrica 350W","Scooter Elétrica 800W","Triciclo Elétrico Infantil"];
-/* o material da loja mostra que vocês vendem além de iPhone: JBL, AirTag, iPad, Redmi, iMac */
-const ACES  = ["Capa Silicone MagSafe","Película 3D Cerâmica","Carregador 20W USB-C","Cabo Lightning 1m","Cabo USB-C 2m",
-               "AirPods 4","AirPods Pro 2","Apple Watch SE","Carregador MagSafe","Fone Lightning","Power Bank 10.000mAh",
-               "Suporte Veicular","JBL PartyBox 100","JBL Go 4","AirTag (rastreador)","iPad 10ª geração","iPad Pro M4",
-               "Redmi Note 13","Fonte Turbo 20W"];
-const ARMAZ = ["64GB","128GB","256GB","512GB","1TB"];
-const CORES = ["Preto","Branco","Azul","Titânio Natural","Meia-noite","Estelar","Grafite"];
-const COND  = ["Novo (lacrado)","Seminovo","Vitrine","Usado"];
+const MODELOS = ["TANK AG11","T1","M6","T3 RETRÔ","AG08","DF17","TCN BASKET","MM3"];
+/* acessório de moto entra por QUANTIDADE: não tem chassi nem quilometragem,
+   um capacete é igual ao outro. ⚠️ Lista de exemplo — troque pela da loja. */
+const ACES  = ["Capacete fechado","Capacete aberto","Baú 45 litros","Carregador reserva",
+               "Capa de cobrir moto","Alarme com controle","Par de retrovisores",
+               "Câmara de ar","Pneu dianteiro","Pneu traseiro","Bateria reserva 60V",
+               "Suporte de celular","Cadeado com trava","Luva de proteção"];
+const CORES = ["Branca","Cinza","Bege","Vinho","Preta","Vermelha","Azul","Amarela"];
+const COND  = ["Zero km","Seminova","Vitrine"];
 const NOMES = ["Ana Beatriz","Carlos Eduardo","Juliana","Rafael","Marina","Thiago","Patrícia","Lucas","Fernanda","Bruno",
                "Camila","Diego","Larissa","Rodrigo","Amanda","Gustavo","Vanessa","Felipe","Tatiane","Marcelo",
                "Renata","André","Bianca","Vinícius","Priscila","Leandro","Débora","Mateus","Sabrina","Igor"];
@@ -954,125 +946,107 @@ const FORMA = ["Pix","Cartão 18x","Cartão 12x","Cartão 6x","Carnê da loja","
 
 /* ============================================================
    CATÁLOGO DOS MODELOS
-   Armazenamentos e cores que cada geração realmente teve. É isso que faz o
-   cadastro "já dar as opções": escolheu o modelo, aparecem só as combinações
-   que existem — não dá pra cadastrar um iPhone 7 de 1TB por engano.
-   `base` = preço de referência de um aparelho em boas condições, em reais.
+   Os mesmos dados do estoque.js e do site da loja: preço de tabela, a cor da
+   foto oficial e a ficha técnica. É isso que faz o cadastro "já dar as
+   opções": escolheu o modelo, a ficha vem junto e ninguém digita 1000W errado.
+   `base` = preço de tabela da moto, em reais.
    ============================================================ */
 const CATALOGO = {
-  "iPhone 7":         {arm:["32GB","128GB","256GB"],            cor:["Preto","Prata","Dourado","Rosé","Vermelho"],                 base:  480},
-  "iPhone 7 Plus":    {arm:["32GB","128GB","256GB"],            cor:["Preto","Prata","Dourado","Rosé","Vermelho"],                 base:  620},
-  "iPhone 8":         {arm:["64GB","128GB","256GB"],            cor:["Cinza-espacial","Prata","Dourado","Vermelho"],               base:  680},
-  "iPhone 8 Plus":    {arm:["64GB","128GB","256GB"],            cor:["Cinza-espacial","Prata","Dourado","Vermelho"],               base:  850},
-  "iPhone X":         {arm:["64GB","256GB"],                    cor:["Cinza-espacial","Prata"],                                    base:  900},
-  "iPhone XR":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Coral","Amarelo","Vermelho"],        base: 1050},
-  "iPhone XS":        {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado"],                          base: 1150},
-  "iPhone XS Max":    {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado"],                          base: 1350},
-  "iPhone 11":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Verde","Amarelo","Roxo","Vermelho"],        base: 1500},
-  "iPhone 11 Pro":    {arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"],       base: 1750},
-  "iPhone 11 Pro Max":{arm:["64GB","256GB","512GB"],            cor:["Cinza-espacial","Prata","Dourado","Verde-meia-noite"],       base: 2050},
-  "iPhone 12 mini":   {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"],           base: 1650},
-  "iPhone 12":        {arm:["64GB","128GB","256GB"],            cor:["Preto","Branco","Azul","Verde","Roxo","Vermelho"],           base: 1950},
-  "iPhone 12 Pro":    {arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"],                 base: 2300},
-  "iPhone 12 Pro Max":{arm:["128GB","256GB","512GB"],           cor:["Grafite","Prata","Dourado","Azul-pacífico"],                 base: 2700},
-  "iPhone 13 mini":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"],     base: 2050},
-  "iPhone 13":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Rosa","Verde","Vermelho"],     base: 2400},
-  "iPhone 13 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Grafite","Prata","Dourado","Azul-sierra","Verde-alpino"],    base: 2900},
-  "iPhone 13 Pro Max":{arm:["128GB","256GB","512GB","1TB"],     cor:["Grafite","Prata","Dourado","Azul-sierra","Verde-alpino"],    base: 3400},
-  "iPhone 14":        {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Roxo","Amarelo","Vermelho"],   base: 2850},
-  "iPhone 14 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Meia-noite","Estelar","Azul","Roxo","Amarelo","Vermelho"],   base: 3200},
-  "iPhone 14 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Preto-espacial","Prata","Dourado","Roxo-profundo"],          base: 3800},
-  "iPhone 14 Pro Max":{arm:["128GB","256GB","512GB","1TB"],     cor:["Preto-espacial","Prata","Dourado","Roxo-profundo"],          base: 4400},
-  "iPhone 15":        {arm:["128GB","256GB","512GB"],           cor:["Preto","Azul","Verde","Amarelo","Rosa"],                     base: 3600},
-  "iPhone 15 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Preto","Azul","Verde","Amarelo","Rosa"],                     base: 4100},
-  "iPhone 15 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Natural","Titânio Azul","Titânio Branco","Titânio Preto"], base: 4900},
-  "iPhone 15 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Azul","Titânio Branco","Titânio Preto"], base: 5700},
-  "iPhone 16":        {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],   base: 4400},
-  "iPhone 16 Plus":   {arm:["128GB","256GB","512GB"],           cor:["Ultramarino","Verde-acinzentado","Rosa","Branco","Preto"],   base: 4900},
-  "iPhone 16 Pro":    {arm:["128GB","256GB","512GB","1TB"],     cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 5800},
-  "iPhone 16 Pro Max":{arm:["256GB","512GB","1TB"],             cor:["Titânio Deserto","Titânio Natural","Titânio Branco","Titânio Preto"], base: 6800},
-  "iPhone 17":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Lavanda"],                           base: 5400},
-  "iPhone 17 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 6900},
-  "iPhone 17 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 7900},
-  "iPhone 18":        {arm:["256GB","512GB"],                   cor:["Preto","Branco","Azul","Verde"],                             base: 6200},
-  "iPhone 18 Pro":    {arm:["256GB","512GB","1TB"],             cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 7800},
-  "iPhone 18 Pro Max":{arm:["256GB","512GB","1TB","2TB"],       cor:["Titânio Natural","Titânio Preto","Titânio Prata"],           base: 8900}
+  "TANK AG11": {var:["Única"], cor:["Branca"], base:11990,
+    ficha:{motor:"1000W", autonomia:"50 a 55 km", velocidade:"32 km/h", bateria:"Lítio 60V 32Ah", peso:"180 kg", recarga:"4h a 8h"}},
+  "T1": {var:["Única"], cor:["Branca"], base:12000,
+    ficha:{motor:"1000W", autonomia:"Até 70 km", velocidade:"32 km/h", bateria:"Lítio 64V 30Ah", peso:"180 kg", recarga:"6h a 7h"}},
+  "M6": {var:["Única"], cor:["Branca"], base:10990,
+    ficha:{motor:"1000W", autonomia:"Até 70 km", velocidade:"32 km/h", bateria:"Lítio 60V 32Ah", peso:"180 kg", recarga:"6h a 8h"}},
+  "MM3": {var:["Única"], cor:["Vinho"], base:10500,
+    ficha:{motor:"1000W", autonomia:"45 a 55 km", velocidade:"32 km/h", bateria:"Lítio 60V 24Ah", peso:"180 kg", recarga:"6h a 8h"}},
+  "T3 RETRÔ": {var:["Única"], cor:["Bege"], base:9990,
+    ficha:{motor:"1000W", autonomia:"60 a 70 km", velocidade:"32 km/h", bateria:"Lítio 64V 30Ah", peso:"180 kg", recarga:"6h a 7h"}},
+  "AG08": {var:["Única"], cor:["Cinza"], base:8990,
+    ficha:{motor:"1000W", autonomia:"40 a 45 km", velocidade:"32 km/h", bateria:"Lítio 60V 24Ah", peso:"200 kg", recarga:"4h a 8h"}},
+  "DF17": {var:["Única"], cor:["Branca"], base:7190,
+    ficha:{motor:"1000W", autonomia:"40 a 50 km", velocidade:"32 km/h", bateria:"Lítio 48V 20Ah", peso:"150 kg", recarga:"4h a 6h"}},
+  "TCN BASKET": {var:["Única"], cor:["Branca"], base:5200,
+    ficha:{motor:"500W", autonomia:"Até 40 km", velocidade:"—", bateria:"Chumbo-ácido 48V 12Ah", peso:"150 kg", recarga:"—"}}
 };
+/* versões: hoje toda moto tem uma só. Fica aqui porque o cadastro pergunta,
+   e no dia em que um modelo vier com duas baterias é só acrescentar. */
+const ARMAZ = ["Única"];
 
 /* Avarias e o quanto cada uma tira do preço. Valores em reais, editáveis —
    é a régua da loja, não uma tabela oficial de ninguém. */
 const AVARIAS = [
-  {k:"Tela riscada",            d: 120},
-  {k:"Tela trincada",           d: 450},
-  {k:"Vidro traseiro trincado", d: 280},
-  {k:"Marcas de uso na lateral",d:  80},
-  {k:"Câmera com risco",        d: 200},
-  {k:"Face ID não funciona",    d: 400},
-  {k:"Botão com defeito",       d: 150},
-  {k:"Bateria trocada",         d: 180},
-  {k:"Tela trocada (paralela)", d: 350},
-  {k:"Sinal de oxidação",       d: 500}
+  {k:"Risco na carenagem",         d: 250},
+  {k:"Carenagem trincada",         d: 600},
+  {k:"Bateria com autonomia baixa",d:1500},
+  {k:"Pneu gasto",                 d: 300},
+  {k:"Farol quebrado",             d: 220},
+  {k:"Retrovisor faltando",        d:  90},
+  {k:"Freio precisando de ajuste", d: 180},
+  {k:"Banco rasgado",              d: 200},
+  {k:"Chave reserva faltando",     d: 120},
+  {k:"Sinal de queda",             d: 800}
 ];
 
-/* Condição muda o preço proporcionalmente ao de referência */
-const FATOR_COND = {"Novo (lacrado)":1.00,"Vitrine":0.90,"Seminovo":0.80,"Usado":0.66};
+/* Condição muda o preço proporcionalmente ao de tabela */
+const FATOR_COND = {"Zero km":1.00,"Vitrine":0.92,"Seminova":0.82};
 
-/* Saúde da bateria: abaixo de 80% a Apple já considera desgastada */
-function fatorBateria(b){
-  if(b>=95) return 1.00;
-  if(b>=90) return 0.97;
-  if(b>=85) return 0.93;
-  if(b>=80) return 0.88;
-  return 0.80;
+/* Quilometragem: é o desgaste que o cliente pergunta antes de fechar,
+   o mesmo papel que a saúde da bateria tinha no celular. */
+function fatorKm(km){
+  if(km <=  500) return 1.00;
+  if(km <= 2000) return 0.95;
+  if(km <= 5000) return 0.90;
+  if(km <=10000) return 0.84;
+  return 0.76;
 }
 
 /* O preço sugerido, com cada desconto explicado — nada de número que cai do céu */
-function precificar({modelo,cond,bateria,avarias}){
-  const base = CATALOGO[modelo]?.base || 1000;
-  const fc = FATOR_COND[cond] ?? 0.8;
-  const fb = cond==="Novo (lacrado)" ? 1 : fatorBateria(bateria);
+function precificar({modelo,cond,km,avarias}){
+  const base = CATALOGO[modelo]?.base || 5000;
+  const fc = FATOR_COND[cond] ?? 0.82;
+  const fk = cond==="Zero km" ? 1 : fatorKm(km);
   const descAv = avarias.reduce((s,k)=>s+(AVARIAS.find(a=>a.k===k)?.d||0),0);
-  const bruto = base*fc*fb;
+  const bruto = base*fc*fk;
   const linhas = [
-    {r:`Referência do ${modelo}`, v:base},
-    {r:`Condição: ${cond}`,       v:Math.round(base*fc-base), neg:fc<1}
+    {r:`Tabela da ${modelo}`, v:base},
+    {r:`Condição: ${cond}`,   v:Math.round(base*fc-base), neg:fc<1}
   ];
-  if(cond!=="Novo (lacrado)") linhas.push({r:`Bateria ${bateria}%`, v:Math.round(base*fc*fb-base*fc), neg:fb<1});
+  if(cond!=="Zero km") linhas.push({r:`${km.toLocaleString("pt-BR")} km rodados`, v:Math.round(base*fc*fk-base*fc), neg:fk<1});
   avarias.forEach(k=>linhas.push({r:k, v:-(AVARIAS.find(a=>a.k===k)?.d||0), neg:true}));
-  return {sugerido:Math.max(100,Math.round((bruto-descAv)/10)*10), linhas};
+  return {sugerido:Math.max(500,Math.round((bruto-descAv)/10)*10), linhas};
 }
 
-/* ---- APARELHOS: cada iPhone é uma peça única (IMEI, bateria, avarias) ---- */
+/* ---- MOTOS: cada uma é peça única (chassi, quilometragem, avarias) ----
+   Duas TANK AG11 zero km parecem iguais, mas a nota fiscal e a garantia são
+   de uma delas especificamente. Por isso cada moto vira uma linha própria. */
 let proximoId = 1;
 const aparelhos = [];
 Object.keys(CATALOGO).forEach(m=>{
-  const qtd = ent(0,3);
+  const qtd = ent(1,3);
   for(let i=0;i<qtd;i++){
     const info=CATALOGO[m];
     const cond=pick(COND);
-    const bat = cond==="Novo (lacrado)" ? 100 : ent(76,100);
-    const avs = cond==="Novo (lacrado)" ? [] : (rnd()>0.55 ? [pick(AVARIAS).k] : []);
-    const {sugerido}=precificar({modelo:m,cond,bateria:bat,avarias:avs});
+    const zero = cond==="Zero km";
+    const km  = zero ? 0 : (cond==="Vitrine" ? ent(20,400) : ent(600,9000));
+    const avs = zero ? [] : (rnd()>0.6 ? [pick(AVARIAS).k] : []);
+    const {sugerido}=precificar({modelo:m,cond,km,avarias:avs});
     aparelhos.push({
-      id:proximoId++, modelo:m, arm:pick(info.arm), cor:pick(info.cor), cond,
-      bateria:bat, avarias:avs, imei:`35${ent(100000,999999)}${ent(100000,999999)}`,
-      custo:Math.round(sugerido*(0.68+rnd()*0.12)), venda:sugerido,
-      entrada:`${String(ent(1,12)).padStart(2,"0")}/08/2026`, vendido:false
+      id:proximoId++, modelo:m, arm:"Única", cor:pick(info.cor), cond,
+      km, avarias:avs, imei:`9C2${ent(100000,999999)}${ent(10000,99999)}`,
+      ficha:info.ficha,
+      custo:Math.round(sugerido*(0.70+rnd()*0.10)), venda:sugerido,
+      entrada:`${String(ent(1,28)).padStart(2,"0")}/08/2026`, vendido:false
     });
   }
 });
 
-/* ---- ESTOQUE por quantidade: acessórios e motinhas ---- */
+/* ---- ESTOQUE por quantidade: acessórios ---- */
 const estoque = [];
-MOTOS.forEach(m=>{
-  const base = ent(700,2600);
-  estoque.push({cat:"Motinha elétrica", nome:m, sub:pick(["Vermelha","Preta","Rosa","Azul"]),
-    cond:"Novo (lacrado)", qtd:ent(0,9), custo:base, venda:Math.round(base*1.42)});
-});
 ACES.forEach(a=>{
-  const base = ent(18,1500);
-  estoque.push({cat:"Acessório", nome:a, sub:pick(["Compatível 12→18","Universal","Original Apple","Linha premium"]),
-    cond:"Novo (lacrado)", qtd:ent(0,45), custo:base, venda:Math.round(base*1.75)});
+  const base = ent(25,900);
+  estoque.push({cat:"Acessório", nome:a, sub:pick(["Universal","Serve em todos os modelos","Linha reforçada","Original da fábrica"]),
+    cond:"Zero km", qtd:ent(0,30), custo:base, venda:Math.round(base*1.75)});
 });
 
 /* ---- CLIENTES ---- */
@@ -1087,7 +1061,7 @@ const clientes = Array.from({length:34},(_,i)=>{
     id:i+1, nome,
     fone:`(81) 9${ent(8000,9999)}-${ent(1000,9999)}`,
     sit:pick(SITUACAO),
-    ultimo: compras ? pick(MODELOS.slice(14)) : "—",
+    ultimo: compras ? pick(MODELOS) : "—",
     compras,
     total: compras ? compras*ent(1400,5200) : 0,
     quando: compras ? `${ent(1,28)}/0${ent(1,8)}/2026` : "—"
@@ -1099,12 +1073,12 @@ const ETAPAS = [
   {n:"Chegou no WhatsApp", d:"Primeira mensagem",        q:186, cor:"var(--f1)"},
   {n:"Qualificado",        d:"Sabe o que quer e o preço", q:124, cor:"var(--f2)"},
   {n:"Proposta enviada",   d:"Recebeu valor e condição",  q: 81, cor:"var(--f3)"},
-  {n:"Negociando troca",   d:"Vai dar o aparelho usado",  q: 47, cor:"var(--f4)"},
+  {n:"Negociando troca",   d:"Vai dar a moto usada",  q: 47, cor:"var(--f4)"},
   {n:"Venda fechada",      d:"Pagou e levou",             q: 29, cor:"var(--f5)"}
 ];
 const negocios = Array.from({length:26},(_,i)=>({
   cli:`${pick(NOMES)} ${pick(SOBRE)}`,
-  prod:pick(MODELOS.slice(20))+" · "+pick(ARMAZ),
+  prod:pick(MODELOS)+" · "+pick(CORES),
   valor:ent(2200,11500),
   etapa:Math.min(4,Math.floor(Math.pow(rnd(),1.5)*5))
 }));
@@ -1112,11 +1086,11 @@ const negocios = Array.from({length:26},(_,i)=>({
 /* ---- MOVIMENTAÇÕES ---- */
 const movs = Array.from({length:28},(_,i)=>{
   const saida = rnd()>0.38;
-  const mod = pick(MODELOS.slice(12));
+  const mod = pick(MODELOS);
   return {
     data:`${String(ent(1,12)).padStart(2,"0")}/08/2026`,
     tipo: saida?"Saída":"Entrada",
-    apar:`${mod} · ${pick(ARMAZ)}`,
+    apar:`${mod} · ${pick(CORES)}`,
     imei:`35${ent(100000,999999)}${ent(100000,999999)}`,
     quem: saida ? `${pick(NOMES)} ${pick(SOBRE)}` : pick(["Troca de cliente","Fornecedor SP","Fornecedor Recife","Compra avulsa"]),
     valor: saida ? ent(2400,9800) : ent(900,5200),
@@ -1129,7 +1103,7 @@ const movs = Array.from({length:28},(_,i)=>{
 const parcelas = Array.from({length:14},(_,i)=>{
   const atras = rnd()>0.72;
   return {
-    cli:`${pick(NOMES)} ${pick(SOBRE)}`, apar:pick(MODELOS.slice(22)),
+    cli:`${pick(NOMES)} ${pick(SOBRE)}`, apar:pick(MODELOS),
     parc:`${ent(1,10)} de 12`, valor:ent(180,890),
     venc:`${String(ent(1,28)).padStart(2,"0")}/0${ent(8,9)}/2026`,
     atras
@@ -1139,7 +1113,7 @@ const parcelas = Array.from({length:14},(_,i)=>{
 /* ---- SÉRIES ---- */
 const MESES = ["set","out","nov","dez","jan","fev","mar","abr","mai","jun","jul","ago"];
 const receita = MESES.map((m,i)=>({m, v: Math.round(48000 + i*3100 + Math.sin(i*1.3)*11000 + rnd()*9000)}));
-const topModelos = ["iPhone 13","iPhone 15","iPhone 12","iPhone 14 Pro","iPhone 11","iPhone 16","iPhone 15 Pro Max","iPhone XR"]
+const topModelos = ["TANK AG11","T1","M6","T3 RETRÔ","AG08","DF17","MM3","TCN BASKET"]
   .map(n=>({n, v:ent(4,27)})).sort((a,b)=>b.v-a.v);
 
 /* ============================================================
@@ -1231,14 +1205,14 @@ function kpi(rot,val,pe,dir,comSpark){
 }
 $("#kpis").innerHTML =
   kpi("Receita do mês", brl(receita.at(-1).v), "18,4%","up") +
-  kpi("Aparelhos vendidos", "63", "9 a mais","up") +
+  kpi("Motos vendidas", "63", "9 a mais","up") +
   kpi("Negócios no funil", negocios.length, "5 parados há +7 dias","") +
   kpi("Ticket médio", brl(4380), "3,1%","down");
 
 $("#alertas").innerHTML = `
   <div class="card hov"><div class="selo s-cr"><span class="pt"></span>Estoque zerado</div>
     <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;margin:14px 0 7px">7 produtos acabaram</div>
-    <div style="font-size:13px;color:var(--ink-2);line-height:1.5">Inclui iPhone 16 Pro Max 256GB, que teve 4 pedidos essa semana.</div>
+    <div style="font-size:13px;color:var(--ink-2);line-height:1.5">Inclui a TANK AG11, que teve 4 pedidos essa semana.</div>
     <button class="btn btn-s btn-sm" style="margin-top:16px" data-ir="estoque">Ver no estoque</button></div>
   <div class="card hov"><div class="selo s-av"><span class="pt"></span>Parado no funil</div>
     <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;margin:14px 0 7px">5 negócios sem resposta</div>
@@ -1355,20 +1329,20 @@ function pintaKpiEstoque(){
   const valorAp = ap.reduce((s,a)=>s+a.custo,0);
   const valorAc = estoque.reduce((s,i)=>s+i.qtd*i.custo,0);
   $("#kpiEstoque").innerHTML =
-    kpi("iPhones em estoque", ap.length,"cada um cadastrado individualmente","") +
+    kpi("Motos em estoque", ap.length,"cada uma cadastrada individualmente","") +
     kpi("Acessórios e motinhas", estoque.reduce((s,i)=>s+i.qtd,0),`${estoque.length} tipos diferentes`,"") +
     kpi("Dinheiro parado", brl(valorAp+valorAc),"a preço de custo","") +
-    kpi("Lucro se vender tudo", brl(ap.reduce((s,a)=>s+(a.venda-a.custo),0)),"só nos aparelhos","");
+    kpi("Lucro se vender tudo", brl(ap.reduce((s,a)=>s+(a.venda-a.custo),0)),"só nas motos","");
 }
 pintaKpiEstoque();
 
-/* abas: aparelho individual x produto por quantidade */
-let abaEstAtual="Aparelhos";
+/* abas: moto individual x produto por quantidade */
+let abaEstAtual="Motos";
 function pintaAbaEst(){
-  $("#abaEst").innerHTML=["Aparelhos","Acessórios e motinhas"].map(a=>
+  $("#abaEst").innerHTML=["Motos","Acessórios"].map(a=>
     `<button class="chip ${a===abaEstAtual?"on":""}" data-aba="${a}">${a}</button>`).join("");
-  $("#blocoAparelhos").style.display  = abaEstAtual==="Aparelhos" ? "" : "none";
-  $("#blocoAcessorios").style.display = abaEstAtual==="Aparelhos" ? "none" : "";
+  $("#blocoAparelhos").style.display  = abaEstAtual==="Motos" ? "" : "none";
+  $("#blocoAcessorios").style.display = abaEstAtual==="Motos" ? "none" : "";
 }
 pintaAbaEst();
 $("#abaEst").onclick = e => {
@@ -1382,7 +1356,7 @@ $("#abaEst").onclick = e => {
    Clicar abre a câmera (no celular) ou o seletor de arquivo (no computador).
    Com foto já anexada, o clique troca; o × ao lado remove.
    A foto tirada aqui ganha da oficial e aparece na vitrine do cliente. */
-/* Aparelho tem `id` numérico; acessório e motinha não têm, porque são
+/* Moto tem `id` numérico; acessório não tem, porque são
    controlados por quantidade. Para esses a chave é o nome do produto — assim
    a foto de um não sobrescreve a do outro. */
 function chaveFoto(p){
@@ -1405,7 +1379,7 @@ function miniFoto(p){
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-foto]");
   if(!b) return;
-  const id = b.dataset.foto;          // texto: serve para aparelho e acessório
+  const id = b.dataset.foto;          // texto: serve para moto e acessório
 
   /* já tem foto da loja? oferece trocar ou remover antes de abrir a câmera */
   if(fotoManual(id)){
@@ -1452,23 +1426,26 @@ function anexar(id){
 /* --- TABELA DE APARELHOS --- */
 let filtroAparAtual="Todos";
 function pintaFiltroApar(){
-  $("#filtroApar").innerHTML=["Todos",...COND,"Com avaria","Bateria baixa"].map(f=>
+  $("#filtroApar").innerHTML=["Todos",...COND,"Com avaria","Muito rodada"].map(f=>
     `<button class="chip ${f===filtroAparAtual?"on":""}" data-ap="${f}">${f}</button>`).join("");
 }
-function corBateria(b){ return b>=90?"var(--good)":b>=80?"var(--warning)":"var(--critical)"; }
+/* Quanto mais rodada, mais o número puxa para o vermelho. É a mesma leitura
+   rápida que a saúde da bateria dava no celular: verde passa, vermelho pede
+   conversa antes de fechar o preço. */
+function corKm(k){ return k<=2000?"var(--good)":k<=8000?"var(--warning)":"var(--critical)"; }
 function pintaAparelhos(){
   let l=emEstoque();
   if(filtroAparAtual==="Com avaria")        l=l.filter(a=>a.avarias.length);
-  else if(filtroAparAtual==="Bateria baixa") l=l.filter(a=>a.bateria<85);
+  else if(filtroAparAtual==="Muito rodada")   l=l.filter(a=>a.km>8000);
   else if(filtroAparAtual!=="Todos")         l=l.filter(a=>a.cond===filtroAparAtual);
   $("#tbAparelhos").innerHTML = l.map(a=>`<tr>
     <td><div class="prod-cel">${miniFoto(a)}<div>
-      <div class="nm">${a.modelo}</div><div class="meta">${a.arm} · ${a.cor}</div></div></div></td>
+      <div class="nm">${a.modelo}</div><div class="meta">${a.cor}${a.ficha?` · ${a.ficha.motor} · ${a.ficha.autonomia}`:""}</div></div></div></td>
     <td style="color:var(--ink-2)">${a.cond}</td>
-    <td>${a.cond==="Novo (lacrado)"
-      ? `<span style="color:var(--ink-3)">lacrado</span>`
-      : `<div class="bat-cel"><div class="bat-barra"><i style="width:${a.bateria}%;background:${corBateria(a.bateria)}"></i></div>
-         <span style="font-variant-numeric:tabular-nums">${a.bateria}%</span></div>`}</td>
+    <td>${a.cond==="Zero km"
+      ? `<span style="color:var(--ink-3)">zero km</span>`
+      : `<div class="bat-cel"><div class="bat-barra"><i style="width:${Math.min(100,Math.round(a.km/150))}%;background:${corKm(a.km)}"></i></div>
+         <span style="font-variant-numeric:tabular-nums">${a.km.toLocaleString("pt-BR")} km</span></div>`}</td>
     <td>${a.avarias.length ? a.avarias.map(v=>`<span class="tag-av">${v}</span>`).join("")
                            : `<span style="color:var(--ink-3);font-size:12px">sem avaria</span>`}</td>
     <td style="color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:12px">${a.imei}</td>
@@ -1476,7 +1453,7 @@ function pintaAparelhos(){
     <td class="num forte">${brl(a.venda)}</td>
     <td class="num lucro">${brl(a.venda-a.custo)}</td>
     <td><button class="btn btn-p btn-sm" data-vender="${a.id}">Vender</button></td></tr>`).join("")
-    || `<tr><td colspan="9" style="text-align:center;color:var(--ink-3);padding:36px">nenhum aparelho nesse filtro</td></tr>`;
+    || `<tr><td colspan="9" style="text-align:center;color:var(--ink-3);padding:36px">nenhuma moto nesse filtro</td></tr>`;
 }
 pintaFiltroApar(); pintaAparelhos();
 $("#filtroApar").onclick = e => {
@@ -1547,7 +1524,7 @@ function rosca(dados, sufixo){
 function pintaRoscas(){
   const custoAp = emEstoque().reduce((s,a)=>s+a.custo,0);
   const porCat=[
-    {n:"iPhone",           v:custoAp,                                                                    c:"var(--f1)"},
+    {n:"Motos",            v:custoAp,                                                                    c:"var(--f1)"},
     {n:"Motinha elétrica", v:estoque.filter(e=>e.cat==="Motinha elétrica").reduce((s,e)=>s+e.qtd*e.custo,0), c:"var(--f4)"},
     {n:"Acessório",        v:estoque.filter(e=>e.cat==="Acessório").reduce((s,e)=>s+e.qtd*e.custo,0),        c:"var(--f6)"}
   ].map(d=>({...d, rot:brl(d.v)})).filter(d=>d.v>0);
@@ -1555,7 +1532,7 @@ function pintaRoscas(){
 
   const porCond=COND.map((c,i)=>{
     const v=emEstoque().filter(a=>a.cond===c).length;
-    return {n:c, v, rot:`${v} ${v===1?"aparelho":"aparelhos"}`, c:["var(--f1)","var(--f3)","var(--f4)","var(--f6)"][i]};
+    return {n:c, v, rot:`${v} ${v===1?"moto":"motos"}`, c:["var(--f1)","var(--f3)","var(--f4)","var(--f6)"][i]};
   }).filter(d=>d.v>0);
   $("#vizCondicao").innerHTML=rosca(porCond,"APARELHOS");
 }
@@ -1571,7 +1548,7 @@ $("#filtroEst").onclick = e => {
 function pintaMovs(){
 const ents2=movs.filter(m=>m.tipo==="Entrada"), sais2=movs.filter(m=>m.tipo==="Saída");
 $("#kpiMov").innerHTML =
-  kpi("Saídas do mês", sais2.length,"aparelhos vendidos","") +
+  kpi("Saídas do mês", sais2.length,"motos vendidas","") +
   kpi("Entradas do mês", ents2.length,"comprados ou trocados","") +
   kpi("Saiu em valor", brl(sais2.reduce((s,m)=>s+m.valor,0)),"","") +
   kpi("Entrou em valor", brl(ents2.reduce((s,m)=>s+m.valor,0)),"","");
@@ -1652,14 +1629,14 @@ $("#tbParcelas").innerHTML = parcelas.map(p=>`<tr>
    ASSISTÊNCIA TÉCNICA
    ============================================================ */
 const ETAPAS_OS=[
-  {n:"Recebido",         d:"Aparelho na loja, aguardando avaliação", cor:"var(--f1)"},
+  {n:"Recebido",         d:"Moto na loja, aguardando avaliação", cor:"var(--f1)"},
   {n:"Orçamento enviado",d:"Cliente vai decidir se aprova",          cor:"var(--f2)"},
   {n:"Aprovado",         d:"Pode consertar",                          cor:"var(--f3)"},
   {n:"Na bancada",       d:"Técnico trabalhando agora",               cor:"var(--f4)"},
   {n:"Aguardando peça",  d:"Parado até a peça chegar",                cor:"var(--f5)"},
   {n:"Pronto",           d:"Consertado, esperando o cliente buscar",  cor:"var(--f6)"}
 ];
-const DEFEITOS=["Tela quebrada","Não liga","Bateria viciada","Não carrega","Molhado (oxidado)","Câmera sem foco",
+const DEFEITOS=["Não liga","Bateria não segura carga","Não carrega na tomada","Motor sem força","Freio falhando","Pneu furado",
   "Alto-falante mudo","Botão power travado","Face ID não funciona","Troca de conector","Vidro traseiro trincado"];
 const TECNICOS=["Gêmeo 1","Gêmeo 2","Bancada externa"];
 const ordens = Array.from({length:19},(_,i)=>{
@@ -1683,7 +1660,7 @@ const ordens = Array.from({length:19},(_,i)=>{
 $("#tagOS").textContent = ordens.filter(o=>o.etapa<5).length;
 
 $("#kpiOS").innerHTML =
-  kpi("Aparelhos na loja", ordens.filter(o=>o.etapa<5).length,"em conserto agora","") +
+  kpi("Motos na loja", ordens.filter(o=>o.etapa<5).length,"em conserto agora","") +
   kpi("Prontos p/ entregar", ordens.filter(o=>o.etapa===5).length,"avisar o cliente","") +
   kpi("Parados por peça", ordens.filter(o=>o.etapa===4).length,"aguardando fornecedor","") +
   kpi("A receber em serviço", brl(ordens.filter(o=>o.etapa>=2).reduce((s,o)=>s+o.orc,0)),"orçamentos aprovados","");
@@ -1694,7 +1671,7 @@ $("#etapasOS").innerHTML = ETAPAS_OS.map((e,i)=>{
   return `<div class="et">
     <div class="et-nome">${e.n}<small>${e.d}</small></div>
     <div class="et-bar"><div class="et-fill" style="background:${e.cor}" data-w="${maxOS?(q/maxOS)*100:0}"><span>${q}</span></div></div>
-    <div class="et-conv">${q} ${q===1?"aparelho":"aparelhos"}</div></div>`;
+    <div class="et-conv">${q} ${q===1?"moto":"motos"}</div></div>`;
 }).join("");
 
 let filtroOSAtual="Todas";
@@ -1734,7 +1711,7 @@ $("#filtroOS").onclick = e => {
 /* ============================================================
    NOTA / COMPROVANTE (imprimível)
    ============================================================ */
-const LOJA={nome:"Gêmeos do iPhone",end:"Carpina · Goiana — Pernambuco",fone:"(81) 9xxxx-xxxx",cnpj:"00.000.000/0001-00"};
+const LOJA={nome:"Gêmeos Motors",end:"Goiana · Carpina — Pernambuco",fone:"(81) 99386-9767",cnpj:"00.000.000/0001-00"};
 function linhaNota(desc,sub,val){
   return `<tr><td style="padding:9px 0;border-bottom:1px solid #e6e6e6">
     <div style="font-weight:600">${desc}</div>
@@ -1746,22 +1723,22 @@ function abrirNota(tipo,dado){
   const num = tipo==="os" ? dado.os : `V-${ent(10000,99999)}`;
   let itens="",total=0,rodape="";
   if(tipo==="os"){
-    itens = linhaNota(`Serviço técnico — ${dado.def}`,`${dado.apar} · IMEI ${dado.imei}`,brlc(dado.orc));
+    itens = linhaNota(`Serviço técnico — ${dado.def}`,`${dado.apar} · Chassi ${dado.imei}`,brlc(dado.orc));
     total = dado.orc;
     rodape = `<p style="margin-top:14px">Garantia do serviço: <b>${dado.garantia}</b>, contados da retirada.
       A garantia cobre apenas o serviço descrito acima e não cobre danos por queda, líquido ou mau uso.</p>
       <p style="margin-top:8px">Técnico responsável: <b>${dado.tec}</b> · Entrada em ${dado.entrada}</p>`;
   } else {
-    itens = linhaNota(dado.apar,`IMEI ${dado.imei} · ${dado.forma}`,brlc(dado.valor));
+    itens = linhaNota(dado.apar,`Chassi ${dado.imei} · ${dado.forma}`,brlc(dado.valor));
     total = dado.valor;
     rodape = `<p style="margin-top:14px">Vendedor: <b>${dado.vend}</b> · Forma de pagamento: <b>${dado.forma}</b></p>
       <p style="margin-top:8px">Aparelho conferido e testado no ato da entrega.
-      Garantia de <b>90 dias</b> para seminovos e <b>1 ano Apple</b> para lacrados.</p>`;
+      Garantia de <b>90 dias</b> da loja para seminovas e a <b>garantia de fábrica</b> nas zero km.</p>`;
   }
   $("#modal").innerHTML = `
     <div id="notaImp" style="background:#fff;color:#111;border-radius:14px;padding:30px;font-size:13px;line-height:1.5">
       <div style="display:flex;align-items:flex-start;gap:16px;border-bottom:2px solid #111;padding-bottom:16px">
-        <div style="background:#000;border-radius:8px;padding:9px 12px"><img src="logo-gemeos.png" alt="" style="height:30px;display:block"></div>
+        <div style="background:#000;border-radius:8px;padding:9px 12px"><img src="fotos/logo-gemeos-motors.webp" alt="" style="height:30px;display:block"></div>
         <div style="flex:1">
           <div style="font-weight:700;font-size:15px">${LOJA.nome}</div>
           <div style="color:#666;font-size:11.5px;margin-top:3px">${LOJA.end}<br>${LOJA.fone} · CNPJ ${LOJA.cnpj}</div>
@@ -1953,14 +1930,14 @@ function autocomplete(inputEl, listaEl, fonte, aoEscolher){
 function wizEntrada(){
   /* vendaManual: enquanto você não digitar um preço próprio, o campo acompanha o
      cálculo. Assim que digitar, o sistema para de sobrescrever o seu número. */
-  const st = {modelo:null, arm:null, cor:null, cond:"Seminovo", bateria:92, avarias:[],
+  const st = {modelo:null, arm:null, cor:null, cond:"Seminova", km:1500, avarias:[],
               imei:"", custo:"", venda:null, vendaManual:false};
 
   $("#modal").innerHTML = `
-    <h3>Dar entrada em aparelho</h3>
+    <h3>Dar entrada em moto</h3>
     <div class="dsc">Comece digitando o modelo. O resto o sistema já sugere.</div>
     <div class="passo">
-      <div class="passo-n"><i>1</i><b>Qual aparelho?</b><small>digite "15 pro", "xr", "13"…</small></div>
+      <div class="passo-n"><i>1</i><b>Qual moto?</b><small>digite "tank", "t1", "retro"…</small></div>
       <div class="autoc">
         <input id="wModelo" placeholder="Buscar modelo do iPhone…" autocomplete="off">
         <div class="autoc-lista" id="wLista"></div>
@@ -1985,8 +1962,8 @@ function wizEntrada(){
     const info=CATALOGO[st.modelo];
     $("#wResto").innerHTML = `
       <div class="passo">
-        <div class="passo-n"><i>2</i><b>Memória e cor</b><small>só o que esse modelo teve</small></div>
-        <div class="escolhas" id="wArm">${info.arm.map(a=>`<button class="esc ${a===st.arm?"on":""}" data-arm="${a}">${a}</button>`).join("")}</div>
+        <div class="passo-n"><i>2</i><b>Versão e cor</b><small>só o que esse modelo tem</small></div>
+        <div class="escolhas" id="wArm">${info.var.map(a=>`<button class="esc ${a===st.arm?"on":""}" data-arm="${a}">${a}</button>`).join("")}</div>
         <div class="escolhas" style="margin-top:9px" id="wCor">${info.cor.map(c=>`<button class="esc ${c===st.cor?"on":""}" data-cor="${c}">${c}</button>`).join("")}</div>
       </div>
       <div class="passo">
@@ -1995,10 +1972,10 @@ function wizEntrada(){
       </div>
       <div class="passo">
         <div id="wUsado">
-          <div class="passo-n"><i>4</i><b>Saúde da bateria</b><small>aparece no iPhone em Ajustes › Bateria</small></div>
+          <div class="passo-n"><i>4</i><b>Quilometragem</b><small>o que está marcado no painel da moto</small></div>
           <div class="bat">
-            <input type="range" id="wBat" min="60" max="100" value="${st.bateria}">
-            <div class="bat-v" id="wBatV">${st.bateria}%</div>
+            <input type="range" id="wBat" min="0" max="15000" step="100" value="${st.km}">
+            <div class="bat-v" id="wBatV">${st.km.toLocaleString("pt-BR")} km</div>
             <span class="bat-sel" id="wBatSel"></span>
           </div>
           <div class="passo-n" style="margin-top:22px"><i>5</i><b>Tem alguma avaria?</b><small>cada uma abate do preço</small></div>
@@ -2008,9 +1985,9 @@ function wizEntrada(){
         </div>
       </div>
       <div class="passo">
-        <div class="passo-n"><i>6</i><b>IMEI e o que você pagou</b></div>
-        <div class="campo"><label>IMEI</label><input id="wImei" placeholder="digite ou bipe o código" autocomplete="off"></div>
-        <div class="campo"><label>Quanto você pagou nesse aparelho</label><input id="wCusto" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"></div>
+        <div class="passo-n"><i>6</i><b>Chassi e o que você pagou</b></div>
+        <div class="campo"><label>Chassi</label><input id="wImei" placeholder="o número gravado na moto" autocomplete="off"></div>
+        <div class="campo"><label>Quanto você pagou nessa moto</label><input id="wCusto" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"></div>
       </div>
       <div class="resumo" id="wResumo"></div>`;
     aplicarCond(); atualizarResumo();
@@ -2021,7 +1998,7 @@ function wizEntrada(){
       $$("#wCor .esc").forEach(x=>x.classList.toggle("on",x===b));};
     $("#wCond").onclick = e=>{const b=e.target.closest("[data-cond]"); if(!b)return; st.cond=b.dataset.cond;
       $$("#wCond .esc").forEach(x=>x.classList.toggle("on",x===b)); aplicarCond(); atualizarResumo();};
-    $("#wBat").oninput  = e=>{st.bateria=+e.target.value; $("#wBatV").textContent=st.bateria+"%"; atualizarResumo();};
+    $("#wBat").oninput  = e=>{st.km=+e.target.value; $("#wBatV").textContent=st.km.toLocaleString("pt-BR")+" km"; atualizarResumo();};
     $("#wAv").onclick   = e=>{const b=e.target.closest("[data-av]"); if(!b)return;
       const k=b.dataset.av;
       st.avarias = st.avarias.includes(k) ? st.avarias.filter(x=>x!==k) : [...st.avarias,k];
@@ -2031,9 +2008,9 @@ function wizEntrada(){
   }
 
   function aplicarCond(){
-    const lacrado = st.cond==="Novo (lacrado)";
-    $("#wUsado").style.display = lacrado ? "none" : "";
-    if(lacrado) { st.bateria=100; st.avarias=[]; }
+    const zero = st.cond==="Zero km";
+    $("#wUsado").style.display = zero ? "none" : "";
+    if(zero) { st.km=0; st.avarias=[]; }
   }
 
   function atualizarResumo(){
@@ -2044,9 +2021,10 @@ function wizEntrada(){
     const lucro = st.venda - custo;
     const sel = $("#wBatSel");
     if(sel){
-      const b=st.bateria;
-      sel.textContent = b>=90?"ótima":b>=85?"boa":b>=80?"aceitável":"desgastada — Apple recomenda troca";
-      sel.style.color = corBateria(b); sel.style.borderColor="currentColor";
+      const k=st.km;
+      sel.textContent = k<=500?"praticamente nova":k<=2000?"pouco rodada":k<=5000?"uso normal":
+                        k<=10000?"bastante rodada":"muito rodada — confira a bateria";
+      sel.style.color = corKm(k); sel.style.borderColor="currentColor";
     }
     $("#wResumo").innerHTML =
       linhas.map(l=>`<div class="res-l"><span>${l.r}</span>
@@ -2054,10 +2032,10 @@ function wizEntrada(){
       `<div class="res-l total"><span>Preço de venda sugerido</span><span>${brl(sugerido)}</span></div>
        <div class="campo" style="margin-top:14px"><label>Quer vender por outro valor?</label>
          <input id="wVenda" value="${st.venda}" inputmode="numeric" autocomplete="off"></div>
-       ${custo?`<div class="res-l" style="margin-top:10px"><span>Seu lucro nesse aparelho</span>
+       ${custo?`<div class="res-l" style="margin-top:10px"><span>Seu lucro nessa moto</span>
          <span class="${lucro>0?"lucro":"desconto"}">${brl(lucro)}</span></div>`:""}
        <div class="res-nota">O valor é uma sugestão calculada a partir da referência do modelo, da condição,
-       da bateria e das avarias marcadas. Você manda — pode trocar acima.</div>`;
+       da quilometragem e das avarias marcadas. Você manda — pode trocar acima.</div>`;
     $("#wVenda").oninput = e=>{
       const v = +e.target.value.replace(/\D/g,"");
       st.vendaManual = e.target.value.trim() !== "";
@@ -2076,7 +2054,7 @@ function wizEntrada(){
     const {sugerido}=precificar(st);
     aparelhos.push({
       id:proximoId++, modelo:st.modelo, arm:st.arm, cor:st.cor, cond:st.cond,
-      bateria:st.cond==="Novo (lacrado)"?100:st.bateria, avarias:[...st.avarias],
+      km:st.cond==="Zero km"?0:st.km, avarias:[...st.avarias],
       imei:st.imei, custo:+st.custo||0, venda:st.venda||sugerido,
       entrada:"12/08/2026", vendido:false
     });
@@ -2093,10 +2071,10 @@ function wizEntrada(){
 function wizVenda(idPre){
   const st = {ap:null, cliente:"", preco:0, forma:"Pix", parcelas:1, trocaTexto:""};
   $("#modal").innerHTML = `
-    <h3>Vender aparelho</h3>
-    <div class="dsc">Ache o aparelho pelo modelo ou pelo IMEI. O preço já vem do cadastro.</div>
+    <h3>Vender moto</h3>
+    <div class="dsc">Ache a moto pelo modelo ou pelo chassi. O preço já vem do cadastro.</div>
     <div class="passo">
-      <div class="passo-n"><i>1</i><b>Qual aparelho está saindo?</b><small>só o que está em estoque</small></div>
+      <div class="passo-n"><i>1</i><b>Qual moto está saindo?</b><small>só o que está em estoque</small></div>
       <div class="autoc">
         <input id="vBusca" placeholder="Buscar por modelo ou IMEI…" autocomplete="off">
         <div class="autoc-lista" id="vLista"></div>
@@ -2112,7 +2090,7 @@ function wizVenda(idPre){
   autocomplete($("#vBusca"), $("#vLista"),
     q => emEstoque().filter(a=>(`${a.modelo} ${a.arm} ${a.cor} ${a.imei}`).toLowerCase().includes(q))
           .map(a=>({titulo:`${a.modelo} · ${a.arm}`,
-                    sub:`${a.cor} · ${a.cond}${a.cond!=="Novo (lacrado)"?` · bateria ${a.bateria}%`:""}${a.avarias.length?` · ${a.avarias.length} avaria(s)`:""}`,
+                    sub:`${a.cor} · ${a.cond}${a.cond!=="Zero km"?` · ${a.km.toLocaleString("pt-BR")} km`:""}${a.avarias.length?` · ${a.avarias.length} avaria(s)`:""}`,
                     det:brl(a.venda), valor:a})),
     o => { st.ap=o.valor; st.preco=o.valor.venda; $("#vBusca").value=`${o.valor.modelo} · ${o.valor.arm} · ${o.valor.imei}`; montar(); });
 
@@ -2145,7 +2123,7 @@ function wizVenda(idPre){
         </div>
       </div>
       <div class="passo">
-        <div class="passo-n"><i>5</i><b>Entrou aparelho na troca?</b><small>opcional</small></div>
+        <div class="passo-n"><i>5</i><b>Entrou moto na troca?</b><small>opcional</small></div>
         <div class="campo"><input id="vTroca" placeholder="Ex.: iPhone 11 64GB — cadastrar depois" autocomplete="off"></div>
       </div>
       <div class="resumo" id="vResumo"></div>`;
@@ -2171,7 +2149,7 @@ function wizVenda(idPre){
     const parc = st.parcelas>1 ? st.preco/st.parcelas : 0;
     $("#vResumo").innerHTML=`
       <div class="res-l"><span>${a.modelo} · ${a.arm} · ${a.cor}</span><span>${a.cond}</span></div>
-      <div class="res-l"><span>Você pagou nesse aparelho</span><span>${brl(a.custo)}</span></div>
+      <div class="res-l"><span>Você pagou nessa moto</span><span>${brl(a.custo)}</span></div>
       <div class="res-l total"><span>Venda</span><span>${brl(st.preco)}</span></div>
       ${parc?`<div class="res-l"><span>${st.parcelas}x de</span><span>${brlc(parc)}</span></div>`:""}
       <div class="res-l"><span>Seu lucro nessa venda</span>
@@ -2224,13 +2202,13 @@ const MODAIS={
     c:[["Categoria","select",["iPhone","Motinha elétrica","Acessório","Outro"]],
        ["Nome do produto","text","Ex.: iPhone 18 Pro Max"],
        ["Armazenamento / variação","text","256GB · Titânio Natural"],
-       ["Condição","select",["Novo (lacrado)","Seminovo","Vitrine","Usado"]],
+       ["Condição","select",["Zero km","Seminova","Vitrine"]],
        ["Custo (o que você pagou)","text","R$ 0,00"],
        ["Preço de venda","text","R$ 0,00"],
        ["Quantidade inicial","text","0"]]},
-  entrada:{t:"Dar entrada em aparelho",d:"Aparelho comprado de fornecedor, de cliente ou recebido em troca.",
+  entrada:{t:"Dar entrada em moto",d:"Moto comprada de fornecedor, de cliente ou recebida em troca.",
     c:[["Produto","select",["iPhone 15 Pro Max","iPhone 14","iPhone 13","Outro (cadastrar)"]],
-       ["IMEI","text","35xxxxxxxxxxxxx"],["Condição","select",["Novo (lacrado)","Seminovo","Vitrine","Usado"]],
+       ["Chassi","text","9C2xxxxxxxxxxx"],["Condição","select",["Zero km","Seminova","Vitrine"]],
        ["Origem","select",["Fornecedor","Troca de cliente","Compra avulsa"]],
        ["Valor pago","text","R$ 0,00"],["Data","text","12/08/2026"]]},
   saida:{t:"Registrar saída (venda)",d:"Aparelho que sai da loja — vendido, trocado ou devolvido.",
@@ -2238,7 +2216,7 @@ const MODAIS={
        ["Cliente","select",["Cliente cadastrado…","Novo cliente"]],
        ["Valor da venda","text","R$ 0,00"],
        ["Forma de pagamento","select",["Pix","Cartão 12x","Cartão 6x","Carnê da loja","Dinheiro","Entrada + Pix"]],
-       ["Entrou aparelho na troca?","select",["Não","Sim — cadastrar entrada"]],
+       ["Entrou moto na troca?","select",["Não","Sim — cadastrar entrada"]],
        ["Vendedor","select",["Você","Gêmeo 1","Gêmeo 2","Balcão"]]]},
   cliente:{t:"Novo cliente",d:"Também dá para importar direto do Kommo depois que a integração estiver ligada.",
     c:[["Nome completo","text","Nome do cliente"],["WhatsApp","text","(83) 9xxxx-xxxx"],
@@ -2256,7 +2234,7 @@ const MODAIS={
        ["Garantia do serviço","select",["90 dias","30 dias","Sem garantia"]]]},
   orcamento:{t:"Fazer orçamento",d:"Valor a enviar para o cliente aprovar antes de consertar.",
     c:[["Ordem de serviço","select",["OS-2600","OS-2601","OS-2602","Outra…"]],
-       ["Peça necessária","text","Ex.: tela original, bateria"],
+       ["Peça necessária","text","Ex.: bateria de lítio, controlador"],
        ["Custo da peça","text","R$ 0,00"],
        ["Mão de obra","text","R$ 0,00"],
        ["Prazo estimado","select",["Mesmo dia","1 a 2 dias","3 a 5 dias","Depende da peça"]]]},

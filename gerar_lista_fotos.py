@@ -1,12 +1,27 @@
-﻿import os, json
+import os, json
 pasta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fotos")
-todos = sorted(f for f in os.listdir(pasta) if f.lower().endswith((".webp", ".png", ".jpg", ".jpeg")))
+
+# Percorre fotos/ e as subpastas (motos/, loja/), porque cada linha da loja tem
+# a sua. O nome guardado e relativo a fotos/ — "motos/t1.webp" — que e
+# exatamente o que fotoDe() procura depois de tirar o prefixo "fotos/".
+# Pastas com _ na frente sao arquivo morto (ex.: _apple, do sistema antigo de
+# celular) e nao entram.
+todos = []
+for raiz, dirs, arquivos in os.walk(pasta):
+    dirs[:] = [d for d in dirs if not d.startswith("_")]
+    for f in arquivos:
+        if f.lower().endswith((".webp", ".png", ".jpg", ".jpeg")):
+            rel = os.path.relpath(os.path.join(raiz, f), pasta).replace(os.sep, "/")
+            todos.append(rel)
+todos.sort()
+
 webps = {os.path.splitext(f)[0] for f in todos if f.lower().endswith(".webp")}
-# Um PNG que já tem .webp gêmeo NÃO entra na lista: ele fica só nesta máquina
-# (está no .gitignore), então listá-lo faria o site procurar, depois de clonar,
-# um arquivo que não existe — e cair no contorno sem necessidade.
+# Um PNG que ja tem .webp gemeo NAO entra na lista: ele fica so nesta maquina
+# (esta no .gitignore), entao lista-lo faria o site procurar, depois de clonar,
+# um arquivo que nao existe — e cair no contorno sem necessidade.
 arqs = [f for f in todos
         if f.lower().endswith(".webp") or os.path.splitext(f)[0] not in webps]
+
 cab = """/* ============================================================
    LISTA DAS FOTOS QUE EXISTEM NA PASTA fotos/
    ------------------------------------------------------------
