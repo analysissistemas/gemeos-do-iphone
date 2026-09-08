@@ -1,16 +1,19 @@
 # Gêmeos Motors — Sistema da loja
 
 Sistema de gestão da **Gêmeos Motors** (Goiana e Carpina, Pernambuco):
-venda de **motos e triciclos elétricos**, acessórios e assistência técnica
-própria.
+venda de **motos e triciclos elétricos**, **compra, venda e repasse de moto a
+combustão e de carro**, acessórios e assistência técnica própria.
 
 > **Antes era a Gêmeos Motors.** Em 08/09/2026 os donos passaram o sistema
 > para a loja de moto elétrica. O sistema de celular está guardado inteiro na
 > branch `celulares-apple` — nada foi perdido.
 
 > **Estado atual: protótipo visual.** Todas as telas existem e funcionam de
-> navegar. Os **modelos, preços e ficha técnica são reais** (vieram do site
-> gemeosmotors.com.br), mas o estoque, os clientes e o caixa são **simulados** —
+> navegar. Na linha **elétrica**, os modelos, preços e ficha técnica são
+> **reais** (vieram do site gemeosmotors.com.br). Já os modelos de **carro e
+> moto a combustão são exemplo** — a loja faz esse repasse, mas não publica
+> catálogo, então o preço sai do cadastro. Estoque, clientes e caixa são
+> **simulados** —
 > inventados pelo próprio arquivo quando você abre. Nada está conectado ao
 > Kommo, ao WhatsApp nem a um banco de dados ainda. Serve para você ver o
 > sistema de pé e decidir o que muda antes de valer a pena programar o
@@ -88,8 +91,8 @@ que abre em qualquer celular ou computador.
 | **Visão Geral** | Resumo do dia: receita, aparelhos vendidos, o que está travado |
 | **Funil de Vendas** | Cada negócio, da primeira mensagem no WhatsApp até a venda fechada |
 | **Clientes (CRM)** | Quem já comprou, quem está negociando, quem tem parcela atrasada |
-| **Estoque** | As 8 motos e o triciclo, mais acessórios; zero km x seminova |
-| **Entradas e Saídas** | Toda moto que entra ou sai, com chassi e forma de pagamento |
+| **Estoque** | As 8 motos elétricas, o triciclo, motos a combustão, carros e acessórios; filtro por tipo e por condição |
+| **Entradas e Saídas** | Todo veículo que entra ou sai, com placa ou chassi e forma de pagamento |
 | **Assistência Técnica** | Ordem de serviço: da bancada até a entrega, com orçamento e garantia |
 | **Financeiro** | Recebido, a receber, atrasado, e as parcelas em aberto |
 

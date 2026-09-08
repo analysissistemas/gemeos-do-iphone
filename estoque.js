@@ -41,6 +41,10 @@ const _pick = a => a[Math.floor(_rnd()*a.length)];
    cor   = a cor da foto oficial. Acrescente na lista as outras que a loja tiver.
    ficha = o que o cliente pergunta antes de qualquer outra coisa.
    video = id do vídeo no YouTube, quando a loja gravou um daquele modelo. */
+/* eletrico:true é o que libera os selos "sem CNH" e "sem IPVA" na vitrine.
+   genero define se a tela escreve "seminova" ou "seminovo". */
+const GENERO = {moto:"f", triciclo:"m", carro:"m", acessorio:"m"};
+
 const CATALOGO = {
   "TANK AG11": {
     var:["Única"], cor:["Branca"], base:11990, tipo:"Moto elétrica", video:"iHcO_WgTwPA",
@@ -97,6 +101,89 @@ const CAT_TRICICLO = {
   }
 };
 
+/* ---------- MOTOS A COMBUSTÃO ----------
+   A loja não vende só elétrica: o Instagram anuncia "compra, venda e repasse
+   de veículos", e moto de gasolina é boa parte disso. São todas de repasse —
+   entram usadas, com placa, ano e quilometragem de verdade.
+
+   ⚠️ EXEMPLO. Estes modelos e valores são um ponto de partida para a tela não
+   nascer vazia. O site da loja não lista essa linha, então NÃO existe preço
+   oficial aqui: quem define é o cadastro, moto por moto. O valor de tabela
+   abaixo é só a referência de onde o cálculo parte.
+
+   ATENÇÃO, e isso não é detalhe: moto a combustão PRECISA de CNH, PAGA IPVA e
+   PRECISA de emplacamento. O contrário de tudo que a vitrine promete na
+   elétrica. Por isso `eletrico:false` — é ele que apaga aqueles selos. */
+const CAT_MOTO_COMB = {
+  "Honda CG 160 Fan": {
+    var:["Única"], cor:["Preta","Vermelha","Branca"], base:14500,
+    tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"162,7 cc", cambio:"5 marchas", combustivel:"Flex",
+           partida:"Elétrica", consumo:"Cerca de 45 km/l", freio:"Disco / tambor"}
+  },
+  "Honda Biz 125": {
+    var:["Única"], cor:["Vermelha","Branca","Preta"], base:13900,
+    tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"124,9 cc", cambio:"4 marchas", combustivel:"Flex",
+           partida:"Elétrica", consumo:"Cerca de 50 km/l", freio:"Disco / tambor"}
+  },
+  "Honda POP 110i": {
+    var:["Única"], cor:["Vermelha","Preta"], base:10900,
+    tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"109,1 cc", cambio:"4 marchas", combustivel:"Flex",
+           partida:"Elétrica", consumo:"Cerca de 55 km/l", freio:"Tambor"}
+  },
+  "Yamaha Factor 150": {
+    var:["Única"], cor:["Azul","Preta","Vermelha"], base:15900,
+    tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"149,7 cc", cambio:"5 marchas", combustivel:"Flex",
+           partida:"Elétrica", consumo:"Cerca de 42 km/l", freio:"Disco / tambor"}
+  },
+  "Honda Titan 160": {
+    var:["Única"], cor:["Vermelha","Preta","Prata"], base:16500,
+    tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"162,7 cc", cambio:"5 marchas", combustivel:"Flex",
+           partida:"Elétrica", consumo:"Cerca de 43 km/l", freio:"Disco / disco"}
+  }
+};
+
+/* ---------- CARROS ----------
+   Também de repasse. Mesma regra: ⚠️ modelos e valores de EXEMPLO, o preço
+   real sai do cadastro de cada carro, porque em carro usado o ano e o estado
+   mandam mais que o modelo. Carro tambem precisa de CNH e paga IPVA. */
+const CAT_CARRO = {
+  "Fiat Uno": {
+    var:["Única"], cor:["Branco","Prata","Vermelho","Preto"], base:32000,
+    tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 Fire", cambio:"Manual, 5 marchas", combustivel:"Flex",
+           portas:"4 portas", consumo:"Cerca de 12 km/l", direcao:"Mecânica"}
+  },
+  "Volkswagen Gol": {
+    var:["Única"], cor:["Branco","Prata","Preto"], base:38000,
+    tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 MPI", cambio:"Manual, 5 marchas", combustivel:"Flex",
+           portas:"4 portas", consumo:"Cerca de 13 km/l", direcao:"Hidráulica"}
+  },
+  "Chevrolet Onix": {
+    var:["Única"], cor:["Branco","Prata","Preto","Vermelho"], base:52000,
+    tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 Turbo", cambio:"Manual, 6 marchas", combustivel:"Flex",
+           portas:"4 portas", consumo:"Cerca de 14 km/l", direcao:"Elétrica"}
+  },
+  "Hyundai HB20": {
+    var:["Única"], cor:["Branco","Prata","Preto"], base:49000,
+    tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 Flex", cambio:"Manual, 5 marchas", combustivel:"Flex",
+           portas:"4 portas", consumo:"Cerca de 13 km/l", direcao:"Elétrica"}
+  },
+  "Renault Kwid": {
+    var:["Única"], cor:["Branco","Prata","Laranja"], base:41000,
+    tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 SCe", cambio:"Manual, 5 marchas", combustivel:"Flex",
+           portas:"4 portas", consumo:"Cerca de 15 km/l", direcao:"Elétrica"}
+  }
+};
+
 /* ---------- ACESSÓRIOS ----------
    ⚠️ EXEMPLO. Estes itens e preços são um ponto de partida para a tela não
    nascer vazia — troque pelos que a loja vende de verdade. Entram por
@@ -110,11 +197,22 @@ const CAT_ACES = {
   "Alarme com controle":       {var:["Única"], cor:["Preto"],           base: 150}
 };
 
-/* ---------- CONDIÇÃO E DESGASTE ---------- */
-const COND = ["Zero km","Seminova","Vitrine"];
+/* ---------- CONDIÇÃO E DESGASTE ----------
+   A condição é guardada no MASCULINO e traduzida na hora de mostrar. Sem isso
+   a tela escreve "moto seminovo" e "carro seminova" — erro de concordância na
+   cara do cliente, numa loja que vende confiança. O gênero vem do catálogo:
+   a moto é "ela", o triciclo e o carro são "ele". */
+const COND = ["Zero km","Seminovo","Vitrine","Usado"];
 
-/* Fator por condição. A moto de vitrine rodou pouco, mas rodou. */
-const FATOR_COND = {"Zero km":1.00, "Vitrine":0.92, "Seminova":0.82};
+/** Condição escrita do jeito certo para aquele produto. */
+function condRotulo(cond, genero){
+  if(genero !== "f") return cond;
+  return {"Seminovo":"Seminova", "Usado":"Usada"}[cond] || cond;
+}
+
+/* Fator por condição. O de vitrine rodou pouco, mas rodou. O "usado" é o
+   repasse: veículo com dono anterior e rodagem de verdade. */
+const FATOR_COND = {"Zero km":1.00, "Vitrine":0.92, "Seminovo":0.82, "Usado":0.70};
 
 /* Avarias de moto elétrica — o que a loja realmente encontra numa troca.
    O desconto é em reais, para o cliente entender de onde saiu o abatimento. */
@@ -131,6 +229,31 @@ const AVARIAS = [
   {k:"Sinal de queda",            d: 800}
 ];
 
+/* Veículo a combustão quebra em outros lugares: não tem bateria de lítio para
+   viciar, mas tem óleo, embreagem, câmbio e motor. Lista separada para o
+   cadastro não oferecer "bateria com autonomia baixa" num Gol 1.0. */
+const AVARIAS_COMBUSTAO = [
+  {k:"Risco na lataria",           d: 400},
+  {k:"Amassado na lataria",        d: 900},
+  {k:"Pneus carecas",              d: 800},
+  {k:"Embreagem gasta",            d:1500},
+  {k:"Câmbio com folga",           d:2000},
+  {k:"Motor fumaçando",            d:3000},
+  {k:"Ar-condicionado sem gelar",  d:1200},
+  {k:"Farol ou lanterna quebrada", d: 300},
+  {k:"Estofado rasgado",           d: 500},
+  {k:"Revisão atrasada",           d: 600},
+  {k:"IPVA em aberto",             d: 900},
+  {k:"Documento com pendência",    d:1500}
+];
+/* o preço procura a avaria nas duas listas — a peça sabe qual é a dela */
+const TODAS_AVARIAS = [...AVARIAS, ...AVARIAS_COMBUSTAO];
+
+/** Lista de avarias que faz sentido oferecer para este produto. */
+function avariasDe(p){
+  return (p && p.eletrico === false) ? AVARIAS_COMBUSTAO : AVARIAS;
+}
+
 /* A quilometragem faz na moto o que a saúde da bateria fazia no celular:
    é o desgaste que o cliente pergunta antes de fechar. */
 function fatorKm(km){
@@ -141,28 +264,72 @@ function fatorKm(km){
   return 0.76;
 }
 
-/** Ficha técnica de um modelo, venha ele de qual catálogo for. */
-function fichaDe(modelo){
-  return (CATALOGO[modelo] || CAT_TRICICLO[modelo] || {}).ficha || null;
+/* ---------- COMO A FICHA É ESCRITA NA TELA ----------
+   Cada linha tem a ficha dela: a elétrica fala de autonomia e recarga, a de
+   gasolina fala de câmbio e consumo, o carro fala de portas e direção. Em vez
+   de a tela conhecer os campos de cada tipo, ela percorre o que a ficha tiver
+   e usa este mapa para escrever. Acrescentar um campo novo é acrescentar uma
+   linha aqui — nenhuma tela muda.
+
+   `destaque` marca o que vai em negrito: o número que o cliente compara. */
+const FICHA_ROTULO = {
+  /* `depois` vai atrás do valor e o valor sai em negrito: "**1000W** motor".
+     `antes` vai na frente e o valor sai normal: "Bateria Lítio 60V 32Ah".
+     O negrito é para o número que o cliente compara entre um modelo e outro. */
+  motor:      {depois:"motor"},
+  autonomia:  {depois:"de autonomia"},
+  velocidade: {depois:""},
+  consumo:    {depois:""},
+  portas:     {depois:""},
+  bateria:    {antes:"Bateria"},
+  recarga:    {antes:"Recarga"},
+  pneu:       {antes:"Pneu"},
+  peso:       {antes:"Peso"},
+  cambio:     {antes:"Câmbio"},
+  combustivel:{antes:"Combustível"},
+  partida:    {antes:"Partida"},
+  freio:      {antes:"Freio"},
+  direcao:    {antes:"Direção"}
+};
+
+/** A ficha vira uma lista pronta de pedacinhos para a tela desenhar.
+ *  Campo vazio ou com "—" fica de fora: chip sem informação só ocupa espaço. */
+function fichaEmPedacos(ficha){
+  if(!ficha) return [];
+  return Object.keys(ficha)
+    .filter(k => FICHA_ROTULO[k] && ficha[k] && ficha[k] !== "—" && ficha[k] !== "-")
+    .map(k => ({
+      valor: ficha[k],
+      antes: FICHA_ROTULO[k].antes || "",
+      depois: FICHA_ROTULO[k].depois || "",
+      destaque: FICHA_ROTULO[k].antes === undefined   // sem `antes` = valor em negrito
+    }));
 }
-/** Info do modelo (base, cores, reserva) em qualquer catálogo. */
+
+/** Todos os catálogos na ordem de procura — um lugar só para acrescentar linha. */
+const _CATALOGOS = [CATALOGO, CAT_TRICICLO, CAT_MOTO_COMB, CAT_CARRO, CAT_ACES];
+
+/** Info do modelo (base, cores, ficha, gênero) em qualquer catálogo. */
 function _infoModelo(modelo){
-  return CATALOGO[modelo] || CAT_TRICICLO[modelo] || CAT_ACES[modelo] || {};
+  for(const c of _CATALOGOS) if(c[modelo]) return c[modelo];
+  return {};
 }
+/** Ficha técnica de um modelo, venha ele de qual catálogo for. */
+function fichaDe(modelo){ return _infoModelo(modelo).ficha || null; }
 
 /* preço sugerido com cada desconto explicado — nada de número que cai do céu */
 function precificar({modelo,cond,km,avarias}){
   const base = _infoModelo(modelo).base || 5000;
   const fc = FATOR_COND[cond] ?? 0.82;
   const fk = cond==="Zero km" ? 1 : fatorKm(km);
-  const descAv = (avarias||[]).reduce((s,k)=>s+(AVARIAS.find(a=>a.k===k)?.d||0),0);
+  const descAv = (avarias||[]).reduce((s,k)=>s+(TODAS_AVARIAS.find(a=>a.k===k)?.d||0),0);
   const bruto = base*fc*fk;
   const linhas = [
     {r:`Tabela da ${modelo}`, v:base},
     {r:`Condição: ${cond}`,   v:Math.round(base*fc-base), neg:fc<1}
   ];
   if(cond!=="Zero km") linhas.push({r:`${km.toLocaleString("pt-BR")} km rodados`, v:Math.round(base*fc*fk-base*fc), neg:fk<1});
-  (avarias||[]).forEach(k=>linhas.push({r:k, v:-(AVARIAS.find(a=>a.k===k)?.d||0), neg:true}));
+  (avarias||[]).forEach(k=>linhas.push({r:k, v:-(TODAS_AVARIAS.find(a=>a.k===k)?.d||0), neg:true}));
   return {sugerido:Math.max(500,Math.round((bruto-descAv)/10)*10), linhas};
 }
 
@@ -176,26 +343,50 @@ function precificar({modelo,cond,km,avarias}){
    ============================================================ */
 let proximoId = 1;
 
-function _gerarMotos(catalogo, categoria){
+/* Placa no padrão Mercosul: 3 letras, 1 número, 1 letra, 2 números.
+   Só veículo emplacado tem — a elétrica não tem placa, e é justamente esse
+   o argumento de venda dela. */
+const _LETRAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+function _placa(){
+  const L = () => _LETRAS[_ent(0,25)];
+  return `${L()}${L()}${L()}${_ent(0,9)}${L()}${_ent(10,99)}`;
+}
+
+function _gerarVeiculos(catalogo, categoria){
   const out = [];
   Object.keys(catalogo).forEach(m=>{
     const info = catalogo[m];
+    const eletrico = info.eletrico !== false;
     /* Modelo em reserva ainda NÃO está na loja: vira um card só, zero km,
        com a data de chegada. Gerar estoque para ele daria a contradição de
        uma moto "seminova, 3.491 km rodados" que ao mesmo tempo "chega na
        semana que vem" — e o cliente percebe. */
     const qtd = info.reserva ? 1 : _ent(1,3);
     for(let i=0;i<qtd;i++){
-      const cond = info.reserva ? "Zero km" : _pick(COND);
+      /* Veículo de repasse não é zero km nem de vitrine: ele chega usado, e a
+         quilometragem é bem maior que a de uma elétrica de bairro. */
+      const cond = info.reserva ? "Zero km"
+                 : eletrico     ? _pick(["Zero km","Seminovo","Vitrine"])
+                                : _pick(["Seminovo","Usado"]);
       const zero = cond==="Zero km";
-      const km  = zero ? 0 : (cond==="Vitrine" ? _ent(20,400) : _ent(600,9000));
-      const avs = zero ? [] : (_rnd()>0.6 ? [_pick(AVARIAS).k] : []);
+      const km  = zero      ? 0
+                : !eletrico ? _ent(12000, 95000)
+                : cond==="Vitrine" ? _ent(20,400) : _ent(600,9000);
+      const lista = eletrico ? AVARIAS : AVARIAS_COMBUSTAO;
+      const avs = zero ? [] : (_rnd()>(eletrico?0.6:0.35) ? [_pick(lista).k] : []);
       const {sugerido} = precificar({modelo:m, cond, km, avarias:avs});
       out.push({
         id: proximoId++, categoria, modelo:m, tipo:info.tipo,
+        eletrico, genero: info.genero || "f",
         arm:"Única", cor:_pick(info.cor), cond,
         km, avarias:avs,
         chassi:`9C2${_ent(100000,999999)}${_ent(10000,99999)}`,
+        /* placa, ano e Renavam só existem em veículo emplacado */
+        placa:   eletrico ? null : _placa(),
+        /* ano-modelo e o de fabricacao ou o seguinte — nunca antes.
+           Sorteando os dois soltos saia "2019/2015", que nao existe. */
+        ano:     eletrico ? null : (()=>{ const f=_ent(2012,2023); return `${f}/${f+_ent(0,1)}`; })(),
+        renavam: eletrico ? null : `${_ent(10000000000,99999999999)}`,
         ficha:info.ficha, video:info.video || null,
         reserva:!!info.reserva, disponivelEm:info.disponivelEm || null,
         custo:Math.round(sugerido*(0.70+_rnd()*0.10)),
@@ -216,6 +407,7 @@ function _gerarQuantidade(catalogo, categoria){
     const info = catalogo[m];
     out.push({
       id: proximoId++, categoria, modelo:m, tipo:"Acessório",
+      eletrico:true, genero:"m",
       arm:info.var[0], cor:info.cor[0],
       cond:"Zero km", km:null, avarias:[], chassi:"", ficha:null, video:null,
       reserva:false, disponivelEm:null,
@@ -226,18 +418,22 @@ function _gerarQuantidade(catalogo, categoria){
   return out;
 }
 
-const MOTOS      = _gerarMotos(CATALOGO,      "Motos elétricas");
-const TRICICLOS  = _gerarMotos(CAT_TRICICLO,  "Triciclos");
-const ACESSORIOS = _gerarQuantidade(CAT_ACES, "Acessórios");
+const MOTOS      = _gerarVeiculos(CATALOGO,       "Motos elétricas");
+const TRICICLOS  = _gerarVeiculos(CAT_TRICICLO,   "Triciclos");
+const MOTOS_COMB = _gerarVeiculos(CAT_MOTO_COMB,  "Motos a combustão");
+const CARROS     = _gerarVeiculos(CAT_CARRO,      "Carros");
+const ACESSORIOS = _gerarQuantidade(CAT_ACES,     "Acessórios");
 
 /* tudo o que a loja vende, numa lista só */
-const PRODUTOS = [...MOTOS, ...TRICICLOS, ...ACESSORIOS];
+const PRODUTOS = [...MOTOS, ...TRICICLOS, ...MOTOS_COMB, ...CARROS, ...ACESSORIOS];
 
 /* as seções do catálogo, na ordem em que aparecem para o cliente */
 const CATEGORIAS = [
-  {nome:"Motos elétricas", titulo:"Motos elétricas", sub:"Sem CNH, sem emplacamento e sem IPVA. Você carrega na tomada de casa.", catalogo:CATALOGO,      campoVar:"var"},
-  {nome:"Triciclos",       titulo:"Triciclos",       sub:"Três rodas, mais estabilidade e assento para dois.",                    catalogo:CAT_TRICICLO,  campoVar:"var"},
-  {nome:"Acessórios",      titulo:"Acessórios",      sub:"Capacete, baú, alarme, carregador reserva e capa.",                     catalogo:CAT_ACES,      campoVar:"var"}
+  {nome:"Motos elétricas",   titulo:"Motos elétricas",   sub:"Sem CNH, sem emplacamento e sem IPVA. Você carrega na tomada de casa.", catalogo:CATALOGO,      campoVar:"var"},
+  {nome:"Triciclos",         titulo:"Triciclos",         sub:"Três rodas, mais estabilidade e assento para dois.",                    catalogo:CAT_TRICICLO,  campoVar:"var"},
+  {nome:"Motos a combustão", titulo:"Motos a combustão", sub:"Repasse de moto usada, com documentação em dia e procedência conferida.", catalogo:CAT_MOTO_COMB, campoVar:"var"},
+  {nome:"Carros",            titulo:"Carros",            sub:"Compra, venda e repasse. Cada carro com ano, placa e quilometragem no anúncio.", catalogo:CAT_CARRO, campoVar:"var"},
+  {nome:"Acessórios",        titulo:"Acessórios",        sub:"Capacete, baú, alarme, carregador reserva e capa.",                     catalogo:CAT_ACES,      campoVar:"var"}
 ];
 
 /* opções (versão) e cores de qualquer produto, seja de que linha for */

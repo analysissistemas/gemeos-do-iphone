@@ -28,7 +28,15 @@ const CORES_MOTOS = {
   "Amarela":    {hex:"#f2c518"},               // o amarelo da marca
   "Prata":      {hex:"#d7dade", borda:true},
   "Rosa":       {hex:"#e0a0b4"},
-  "Laranja":    {hex:"#e2662a"}
+  "Laranja":    {hex:"#e2662a"},
+
+  /* carro é "ele": as mesmas cores no masculino, senão a bolinha cai no cinza
+     padrão por causa de uma letra. O nome aqui tem que bater EXATAMENTE com o
+     do catálogo do estoque.js. */
+  "Branco":     {hex:"#f4f5f7", borda:true},
+  "Vermelho":   {hex:"#b3122b"},
+  "Amarelo":    {hex:"#f2c518"},
+  "Cinzento":   {hex:"#7c8085"}
 };
 
 function corHex(nome){ return (CORES_MOTOS[nome] || {hex:"#8e8e93"}).hex; }

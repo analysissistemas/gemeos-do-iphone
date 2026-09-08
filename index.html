@@ -758,7 +758,7 @@ tbody tr:last-child td{border-bottom:none}
 <section class="tela" id="tela-estoque">
   <div class="pad">
     <div class="cab rev">
-      <div><h2>Estoque</h2><div class="sub">Motos elétricas, triciclos e acessórios</div></div>
+      <div><h2>Estoque</h2><div class="sub">Motos elétricas, triciclos, motos a combustão, carros e acessórios</div></div>
       <div class="dir">
         <button class="btn btn-s btn-sm" data-modal="item">Cadastrar item que não temos</button>
         <button class="btn btn-p btn-sm" data-modal="entrada">+ Dar entrada</button>
@@ -788,7 +788,7 @@ tbody tr:last-child td{border-bottom:none}
         <div class="tab-scroll">
           <table>
             <thead><tr>
-              <th>Moto</th><th>Condição</th><th>Rodagem</th><th>Avarias</th><th>Chassi</th>
+              <th>Veículo</th><th>Condição</th><th>Rodagem</th><th>Avarias</th><th>Placa / chassi</th>
               <th class="num">Custo</th><th class="num">Venda</th><th class="num">Lucro</th><th></th>
             </tr></thead>
             <tbody id="tbAparelhos"></tbody>
@@ -830,7 +830,7 @@ tbody tr:last-child td{border-bottom:none}
       <div class="tab-scroll">
         <table>
           <thead><tr>
-            <th>Data</th><th>Tipo</th><th>Moto</th><th>Chassi</th><th>Cliente / Origem</th>
+            <th>Data</th><th>Tipo</th><th>Veículo</th><th>Placa / chassi</th><th>Cliente / Origem</th>
             <th class="num">Valor</th><th>Forma</th><th>Quem</th><th></th>
           </tr></thead>
           <tbody id="tbMov"></tbody>
@@ -864,7 +864,7 @@ tbody tr:last-child td{border-bottom:none}
       <div class="tab-scroll">
         <table>
           <thead><tr>
-            <th>OS</th><th>Cliente</th><th>Moto</th><th>Defeito</th><th>Etapa</th>
+            <th>OS</th><th>Cliente</th><th>Veículo</th><th>Defeito</th><th>Etapa</th>
             <th class="num">Orçamento</th><th>Entrada</th><th>Prazo</th><th>Técnico</th><th></th>
           </tr></thead>
           <tbody id="tbOS"></tbody>
@@ -933,54 +933,95 @@ const ent  = (a,b) => Math.floor(rnd()*(b-a+1))+a;
 const brl  = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:0});
 const brlc = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-const MODELOS = ["TANK AG11","T1","M6","T3 RETRÔ","AG08","DF17","TCN BASKET","MM3"];
-/* acessório de moto entra por QUANTIDADE: não tem chassi nem quilometragem,
-   um capacete é igual ao outro. ⚠️ Lista de exemplo — troque pela da loja. */
+/* Tudo que a loja vende. As eletricas vieram do site (dado real); as de
+   combustao e os carros sao EXEMPLO — a loja anuncia "compra, venda e repasse
+   de veiculos", mas nao publica catalogo dessa linha, entao quem define modelo
+   e preco e o cadastro, veiculo por veiculo. */
+const MODELOS = ["TANK AG11","T1","M6","T3 RETRÔ","AG08","DF17","TCN BASKET","MM3",
+                 "Honda CG 160 Fan","Honda Biz 125","Honda POP 110i","Yamaha Factor 150",
+                 "Honda Titan 160","Fiat Uno","Volkswagen Gol","Chevrolet Onix",
+                 "Hyundai HB20","Renault Kwid"];
+/* acessorio entra por QUANTIDADE: nao tem chassi nem quilometragem, um
+   capacete e igual ao outro. Lista de exemplo — troque pela da loja. */
 const ACES  = ["Capacete fechado","Capacete aberto","Baú 45 litros","Carregador reserva",
                "Capa de cobrir moto","Alarme com controle","Par de retrovisores",
                "Câmara de ar","Pneu dianteiro","Pneu traseiro","Bateria reserva 60V",
                "Suporte de celular","Cadeado com trava","Luva de proteção"];
-const CORES = ["Branca","Cinza","Bege","Vinho","Preta","Vermelha","Azul","Amarela"];
-const COND  = ["Zero km","Seminova","Vitrine"];
+const CORES = ["Branca","Cinza","Bege","Vinho","Preta","Vermelha","Azul","Branco","Prata","Preto"];
+
+/* ---------- CONDICAO ----------
+   Guardada no MASCULINO e traduzida na hora de mostrar. Sem isso a tela
+   escreve "moto seminovo" e "carro seminova" — erro de concordancia na cara
+   do cliente, numa loja que vende confianca. */
+const COND  = ["Zero km","Seminovo","Vitrine","Usado"];
+function condRotulo(cond, genero){
+  if(genero !== "f") return cond;
+  return {"Seminovo":"Seminova", "Usado":"Usada"}[cond] || cond;
+}
+
 const NOMES = ["Ana Beatriz","Carlos Eduardo","Juliana","Rafael","Marina","Thiago","Patrícia","Lucas","Fernanda","Bruno",
                "Camila","Diego","Larissa","Rodrigo","Amanda","Gustavo","Vanessa","Felipe","Tatiane","Marcelo",
                "Renata","André","Bianca","Vinícius","Priscila","Leandro","Débora","Mateus","Sabrina","Igor"];
 const SOBRE = ["Silva","Santos","Oliveira","Souza","Lima","Costa","Pereira","Almeida","Ferreira","Rodrigues","Martins","Barbosa"];
 const VEND  = ["Você","Gêmeo 1","Gêmeo 2","Balcão"];
-/* a loja anuncia "parcelamento até 18x" — as opções seguem isso */
+/* a loja anuncia "parcelamento ate 18x" — as opcoes seguem isso */
 const FORMA = ["Pix","Cartão 18x","Cartão 12x","Cartão 6x","Carnê da loja","Dinheiro","Entrada + Pix"];
 
 /* ============================================================
-   CATÁLOGO DOS MODELOS
-   Os mesmos dados do estoque.js e do site da loja: preço de tabela, a cor da
-   foto oficial e a ficha técnica. É isso que faz o cadastro "já dar as
-   opções": escolheu o modelo, a ficha vem junto e ninguém digita 1000W errado.
-   `base` = preço de tabela da moto, em reais.
+   CATALOGO DOS MODELOS
+   `eletrico:false` e o que muda tudo: veiculo a combustao precisa de CNH,
+   paga IPVA e tem placa, ano e Renavam. A eletrica nao tem nada disso — e e
+   justamente esse o argumento de venda dela.
+   `genero` diz se a tela escreve "seminova" (a moto) ou "seminovo" (o carro).
    ============================================================ */
 const CATALOGO = {
-  "TANK AG11": {var:["Única"], cor:["Branca"], base:11990,
+  /* --- eletricas: dado REAL, do site gemeosmotors.com.br --- */
+  "TANK AG11": {var:["Única"], cor:["Branca"], base:11990, tipo:"Moto elétrica", eletrico:true, genero:"f",
     ficha:{motor:"1000W", autonomia:"50 a 55 km", velocidade:"32 km/h", bateria:"Lítio 60V 32Ah", peso:"180 kg", recarga:"4h a 8h"}},
-  "T1": {var:["Única"], cor:["Branca"], base:12000,
+  "T1": {var:["Única"], cor:["Branca"], base:12000, tipo:"Moto elétrica", eletrico:true, genero:"f",
     ficha:{motor:"1000W", autonomia:"Até 70 km", velocidade:"32 km/h", bateria:"Lítio 64V 30Ah", peso:"180 kg", recarga:"6h a 7h"}},
-  "M6": {var:["Única"], cor:["Branca"], base:10990,
+  "M6": {var:["Única"], cor:["Branca"], base:10990, tipo:"Moto elétrica", eletrico:true, genero:"f",
     ficha:{motor:"1000W", autonomia:"Até 70 km", velocidade:"32 km/h", bateria:"Lítio 60V 32Ah", peso:"180 kg", recarga:"6h a 8h"}},
-  "MM3": {var:["Única"], cor:["Vinho"], base:10500,
+  "MM3": {var:["Única"], cor:["Vinho"], base:10500, tipo:"Triciclo elétrico", eletrico:true, genero:"m",
     ficha:{motor:"1000W", autonomia:"45 a 55 km", velocidade:"32 km/h", bateria:"Lítio 60V 24Ah", peso:"180 kg", recarga:"6h a 8h"}},
-  "T3 RETRÔ": {var:["Única"], cor:["Bege"], base:9990,
+  "T3 RETRÔ": {var:["Única"], cor:["Bege"], base:9990, tipo:"Moto elétrica", eletrico:true, genero:"f",
     ficha:{motor:"1000W", autonomia:"60 a 70 km", velocidade:"32 km/h", bateria:"Lítio 64V 30Ah", peso:"180 kg", recarga:"6h a 7h"}},
-  "AG08": {var:["Única"], cor:["Cinza"], base:8990,
+  "AG08": {var:["Única"], cor:["Cinza"], base:8990, tipo:"Moto elétrica", eletrico:true, genero:"f",
     ficha:{motor:"1000W", autonomia:"40 a 45 km", velocidade:"32 km/h", bateria:"Lítio 60V 24Ah", peso:"200 kg", recarga:"4h a 8h"}},
-  "DF17": {var:["Única"], cor:["Branca"], base:7190,
+  "DF17": {var:["Única"], cor:["Branca"], base:7190, tipo:"Moto elétrica", eletrico:true, genero:"f",
     ficha:{motor:"1000W", autonomia:"40 a 50 km", velocidade:"32 km/h", bateria:"Lítio 48V 20Ah", peso:"150 kg", recarga:"4h a 6h"}},
-  "TCN BASKET": {var:["Única"], cor:["Branca"], base:5200,
-    ficha:{motor:"500W", autonomia:"Até 40 km", velocidade:"—", bateria:"Chumbo-ácido 48V 12Ah", peso:"150 kg", recarga:"—"}}
+  "TCN BASKET": {var:["Única"], cor:["Branca"], base:5200, tipo:"Moto elétrica", eletrico:true, genero:"f",
+    ficha:{motor:"500W", autonomia:"Até 40 km", velocidade:"—", bateria:"Chumbo-ácido 48V 12Ah", peso:"150 kg", recarga:"—"}},
+
+  /* --- motos a combustao: EXEMPLO, repasse de usadas --- */
+  "Honda CG 160 Fan": {var:["Única"], cor:["Preta","Vermelha","Branca"], base:14500, tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"162,7 cc", cambio:"5 marchas", combustivel:"Flex", partida:"Elétrica", consumo:"Cerca de 45 km/l", freio:"Disco / tambor"}},
+  "Honda Biz 125": {var:["Única"], cor:["Vermelha","Branca","Preta"], base:13900, tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"124,9 cc", cambio:"4 marchas", combustivel:"Flex", partida:"Elétrica", consumo:"Cerca de 50 km/l", freio:"Disco / tambor"}},
+  "Honda POP 110i": {var:["Única"], cor:["Vermelha","Preta"], base:10900, tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"109,1 cc", cambio:"4 marchas", combustivel:"Flex", partida:"Elétrica", consumo:"Cerca de 55 km/l", freio:"Tambor"}},
+  "Yamaha Factor 150": {var:["Única"], cor:["Azul","Preta","Vermelha"], base:15900, tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"149,7 cc", cambio:"5 marchas", combustivel:"Flex", partida:"Elétrica", consumo:"Cerca de 42 km/l", freio:"Disco / tambor"}},
+  "Honda Titan 160": {var:["Única"], cor:["Vermelha","Preta","Prata"], base:16500, tipo:"Moto a combustão", eletrico:false, genero:"f",
+    ficha:{motor:"162,7 cc", cambio:"5 marchas", combustivel:"Flex", partida:"Elétrica", consumo:"Cerca de 43 km/l", freio:"Disco / disco"}},
+
+  /* --- carros: EXEMPLO, compra, venda e repasse --- */
+  "Fiat Uno": {var:["Única"], cor:["Branco","Prata","Vermelho","Preto"], base:32000, tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 Fire", cambio:"Manual, 5 marchas", combustivel:"Flex", portas:"4 portas", consumo:"Cerca de 12 km/l", direcao:"Mecânica"}},
+  "Volkswagen Gol": {var:["Única"], cor:["Branco","Prata","Preto"], base:38000, tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 MPI", cambio:"Manual, 5 marchas", combustivel:"Flex", portas:"4 portas", consumo:"Cerca de 13 km/l", direcao:"Hidráulica"}},
+  "Chevrolet Onix": {var:["Única"], cor:["Branco","Prata","Preto","Vermelho"], base:52000, tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 Turbo", cambio:"Manual, 6 marchas", combustivel:"Flex", portas:"4 portas", consumo:"Cerca de 14 km/l", direcao:"Elétrica"}},
+  "Hyundai HB20": {var:["Única"], cor:["Branco","Prata","Preto"], base:49000, tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 Flex", cambio:"Manual, 5 marchas", combustivel:"Flex", portas:"4 portas", consumo:"Cerca de 13 km/l", direcao:"Elétrica"}},
+  "Renault Kwid": {var:["Única"], cor:["Branco","Prata","Laranja"], base:41000, tipo:"Carro", eletrico:false, genero:"m",
+    ficha:{motor:"1.0 SCe", cambio:"Manual, 5 marchas", combustivel:"Flex", portas:"4 portas", consumo:"Cerca de 15 km/l", direcao:"Elétrica"}}
 };
-/* versões: hoje toda moto tem uma só. Fica aqui porque o cadastro pergunta,
-   e no dia em que um modelo vier com duas baterias é só acrescentar. */
+/* versoes: hoje todo veiculo tem uma so. Fica aqui porque o cadastro pergunta. */
 const ARMAZ = ["Única"];
 
-/* Avarias e o quanto cada uma tira do preço. Valores em reais, editáveis —
-   é a régua da loja, não uma tabela oficial de ninguém. */
+/* Avarias e o quanto cada uma tira do preco. Valores em reais, editaveis —
+   e a regua da loja, nao uma tabela oficial de ninguem. */
 const AVARIAS = [
   {k:"Risco na carenagem",         d: 250},
   {k:"Carenagem trincada",         d: 600},
@@ -993,12 +1034,41 @@ const AVARIAS = [
   {k:"Chave reserva faltando",     d: 120},
   {k:"Sinal de queda",             d: 800}
 ];
+/* Veiculo a combustao quebra em outros lugares: nao tem bateria de litio para
+   viciar, mas tem oleo, embreagem, cambio e motor. Lista separada para o
+   cadastro nao oferecer "bateria com autonomia baixa" num Gol 1.0. */
+const AVARIAS_COMBUSTAO = [
+  {k:"Risco na lataria",           d: 400},
+  {k:"Amassado na lataria",        d: 900},
+  {k:"Pneus carecas",              d: 800},
+  {k:"Embreagem gasta",            d:1500},
+  {k:"Câmbio com folga",           d:2000},
+  {k:"Motor fumaçando",            d:3000},
+  {k:"Ar-condicionado sem gelar",  d:1200},
+  {k:"Farol ou lanterna quebrada", d: 300},
+  {k:"Estofado rasgado",           d: 500},
+  {k:"Revisão atrasada",           d: 600},
+  {k:"IPVA em aberto",             d: 900},
+  {k:"Documento com pendência",    d:1500}
+];
+const TODAS_AVARIAS = [...AVARIAS, ...AVARIAS_COMBUSTAO];
+/** Lista de avarias que faz sentido oferecer para este modelo. */
+/* Veiculo de repasse nao e "zero km" nem "de vitrine": ele chega usado.
+   Oferecer Zero km no cadastro de um Gol seria oferecer o que a loja nao tem. */
+function condsDoModelo(modelo){
+  return CATALOGO[modelo] && CATALOGO[modelo].eletrico === false
+    ? ["Seminovo","Usado"]
+    : ["Zero km","Seminovo","Vitrine"];
+}
+function avariasDoModelo(modelo){
+  return CATALOGO[modelo] && CATALOGO[modelo].eletrico === false ? AVARIAS_COMBUSTAO : AVARIAS;
+}
 
-/* Condição muda o preço proporcionalmente ao de tabela */
-const FATOR_COND = {"Zero km":1.00,"Vitrine":0.92,"Seminova":0.82};
+/* Condicao muda o preco proporcionalmente ao de tabela */
+const FATOR_COND = {"Zero km":1.00,"Vitrine":0.92,"Seminovo":0.82,"Usado":0.70};
 
-/* Quilometragem: é o desgaste que o cliente pergunta antes de fechar,
-   o mesmo papel que a saúde da bateria tinha no celular. */
+/* Quilometragem: e o desgaste que o cliente pergunta antes de fechar,
+   o mesmo papel que a saude da bateria tinha no celular. */
 function fatorKm(km){
   if(km <=  500) return 1.00;
   if(km <= 2000) return 0.95;
@@ -1007,39 +1077,58 @@ function fatorKm(km){
   return 0.76;
 }
 
-/* O preço sugerido, com cada desconto explicado — nada de número que cai do céu */
+/* O preco sugerido, com cada desconto explicado — nada de numero que cai do ceu */
 function precificar({modelo,cond,km,avarias}){
-  const base = CATALOGO[modelo]?.base || 5000;
+  const info = CATALOGO[modelo] || {};
+  const base = info.base || 5000;
   const fc = FATOR_COND[cond] ?? 0.82;
   const fk = cond==="Zero km" ? 1 : fatorKm(km);
-  const descAv = avarias.reduce((s,k)=>s+(AVARIAS.find(a=>a.k===k)?.d||0),0);
+  const descAv = avarias.reduce((s,k)=>s+(TODAS_AVARIAS.find(a=>a.k===k)?.d||0),0);
   const bruto = base*fc*fk;
   const linhas = [
-    {r:`Tabela da ${modelo}`, v:base},
+    {r:`Tabela d${info.genero==="m"?"o":"a"} ${modelo}`, v:base},
     {r:`Condição: ${cond}`,   v:Math.round(base*fc-base), neg:fc<1}
   ];
   if(cond!=="Zero km") linhas.push({r:`${km.toLocaleString("pt-BR")} km rodados`, v:Math.round(base*fc*fk-base*fc), neg:fk<1});
-  avarias.forEach(k=>linhas.push({r:k, v:-(AVARIAS.find(a=>a.k===k)?.d||0), neg:true}));
+  avarias.forEach(k=>linhas.push({r:k, v:-(TODAS_AVARIAS.find(a=>a.k===k)?.d||0), neg:true}));
   return {sugerido:Math.max(500,Math.round((bruto-descAv)/10)*10), linhas};
 }
 
-/* ---- MOTOS: cada uma é peça única (chassi, quilometragem, avarias) ----
-   Duas TANK AG11 zero km parecem iguais, mas a nota fiscal e a garantia são
-   de uma delas especificamente. Por isso cada moto vira uma linha própria. */
+/* ---- VEICULOS: cada um e peca unica (chassi/placa, km, avarias) ----
+   Dois Onix do mesmo ano parecem iguais, mas a nota fiscal, o Renavam e a
+   garantia sao de um deles. Por isso cada veiculo vira uma linha propria. */
+const _LETRAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+function placaMercosul(){
+  const L = () => _LETRAS[ent(0,25)];
+  return `${L()}${L()}${L()}${ent(0,9)}${L()}${ent(10,99)}`;
+}
+
 let proximoId = 1;
 const aparelhos = [];
 Object.keys(CATALOGO).forEach(m=>{
+  const info=CATALOGO[m];
+  const eletrico = info.eletrico !== false;
   const qtd = ent(1,3);
   for(let i=0;i<qtd;i++){
-    const info=CATALOGO[m];
-    const cond=pick(COND);
+    /* Veiculo de repasse nao e zero km nem de vitrine: chega usado, e roda
+       muito mais que uma eletrica de bairro. */
+    const cond = eletrico ? pick(["Zero km","Seminovo","Vitrine"]) : pick(["Seminovo","Usado"]);
     const zero = cond==="Zero km";
-    const km  = zero ? 0 : (cond==="Vitrine" ? ent(20,400) : ent(600,9000));
-    const avs = zero ? [] : (rnd()>0.6 ? [pick(AVARIAS).k] : []);
+    const km  = zero ? 0
+              : !eletrico ? ent(12000,95000)
+              : cond==="Vitrine" ? ent(20,400) : ent(600,9000);
+    const lista = eletrico ? AVARIAS : AVARIAS_COMBUSTAO;
+    const avs = zero ? [] : (rnd()>(eletrico?0.6:0.35) ? [pick(lista).k] : []);
     const {sugerido}=precificar({modelo:m,cond,km,avarias:avs});
     aparelhos.push({
       id:proximoId++, modelo:m, arm:"Única", cor:pick(info.cor), cond,
+      tipo:info.tipo, eletrico, genero:info.genero,
       km, avarias:avs, imei:`9C2${ent(100000,999999)}${ent(10000,99999)}`,
+      placa:   eletrico ? null : placaMercosul(),
+      /* ano-modelo e o de fabricacao ou o seguinte — nunca antes.
+         Sorteando os dois soltos saia "2019/2015", que nao existe. */
+      ano:     eletrico ? null : (()=>{ const f=ent(2012,2023); return `${f}/${f+ent(0,1)}`; })(),
+      renavam: eletrico ? null : `${ent(10000000000,99999999999)}`,
       ficha:info.ficha,
       custo:Math.round(sugerido*(0.70+rnd()*0.10)), venda:sugerido,
       entrada:`${String(ent(1,28)).padStart(2,"0")}/08/2026`, vendido:false
@@ -1047,7 +1136,7 @@ Object.keys(CATALOGO).forEach(m=>{
   }
 });
 
-/* ---- ESTOQUE por quantidade: acessórios ---- */
+/* ---- ESTOQUE por quantidade: acessorios ---- */
 const estoque = [];
 ACES.forEach(a=>{
   const base = ent(25,900);
@@ -1343,12 +1432,12 @@ function pintaKpiEstoque(){
 pintaKpiEstoque();
 
 /* abas: moto individual x produto por quantidade */
-let abaEstAtual="Motos";
+let abaEstAtual="Veículos";
 function pintaAbaEst(){
-  $("#abaEst").innerHTML=["Motos","Acessórios"].map(a=>
+  $("#abaEst").innerHTML=["Veículos","Acessórios"].map(a=>
     `<button class="chip ${a===abaEstAtual?"on":""}" data-aba="${a}">${a}</button>`).join("");
-  $("#blocoAparelhos").style.display  = abaEstAtual==="Motos" ? "" : "none";
-  $("#blocoAcessorios").style.display = abaEstAtual==="Motos" ? "none" : "";
+  $("#blocoAparelhos").style.display  = abaEstAtual==="Veículos" ? "" : "none";
+  $("#blocoAcessorios").style.display = abaEstAtual==="Veículos" ? "none" : "";
 }
 pintaAbaEst();
 $("#abaEst").onclick = e => {
@@ -1443,34 +1532,49 @@ function anexar(id){
 /* --- TABELA DE APARELHOS --- */
 let filtroAparAtual="Todos";
 function pintaFiltroApar(){
-  $("#filtroApar").innerHTML=["Todos",...COND,"Com avaria","Muito rodada"].map(f=>
+  $("#filtroApar").innerHTML=["Todos","Motos elétricas","Combustão","Carros",...COND,"Com avaria","Muito rodada"].map(f=>
     `<button class="chip ${f===filtroAparAtual?"on":""}" data-ap="${f}">${f}</button>`).join("");
 }
 /* Quanto mais rodada, mais o número puxa para o vermelho. É a mesma leitura
    rápida que a saúde da bateria dava no celular: verde passa, vermelho pede
    conversa antes de fechar o preço. */
 function corKm(k){ return k<=2000?"var(--good)":k<=8000?"var(--warning)":"var(--critical)"; }
+/* Duas informacoes da ficha, as que a equipe olha primeiro: na eletrica o
+   motor e a autonomia; na de gasolina e no carro, o motor e o cambio. Sai
+   daqui e nao de dentro do template para a tabela nao ter que saber de tipo. */
+function fichaCurta(f){
+  if(!f) return "";
+  return [f.motor, f.autonomia || f.cambio].filter(Boolean).join(" · ");
+}
+
 function pintaAparelhos(){
   let l=emEstoque();
-  if(filtroAparAtual==="Com avaria")        l=l.filter(a=>a.avarias.length);
-  else if(filtroAparAtual==="Muito rodada")   l=l.filter(a=>a.km>8000);
-  else if(filtroAparAtual!=="Todos")         l=l.filter(a=>a.cond===filtroAparAtual);
+  if(filtroAparAtual==="Com avaria")            l=l.filter(a=>a.avarias.length);
+  else if(filtroAparAtual==="Muito rodada")      l=l.filter(a=>a.km>8000);
+  else if(filtroAparAtual==="Motos elétricas") l=l.filter(a=>a.eletrico && a.tipo!=="Carro");
+  else if(filtroAparAtual==="Combustão")       l=l.filter(a=>!a.eletrico && a.tipo!=="Carro");
+  else if(filtroAparAtual==="Carros")            l=l.filter(a=>a.tipo==="Carro");
+  else if(filtroAparAtual!=="Todos")             l=l.filter(a=>a.cond===filtroAparAtual);
   $("#tbAparelhos").innerHTML = l.map(a=>`<tr>
     <td><div class="prod-cel">${miniFoto(a)}<div>
-      <div class="nm">${a.modelo}</div><div class="meta">${a.cor}${a.ficha?` · ${a.ficha.motor} · ${a.ficha.autonomia}`:""}</div></div></div></td>
-    <td style="color:var(--ink-2)">${a.cond}</td>
+      <div class="nm">${a.modelo}</div><div class="meta">${[
+        a.ano ? `Ano ${a.ano}` : "", a.cor, fichaCurta(a.ficha)
+      ].filter(Boolean).join(" · ")}</div></div></div></td>
+    <td style="color:var(--ink-2)">${condRotulo(a.cond, a.genero)}</td>
     <td>${a.cond==="Zero km"
       ? `<span style="color:var(--ink-3)">zero km</span>`
       : `<div class="bat-cel"><div class="bat-barra"><i style="width:${Math.min(100,Math.round(a.km/150))}%;background:${corKm(a.km)}"></i></div>
          <span style="font-variant-numeric:tabular-nums">${a.km.toLocaleString("pt-BR")} km</span></div>`}</td>
     <td>${a.avarias.length ? a.avarias.map(v=>`<span class="tag-av">${v}</span>`).join("")
                            : `<span style="color:var(--ink-3);font-size:12px">sem avaria</span>`}</td>
-    <td style="color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:12px">${a.imei}</td>
+    <td style="color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:12px">${
+      a.placa ? `<b style="color:var(--ink-2);letter-spacing:.06em">${a.placa}</b><br><span style="font-size:10.5px">${a.imei}</span>`
+              : a.imei}</td>
     <td class="num" style="color:var(--ink-2)">${brl(a.custo)}</td>
     <td class="num forte">${brl(a.venda)}</td>
     <td class="num lucro">${brl(a.venda-a.custo)}</td>
     <td><button class="btn btn-p btn-sm" data-vender="${a.id}">Vender</button></td></tr>`).join("")
-    || `<tr><td colspan="9" style="text-align:center;color:var(--ink-3);padding:36px">nenhuma moto nesse filtro</td></tr>`;
+    || `<tr><td colspan="9" style="text-align:center;color:var(--ink-3);padding:36px">nenhum veículo nesse filtro</td></tr>`;
 }
 pintaFiltroApar(); pintaAparelhos();
 $("#filtroApar").onclick = e => {
@@ -1947,7 +2051,8 @@ function autocomplete(inputEl, listaEl, fonte, aoEscolher){
 function wizEntrada(){
   /* vendaManual: enquanto você não digitar um preço próprio, o campo acompanha o
      cálculo. Assim que digitar, o sistema para de sobrescrever o seu número. */
-  const st = {modelo:null, arm:null, cor:null, cond:"Seminova", km:1500, avarias:[],
+  const st = {modelo:null, arm:null, cor:null, cond:"Seminovo", km:1500, avarias:[],
+              placa:"", ano:"", renavam:"",
               imei:"", custo:"", venda:null, vendaManual:false};
 
   $("#modal").innerHTML = `
@@ -1971,8 +2076,13 @@ function wizEntrada(){
   autocomplete($("#wModelo"), $("#wLista"),
     q => Object.keys(CATALOGO)
           .filter(m => m.toLowerCase().includes(q))
-          .map(m => ({titulo:m, sub:`${CATALOGO[m].arm.join(" · ")}`, det:brl(CATALOGO[m].base), valor:m})),
-    o => { st.modelo=o.valor; st.arm=CATALOGO[o.valor].arm[0]; st.cor=CATALOGO[o.valor].cor[0];
+          /* o tipo no lugar da versão: "Única" não diz nada, e é o tipo que
+             separa uma TANK AG11 de um Gol na hora de escolher */
+          .map(m => ({titulo:m, sub:CATALOGO[m].tipo, det:brl(CATALOGO[m].base), valor:m})),
+    o => { st.modelo=o.valor; st.arm=CATALOGO[o.valor].var[0]; st.cor=CATALOGO[o.valor].cor[0];
+           /* a condição volta para a primeira que serve ao tipo escolhido:
+              carro não é "zero km", e deixar a escolha antiga vale um erro */
+           st.cond=condsDoModelo(o.valor)[0];
            $("#wModelo").value=o.valor; montarResto(); });
 
   function montarResto(){
@@ -1985,7 +2095,7 @@ function wizEntrada(){
       </div>
       <div class="passo">
         <div class="passo-n"><i>3</i><b>Condição</b></div>
-        <div class="escolhas" id="wCond">${COND.map(c=>`<button class="esc ${c===st.cond?"on":""}" data-cond="${c}">${c}</button>`).join("")}</div>
+        <div class="escolhas" id="wCond">${condsDoModelo(st.modelo).map(c=>`<button class="esc ${c===st.cond?"on":""}" data-cond="${c}">${condRotulo(c, info.genero)}</button>`).join("")}</div>
       </div>
       <div class="passo">
         <div id="wUsado">
@@ -1996,14 +2106,20 @@ function wizEntrada(){
             <span class="bat-sel" id="wBatSel"></span>
           </div>
           <div class="passo-n" style="margin-top:22px"><i>5</i><b>Tem alguma avaria?</b><small>cada uma abate do preço</small></div>
-          <div class="avarias" id="wAv">${AVARIAS.map(a=>
+          <div class="avarias" id="wAv">${avariasDoModelo(st.modelo).map(a=>
             `<div class="av ${st.avarias.includes(a.k)?"on":""}" data-av="${a.k}"><i></i>${a.k}
              <span style="margin-left:auto;color:var(--ink-3);font-size:11px">−${brl(a.d)}</span></div>`).join("")}</div>
         </div>
       </div>
       <div class="passo">
-        <div class="passo-n"><i>6</i><b>Chassi e o que você pagou</b></div>
-        <div class="campo"><label>Chassi</label><input id="wImei" placeholder="o número gravado na moto" autocomplete="off"></div>
+        <div class="passo-n"><i>6</i><b>Documento e o que você pagou</b></div>
+        <div class="campo"><label>Chassi</label><input id="wImei" placeholder="o número gravado no veículo" autocomplete="off"></div>
+        ${info.eletrico === false ? `
+        <!-- so veiculo emplacado tem isso. A eletrica nao tem placa, e e
+             justamente esse o argumento de venda dela. -->
+        <div class="campo"><label>Placa</label><input id="wPlaca" placeholder="ABC1D23" autocomplete="off" maxlength="8"></div>
+        <div class="campo"><label>Ano (fabricação / modelo)</label><input id="wAno" placeholder="2019/2020" autocomplete="off" maxlength="9"></div>
+        <div class="campo"><label>Renavam</label><input id="wRenavam" placeholder="11 dígitos" inputmode="numeric" autocomplete="off" maxlength="11"></div>` : ""}
         <div class="campo"><label>Quanto você pagou nessa moto</label><input id="wCusto" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"></div>
       </div>
       <div class="resumo" id="wResumo"></div>`;
@@ -2021,6 +2137,11 @@ function wizEntrada(){
       st.avarias = st.avarias.includes(k) ? st.avarias.filter(x=>x!==k) : [...st.avarias,k];
       b.classList.toggle("on"); atualizarResumo();};
     $("#wImei").oninput = e=>{st.imei=e.target.value; travarSalvar();};
+    /* os tres so existem quando o veiculo e emplacado; sem o if, o cadastro
+       de uma eletrica quebraria ao procurar um campo que nao esta na tela */
+    if($("#wPlaca"))   $("#wPlaca").oninput   = e=>{st.placa=e.target.value.toUpperCase(); e.target.value=st.placa;};
+    if($("#wAno"))     $("#wAno").oninput     = e=>{st.ano=e.target.value;};
+    if($("#wRenavam")) $("#wRenavam").oninput = e=>{st.renavam=e.target.value.replace(/\D/g,"");};
     $("#wCusto").oninput= e=>{st.custo=e.target.value.replace(/\D/g,""); atualizarResumo(); travarSalvar();};
   }
 
@@ -2071,6 +2192,9 @@ function wizEntrada(){
     const {sugerido}=precificar(st);
     aparelhos.push({
       id:proximoId++, modelo:st.modelo, arm:st.arm, cor:st.cor, cond:st.cond,
+      tipo:(CATALOGO[st.modelo]||{}).tipo, eletrico:(CATALOGO[st.modelo]||{}).eletrico !== false,
+      genero:(CATALOGO[st.modelo]||{}).genero, ficha:(CATALOGO[st.modelo]||{}).ficha,
+      placa:st.placa||null, ano:st.ano||null, renavam:st.renavam||null,
       km:st.cond==="Zero km"?0:st.km, avarias:[...st.avarias],
       imei:st.imei, custo:+st.custo||0, venda:st.venda||sugerido,
       entrada:"12/08/2026", vendido:false
@@ -2219,13 +2343,14 @@ const MODAIS={
     c:[["Categoria","select",["iPhone","Motinha elétrica","Acessório","Outro"]],
        ["Nome do produto","text","Ex.: iPhone 18 Pro Max"],
        ["Armazenamento / variação","text","256GB · Titânio Natural"],
-       ["Condição","select",["Zero km","Seminova","Vitrine"]],
+       ["Condição","select",["Zero km","Seminovo","Vitrine","Usado"]],
        ["Custo (o que você pagou)","text","R$ 0,00"],
        ["Preço de venda","text","R$ 0,00"],
        ["Quantidade inicial","text","0"]]},
   entrada:{t:"Dar entrada em moto",d:"Moto comprada de fornecedor, de cliente ou recebida em troca.",
     c:[["Produto","select",["iPhone 15 Pro Max","iPhone 14","iPhone 13","Outro (cadastrar)"]],
-       ["Chassi","text","9C2xxxxxxxxxxx"],["Condição","select",["Zero km","Seminova","Vitrine"]],
+       ["Chassi","text","9C2xxxxxxxxxxx"],["Placa (só emplacado)","text","ABC1D23"],
+       ["Condição","select",["Zero km","Seminovo","Vitrine","Usado"]],
        ["Origem","select",["Fornecedor","Troca de cliente","Compra avulsa"]],
        ["Valor pago","text","R$ 0,00"],["Data","text","12/08/2026"]]},
   saida:{t:"Registrar saída (venda)",d:"Aparelho que sai da loja — vendido, trocado ou devolvido.",

@@ -75,7 +75,14 @@ manda vários pedidos seguidos — vale confirmar prioridade quando a fila cresc
 ## A loja
 
 **Gêmeos Motors**, em **Goiana e Carpina, Pernambuco**. Vende **moto elétrica**
-e **triciclo elétrico**, mais acessórios, e tem **assistência técnica própria**.
+e **triciclo elétrico**, faz **compra, venda e repasse de moto a combustão e de
+carro**, vende acessórios e tem **assistência técnica própria**.
+
+A linha elétrica é a que o site oficial mostra e a que tem catálogo público. O
+repasse de moto e carro aparece só no Instagram (destaques CLIENTES, MOTOS
+COM(bustão), CARROS e MOTOS ELÉTRICAS, e a bio "compra, venda e repasse de
+veículos") — por isso não existe tabela de preço dessa linha, e quem define
+valor é o cadastro, veículo por veículo.
 
 | | |
 |---|---|
@@ -87,8 +94,10 @@ e **triciclo elétrico**, mais acessórios, e tem **assistência técnica própr
 O **site oficial e este sistema são coisas separadas**. O site é uma página
 pronta com o catálogo escrito dentro do código; este sistema é a vitrine + a
 área da equipe, com estoque, custo, lucro, CRM, funil, caixa e assistência.
-Os dois mostram as mesmas motos e os mesmos preços — se um mudar, o outro
-precisa mudar junto, senão o cliente vê preço diferente em cada lugar.
+Nas **motos elétricas** os dois mostram os mesmos modelos e os mesmos preços —
+se um mudar, o outro precisa mudar junto, senão o cliente vê preço diferente em
+cada lugar. Carro e moto a combustão existem **só aqui**, porque o site não
+tem essa linha.
 
 ## Os dois lados, e a regra que não se quebra
 
@@ -108,10 +117,22 @@ para tirar o aviso da tela; o alerta técnico continua escrito em `login.html`.
 
 ## Decisões de produto já tomadas
 
-- **Cada moto é peça única** (chassi, quilometragem, avarias), nunca contagem
-  por modelo. Duas TANK AG11 zero km parecem iguais, mas a nota fiscal e a
-  garantia são de uma delas. **Acessórios são por quantidade**: não têm chassi
-  nem quilometragem, um capacete é igual ao outro.
+- **Cada veículo é peça única** (chassi, quilometragem, avarias, e placa e ano
+  quando é emplacado), nunca contagem por modelo. Duas TANK AG11 zero km
+  parecem iguais, mas a nota fiscal e a garantia são de uma delas; dois Onix do
+  mesmo ano têm Renavam diferente. **Acessórios são por quantidade**: não têm
+  chassi nem quilometragem, um capacete é igual ao outro.
+- **`eletrico:false` é a chave que separa as duas realidades.** Moto elétrica
+  não tem placa, não tem Renavam, não tem ano-modelo e não precisa de CNH. Moto
+  a combustão e carro têm tudo isso. É esse campo que decide quais campos o
+  cadastro pede, quais avarias ele oferece, quais condições existem e quais
+  selos a vitrine mostra.
+- **Condição é guardada no masculino e traduzida na hora de mostrar**
+  (`condRotulo`). Sem isso a tela escreve "moto seminovo" e "carro seminova" —
+  erro de concordância na cara do cliente, numa loja que vende confiança.
+- **Veículo de repasse não é "zero km" nem "de vitrine"**: ele chega usado. O
+  cadastro de um Gol oferece só Seminovo e Usado — oferecer Zero km seria
+  oferecer o que a loja não tem.
 - **A quilometragem faz o papel que a saúde da bateria fazia no celular**: é o
   desgaste que o cliente pergunta antes de fechar, e o que puxa o preço.
 - **Preço vem do cadastro**, nunca escrito no site. `estoque.js` é a fonte
@@ -119,6 +140,11 @@ para tirar o aviso da tela; o alerta técnico continua escrito em `login.html`.
 - **Os três "não" são o argumento principal da loja**, e por isso vêm no topo:
   não precisa de CNH, não paga emplacamento, não paga IPVA. Ciclomotor elétrico
   até 32 km/h não exige habilitação — é o que destrava a venda.
+  **Eles valem SÓ para a linha elétrica.** Carro e moto a combustão precisam de
+  CNH, de placa e pagam IPVA. Repetir esse selo neles seria o site mentindo
+  para o cliente: no card deles aparece "Documentação em dia", e o texto da
+  seção e do FAQ diz de quem é cada regra. Se um dia alguém for "simplificar"
+  isso, essa é a linha que não se apaga.
 - **Sem emoji em lugar nenhum** — nem no site, nem na mensagem do WhatsApp.
   No site ficam ícones SVG de traço; na mensagem, o negrito do próprio
   WhatsApp (`*texto*`). Emoji ocupa 4 bytes e chegou como "?" no celular do
@@ -139,11 +165,18 @@ para tirar o aviso da tela; o alerta técnico continua escrito em `login.html`.
 
 | Real (veio do site da loja) | Exemplo (troque pelo cadastro) |
 |---|---|
-| Os 8 modelos e os preços de tabela | Quantidade em estoque |
-| A ficha técnica de cada um | Chassi e quilometragem |
+| Os 8 modelos elétricos e os preços de tabela | Quantidade em estoque |
+| A ficha técnica de cada elétrica | Chassi, placa, ano, Renavam, quilometragem |
 | A cor da foto oficial | Custo de compra |
 | As fotos das motos e da loja | Clientes, funil, caixa, ordens de serviço |
 | WhatsApp, Instagram, cidades | A lista de acessórios |
+| Que a loja faz repasse de moto e carro | **Os modelos e preços de moto a combustão e de carro** |
+
+A última linha é a que mais engana: os Honda, Yamaha, Fiat, VW, Chevrolet,
+Hyundai e Renault do catálogo são **exemplo**, escolhidos por serem comuns em
+repasse no Nordeste. A loja não publica catálogo dessa linha, então não existe
+preço oficial — em carro usado o ano e o estado mandam mais que o modelo, e
+quem define é o cadastro.
 
 O rodapé da vitrine avisa isso ao cliente, em vez de fingir que o estoque é real.
 
