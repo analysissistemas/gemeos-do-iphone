@@ -157,9 +157,9 @@ img.logo-claro{display:none}
   display:flex;align-items:center;gap:18px;padding:0 22px;
 }
 .marca{display:flex;align-items:center;gap:10px}
-.logo-nav{height:26px;width:auto;display:block;opacity:.95}
+.logo-nav{height:32px;width:auto;display:block;opacity:.95}
 /* a logo é branca em PNG transparente — some em fundo claro, então nunca usar em superfície branca */
-.logo-hero{height:76px;width:auto;display:block;margin:0 auto 30px;opacity:.92}
+.logo-hero{height:104px;width:auto;display:block;margin:0 auto 26px;opacity:.92}
 .nav-sep{width:1px;height:20px;background:var(--linha)}
 .nav-ctx{font-size:12px;color:var(--ink-3);letter-spacing:.02em}
 .nav-dir{margin-left:auto;display:flex;align-items:center;gap:14px}
@@ -250,15 +250,18 @@ img.logo-claro{display:none}
 /* silhuetas em parallax (as "gêmeas") */
 .gemeas{position:absolute;inset:0;z-index:1;pointer-events:none}
 .fone{
-  position:absolute;top:50%;width:150px;height:310px;border-radius:26px;
+  position:absolute;top:50%;width:300px;height:170px;border-radius:34px;
   border:1px solid var(--linha-forte);
   background:linear-gradient(160deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02) 55%,transparent);
   box-shadow:0 30px 90px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.14);
   will-change:transform;
 }
-.fone::after{content:"";position:absolute;top:11px;left:50%;transform:translateX(-50%);width:46px;height:7px;background:#000;border-radius:20px;opacity:.8}
-.fone.esq{left:11%;transform:translateY(-50%) rotate(-12deg)}
-.fone.dir{right:11%;transform:translateY(-50%) rotate(12deg)}
+/* a roda insinuada no canto: da a leitura de moto sem virar um desenho
+   mal-acabado de moto, que ficaria pior que a forma abstrata */
+.fone::after{content:"";position:absolute;bottom:-26px;left:34px;width:60px;height:60px;
+  border:1px solid var(--linha-forte);border-radius:50%;opacity:.7}
+.fone.esq{left:6%;transform:translateY(-50%) rotate(-9deg)}
+.fone.dir{right:6%;transform:translateY(-50%) rotate(9deg)}
 
 /* ---------- BOTÕES ---------- */
 .btn{
@@ -427,15 +430,18 @@ tbody tr:last-child td{border-bottom:none}
 }
 .chip:hover{border-color:var(--linha-forte);color:var(--ink)}
 .chip.on{background:var(--ink);color:var(--contra-ink);border-color:var(--ink);font-weight:600}
-.mini{width:34px;height:44px;border-radius:6px;border:1px solid var(--linha-forte);
+.mini{width:52px;height:38px;border-radius:7px;border:1px solid var(--linha-forte);
   background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.02));flex:none;position:relative;
   overflow:hidden;cursor:pointer;transition:.2s}
-.mini::after{content:"";position:absolute;top:3px;left:50%;transform:translateX(-50%);width:12px;height:2.5px;background:#000;border-radius:3px}
+/* sem entalhe de celular: no lugar, duas rodinhas de contorno */
+.mini::after{content:"";position:absolute;bottom:6px;left:9px;width:9px;height:9px;
+  border:1px solid var(--linha-forte);border-radius:50%;
+  box-shadow:22px 0 0 -1px transparent, 22px 0 0 0 var(--linha-forte), 23px 0 0 -1px rgba(0,0,0,.6)}
 .mini:hover{border-color:var(--ink);transform:scale(1.06)}
 /* com foto: a imagem toma o quadrinho inteiro e o entalhe some */
 .mini.tem-foto{background:#fff}
 .mini.tem-foto::after{display:none}
-.mini img{width:100%;height:100%;object-fit:cover;display:block}
+.mini img{width:100%;height:100%;object-fit:contain;display:block}
 /* sinal de que dá para clicar e trocar a foto */
 .mini .lente{
   position:absolute;inset:0;display:grid;place-items:center;font-size:13px;
@@ -648,7 +654,7 @@ tbody tr:last-child td{border-bottom:none}
       <img src="fotos/logo-gemeos-motors.webp" alt="Gêmeos Motors" class="logo-hero logo-claro">
       <h1>Dois olhos<br>no seu negócio.</h1>
       <p>CRM, funil de vendas, estoque e caixa da loja — em um só lugar, em tempo real.
-      Carpina e Goiana, Pernambuco.</p>
+      Goiana e Carpina, Pernambuco.</p>
       <div class="hero-acao">
         <a class="btn btn-p" href="#funil" data-ir="funil">Ver funil de vendas</a>
         <a class="btn btn-s" href="#estoque" data-ir="estoque">Conferir estoque</a>
@@ -1363,6 +1369,17 @@ function chaveFoto(p){
   return p.id !== undefined ? String(p.id) : "ac-" + (p.nome || p.modelo || "");
 }
 function nomeDoProduto(p){ return p.modelo || p.nome || "produto"; }
+
+/* Mapa de fotos do lado da equipe. Existe separado porque o index.html nao
+   carrega o estoque.js — carregar daria conflito de nomes (os dois declaram
+   CATALOGO, COND, AVARIAS). Quando os dois forem unificados, isto sai. */
+const FOTOS_MOTOS = {
+  "TANK AG11":"fotos/motos/tank-ag11.webp", "T1":"fotos/motos/t1.webp",
+  "M6":"fotos/motos/m6.webp",               "MM3":"fotos/motos/mm3.webp",
+  "T3 RETRÔ":"fotos/motos/t3-retro.webp",   "AG08":"fotos/motos/ag08.webp",
+  "DF17":"fotos/motos/df17.webp",           "TCN BASKET":"fotos/motos/tcn-basket.webp"
+};
+function fotoDe(modelo){ return FOTOS_MOTOS[modelo] || null; }
 
 function miniFoto(p){
   const k = chaveFoto(p);

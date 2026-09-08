@@ -50,7 +50,7 @@ a{color:inherit;text-decoration:none}
   backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
   border:1px solid var(--linha-esc);border-radius:980px;box-shadow:0 12px 40px rgba(0,0,0,.28);
 }
-.nav img{height:22px;width:auto}
+.nav img{height:34px;width:auto}
 .nav-links{display:flex;gap:2px;margin:0 auto}
 .nav-links a{padding:8px 15px;border-radius:980px;font-size:13.5px;color:var(--ink-2);transition:.2s;white-space:nowrap}
 .nav-links a:hover{background:rgba(255,255,255,.09);color:var(--ink)}
@@ -108,7 +108,7 @@ a{color:inherit;text-decoration:none}
 .hero h1 em{font-style:normal;background:linear-gradient(180deg,#fff 30%,#8e8e93 120%);
   -webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p{margin-top:22px;font-size:clamp(15px,1.7vw,19px);color:var(--ink-2);line-height:1.55;max-width:560px;margin-inline:auto}
-.logo-hero{height:clamp(46px,7vw,80px);width:auto;margin:0 auto 26px;filter:drop-shadow(0 6px 22px rgba(0,0,0,.7))}
+.logo-hero{height:clamp(80px,13vw,150px);width:auto;margin:0 auto 22px;filter:drop-shadow(0 6px 22px rgba(0,0,0,.7))}
 .hero-acoes{margin-top:34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 /* ---------- OS "GÊMEOS" EM PARALLAX ----------
@@ -299,7 +299,7 @@ a{color:inherit;text-decoration:none}
 .rodape{background:var(--escuro);color:var(--ink);padding:56px 24px 34px}
 .rodape-topo{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:28px;flex-wrap:wrap;
   padding-bottom:32px;border-bottom:1px solid var(--linha-esc)}
-.rodape-topo img{height:38px}
+.rodape-topo img{height:52px}
 .rodape-topo p{color:var(--ink-2);font-size:13.5px;line-height:1.6;max-width:330px}
 .rodape-topo .btn-consultar{width:auto;padding:12px 22px;margin:0 0 0 auto}
 .rodape-cols{max-width:1280px;margin:0 auto;padding-top:32px;display:grid;
@@ -558,11 +558,11 @@ a{color:inherit;text-decoration:none}
 <!-- O ?v= força o navegador a buscar a versão nova em vez de usar a guardada.
      Suba o número sempre que mexer nestes arquivos, senão você (e o cliente)
      continuam vendo a versão antiga sem entender por quê. -->
-<script src="cores-motos.js?v=6"></script>
-<script src="fotos-disponiveis.js?v=6"></script>
+<script src="cores-motos.js?v=8"></script>
+<script src="fotos-disponiveis.js?v=8"></script>
 <!-- antes do estoque.js: é daqui que sai fotoDoProduto -->
-<script src="foto-produto.js?v=6"></script>
-<script src="estoque.js?v=6"></script>
+<script src="foto-produto.js?v=8"></script>
+<script src="estoque.js?v=8"></script>
 <script>
 /* ============================================================
    Número que recebe as mensagens do site.
@@ -685,7 +685,7 @@ function card(a){
   const f = a.ficha;
   return `<article class="prod" data-id="${a.id}">
     <div class="prod-foto">
-      <span class="selo ${zero?"lac":"semi"}">${zero?"Zero km":e.cond}</span>
+      <span class="selo ${zero?"lac":"semi"}">${a.porQuantidade?"Novo":zero?"Zero km":e.cond}</span>
       ${fotoDupla(a)}
     </div>
     <div class="prod-corpo">
@@ -706,8 +706,8 @@ function card(a){
           style="background:${corHex(c)}" data-cor="${c}" title="${c}" aria-label="${c}"></button>`).join("")}
       </div>` : ""}
 
-      ${a.porQuantidade ? "" : `<div class="opcoes">
-        ${["Seminova","Zero km"].map(c=>`<button class="op verde ${c===e.cond?"on":""}"
+      ${a.porQuantidade || a.reserva ? "" : `<div class="opcoes">
+        ${["Seminova","Zero km"].map(c=>`<button class="op ${c===e.cond?"on":""}"
           data-cond="${c}">${c}</button>`).join("")}
       </div>`}
 
@@ -725,7 +725,7 @@ function card(a){
         <div class="parc">ou 18x de ${brlc(p/18)}</div>
         <button class="btn-consultar" data-consultar="${a.id}">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
-          ${a.reserva ? "Reservar agora" : "Quero essa moto"}
+          ${a.reserva ? "Reservar agora" : a.porQuantidade ? "Consultar disponibilidade" : "Quero essa moto"}
         </button>
       </div>
     </div>
@@ -839,7 +839,14 @@ document.addEventListener("click", e=>{
        próprio WhatsApp (*texto entre asteriscos*), que é só ASCII e sempre
        chega inteiro — além de ficar com cara de loja, não de conversa. */
     const f = a.ficha;
-    const linhas = [
+    /* acessório não tem condição nem quilometragem: repetir "Zero km, sem uso"
+       num capacete deixa a mensagem com cara de formulário mal preenchido */
+    const linhas = a.porQuantidade ? [
+      "Olá! Tenho interesse neste acessório do site:", "",
+      `*${a.modelo}*`, el.cor, "",
+      `*${brl(precoEscolhido(a))}*`, "",
+      "Ainda tem em estoque?"
+    ] : [
       a.reserva ? "Olá! Quero reservar esta moto do site:"
                 : "Olá! Tenho interesse nesta moto do site:", "",
       `*${a.modelo}*`,

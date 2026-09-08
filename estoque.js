@@ -180,10 +180,13 @@ function _gerarMotos(catalogo, categoria){
   const out = [];
   Object.keys(catalogo).forEach(m=>{
     const info = catalogo[m];
-    /* modelo em reserva chega em quantidade menor: ainda está a caminho */
-    const qtd = info.reserva ? _ent(0,2) : _ent(1,3);
+    /* Modelo em reserva ainda NÃO está na loja: vira um card só, zero km,
+       com a data de chegada. Gerar estoque para ele daria a contradição de
+       uma moto "seminova, 3.491 km rodados" que ao mesmo tempo "chega na
+       semana que vem" — e o cliente percebe. */
+    const qtd = info.reserva ? 1 : _ent(1,3);
     for(let i=0;i<qtd;i++){
-      const cond = _pick(COND);
+      const cond = info.reserva ? "Zero km" : _pick(COND);
       const zero = cond==="Zero km";
       const km  = zero ? 0 : (cond==="Vitrine" ? _ent(20,400) : _ent(600,9000));
       const avs = zero ? [] : (_rnd()>0.6 ? [_pick(AVARIAS).k] : []);
