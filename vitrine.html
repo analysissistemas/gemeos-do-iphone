@@ -76,14 +76,40 @@ a{color:inherit;text-decoration:none}
 /* ---------- HERO ---------- */
 .hero{position:relative;min-height:100svh;display:grid;place-items:center;text-align:center;overflow:hidden;background:var(--escuro)}
 .hero-fundo{position:absolute;inset:0;z-index:0;background:var(--escuro)}
+/* O vídeo e a foto ocupam o MESMO lugar, empilhados. Quem manda é a opacidade:
+   trocar por display faria a imagem entrar de supetão e piscar. Com opacidade,
+   uma some enquanto a outra aparece, e a passagem fica lisa. */
+.hero-fundo > img,
+.hero-fundo > video{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease}
+.hero-fundo > .no-ar{opacity:1}
+
+/* Só entram no topo as CENAS: foto tirada na loja, com cliente e rua. Elas
+   preenchem a tela e levam o mesmo escurecimento do vídeo, porque são fundo
+   de verdade.
+
+   O recorte de moto do catálogo foi TESTADO aqui e não serve: o fundo do topo
+   é escuro, e a moto recortada fica boiando num retângulo preto, com cara de
+   imagem que não carregou. Recorte de produto pede fundo claro — é por isso
+   que ele funciona no card do catálogo e não aqui. Não reintroduzir. */
+.hero-fundo > img{object-fit:cover;object-position:center 0%}
+/* leve aproximação enquanto a imagem está no ar: imagem parada de fundo pesa,
+   e esse movimento lento dá vida sem roubar a atenção do texto */
+@keyframes heroZoom{ from{transform:scale(1)} to{transform:scale(1.07)} }
+.hero-fundo > img.no-ar{animation:heroZoom 7s ease-out forwards}
+@media(prefers-reduced-motion:reduce){
+  .hero-fundo > img.no-ar{animation:none}
+  .hero-fundo > img, .hero-fundo > video{transition:none}
+}
 .hero-fundo img,
 .hero-fundo video{
   width:100%;height:100%;
   /* `cover` preenche a tela, e o object-position escolhe QUAL parte do vídeo
-     fica visível. 100% = mostra o pé do vídeo e corta todo o topo — que é
-     onde ficam os letreiros da moto. Baixar esse número faz o texto
-     voltar a aparecer; é o botão de ajuste fino do enquadramento. */
-  object-fit:cover;object-position:center 100%;
+     fica visível. Centralizado na horizontal e preso no TOPO: é lá que está
+     a moto e o rosto de quem aparece; o pé do quadro é só chão e sombra.
+     Esse segundo valor é o botão de ajuste fino do enquadramento —
+     0% mostra o topo, 50% o meio, 100% o pé. 28% é o ponto em que a moto
+     fica inteira sem sobrar chão embaixo: no 0% subia demais. */
+  object-fit:cover;object-position:center 28%;
   /* exposição baixa: o vídeo vira ambiente, não concorre com o texto.
      brightness derruba a luz, contrast e saturate devolvem a cor que o
      escurecimento rouba — sem isso o vídeo fica cinza e sujo. */
@@ -348,9 +374,9 @@ a{color:inherit;text-decoration:none}
    amplia pela altura e o letreiro do topo volta a caber na tela. Por isso o
    corte fica colado no pé do vídeo (100%) e a escala sobe um pouco, para o
    vídeo continuar grande sem trazer o texto de volta. */
-@media(min-width:1400px){ .hero-fundo video{object-position:center 100%} }
+@media(min-width:1400px){ .hero-fundo video{object-position:center 28%} }
 @media(max-width:900px){
-  .hero-fundo video{object-position:center 100%;transform:scale(1.35);transform-origin:center bottom}
+  .hero-fundo video{object-position:center 28%;transform:scale(1.35);transform-origin:center top}
 }
 @media(max-width:560px){
   .hero-fundo video{transform:scale(1.7);transform-origin:center bottom}
@@ -396,9 +422,11 @@ a{color:inherit;text-decoration:none}
   <div class="hero-fundo" id="heroFundo">
     <!-- muted + playsinline sao obrigatorios: sem os dois, o celular recusa
          tocar sozinho e o fundo fica preto. autoplay so vale com muted. -->
-    <video id="heroVideo" autoplay muted loop playsinline preload="auto"
+    <video id="heroVideo" class="no-ar" autoplay muted loop playsinline preload="auto"
            poster="fotos/loja/loja-02.webp"
            onerror="this.parentElement.classList.add('sem');this.remove()"></video>
+    <!-- a camada das imagens: entra quando o vídeo termina -->
+    <img id="heroFoto" alt="" aria-hidden="true">
   </div>
 
   <!-- Nada nas laterais: com o video das motos na rua ao fundo, qualquer
@@ -567,11 +595,11 @@ a{color:inherit;text-decoration:none}
 <!-- O ?v= força o navegador a buscar a versão nova em vez de usar a guardada.
      Suba o número sempre que mexer nestes arquivos, senão você (e o cliente)
      continuam vendo a versão antiga sem entender por quê. -->
-<script src="cores-motos.js?v=9"></script>
-<script src="fotos-disponiveis.js?v=9"></script>
+<script src="cores-motos.js?v=12"></script>
+<script src="fotos-disponiveis.js?v=12"></script>
 <!-- antes do estoque.js: é daqui que sai fotoDoProduto -->
-<script src="foto-produto.js?v=9"></script>
-<script src="estoque.js?v=9"></script>
+<script src="foto-produto.js?v=12"></script>
+<script src="estoque.js?v=12"></script>
 <script>
 /* ============================================================
    Número que recebe as mensagens do site.
@@ -915,7 +943,7 @@ $("#links").onclick   = ()=> $("#links").classList.remove("abre");
    bateria do celular do cliente. E respeita quem pediu menos animação
    no sistema — nesse caso nem toca. */
 (function(){
-  const v = $("#heroVideo");
+  const v = $("#heroVideo"), foto = $("#heroFoto");
   if(!v) return;
 
   /* Vídeo da própria loja: "a tropa chegou", as motos na rua.
@@ -923,19 +951,78 @@ $("#links").onclick   = ()=> $("#links").classList.remove("abre");
   v.src = "video/gemeos-motors-hero.mp4";
   v.load();
 
+  /* O ciclo do topo: as fotos da própria loja, com cliente de verdade
+     recebendo a moto. É a prova social que nenhuma foto de fábrica dá.
+
+     O recorte de moto do catálogo foi testado aqui e saiu: sobre o fundo
+     escuro ele fica boiando num retângulo preto. Recorte de produto quer
+     fundo claro — o lugar dele é o card do catálogo. */
+  const ROTEIRO = ["fotos/loja/loja-02.webp", "fotos/loja/loja-05.webp",
+                   "fotos/loja/loja-01.webp", "fotos/loja/loja-06.webp",
+                   "fotos/loja/loja-03.webp", "fotos/loja/loja-08.webp"];
+  const TEMPO = 4200;   // quanto cada foto fica no ar, em milissegundos
+
+  /* Quem pediu menos animação no sistema recebe uma cena parada: o primeiro
+     quadro do vídeo, sem ciclo e sem zoom. */
   if(matchMedia("(prefers-reduced-motion: reduce)").matches){ v.pause(); return; }
 
-  /* Toca UMA vez e congela no último quadro — pedido do dono. Vídeo em loop
-     no topo cansa e rouba atenção do que importa, que é o catálogo.
+  /* O vídeo NÃO fica em loop sozinho: ele toca uma vez, entrega a vez para as
+     imagens e só volta quando elas terminam. Quem faz o loop é o ciclo inteiro.
      removeAttribute em vez de loop=false porque o atributo vem no HTML. */
   v.removeAttribute("loop");
   v.loop = false;
 
-  /* Só toca quando o topo está à vista. Não recomeça sozinho: se ja terminou,
-     fica parado no último quadro em vez de reiniciar a cada rolagem. */
+  let indice = 0;          // qual imagem está no ar
+  let relogio = null;      // o timer da imagem atual
+  let visivel = true;      // o topo está na tela?
+
+  const mostrar = quem => {
+    v.classList.toggle("no-ar", quem === "video");
+    foto.classList.toggle("no-ar", quem === "foto");
+  };
+
+  function tocarVideo(){
+    indice = 0;
+    mostrar("video");
+    v.currentTime = 0;
+    if(visivel) v.play().catch(()=>{});   // catch: navegador pode recusar sem gesto
+  }
+
+  function proximaImagem(){
+    if(!ROTEIRO.length || indice >= ROTEIRO.length){ tocarVideo(); return; }
+    /* troca o src ANTES de acender a camada, senão aparece a imagem anterior
+       por um quadro e o corte fica sujo */
+    foto.src = ROTEIRO[indice++];
+    mostrar("foto");
+    /* reinicia o zoom: sem isso a animação só roda na primeira imagem */
+    foto.style.animation = "none";
+    void foto.offsetWidth;
+    foto.style.animation = "";
+    agendar();
+  }
+
+  function agendar(){
+    clearTimeout(relogio);
+    if(visivel) relogio = setTimeout(proximaImagem, TEMPO);
+  }
+
+  /* terminou o vídeo, começam as imagens */
+  v.addEventListener("ended", proximaImagem);
+  /* se o arquivo do vídeo faltar, o ciclo vira só as imagens em vez de um
+     retângulo preto parado */
+  v.addEventListener("error", proximaImagem);
+
+  /* Só roda com o topo à vista. Vídeo e timer trabalhando fora de vista só
+     gastam bateria do celular do cliente. */
   const io = new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting && !v.ended) v.play().catch(()=>{});  // catch: navegador pode recusar sem gesto
-    else if(!e.isIntersecting) v.pause();
+    visivel = e.isIntersecting;
+    if(visivel){
+      if(v.classList.contains("no-ar")){ if(!v.ended) v.play().catch(()=>{}); }
+      else agendar();
+    } else {
+      v.pause();
+      clearTimeout(relogio);
+    }
   }), {threshold:0.05});
   io.observe(v);
 })();
