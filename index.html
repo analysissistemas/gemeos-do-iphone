@@ -6,7 +6,7 @@
 <title>Gêmeos Motors — Sistema</title>
 <style>
 /* ============================================================
-   GÊMEOS DO IPHONE — protótipo visual
+   GÊMEOS MOTORS — sistema da equipe (nasceu do protótipo da Gêmeos do iPhone)
    Identidade: preto e branco. Referência: apple.com
    Cores validadas por contraste (validar_cores.py)
    ============================================================ */
@@ -614,7 +614,7 @@ tbody tr:last-child td{border-bottom:none}
     </a>
     <button class="tema" id="btTema" title="Trocar entre tema claro e escuro" aria-label="Trocar tema"></button>
     <div class="conta" id="conta">
-      <div class="avatar" id="avatar">GI</div>
+      <div class="avatar" id="avatar">GM</div>
       <button class="sair" id="btSair" title="Sair do sistema" aria-label="Sair">Sair</button>
     </div>
   </div>
@@ -797,7 +797,7 @@ tbody tr:last-child td{border-bottom:none}
       </div>
     </div>
 
-    <!-- ACESSÓRIOS E MOTINHAS: por quantidade -->
+    <!-- ACESSÓRIOS: por quantidade -->
     <div id="blocoAcessorios" style="display:none">
       <div class="filtros rev" id="filtroEst"></div>
       <div class="tab-wrap rev">
@@ -903,7 +903,7 @@ tbody tr:last-child td{border-bottom:none}
       <div class="tab-scroll">
         <table>
           <thead><tr>
-            <th>Cliente</th><th>Aparelho</th><th>Parcela</th><th class="num">Valor</th>
+            <th>Cliente</th><th>Veículo</th><th>Parcela</th><th class="num">Valor</th>
             <th>Vencimento</th><th>Situação</th><th></th>
           </tr></thead>
           <tbody id="tbParcelas"></tbody>
@@ -1244,7 +1244,7 @@ function temaAtual(){
 aplicarTema(temaAtual());
 
 /* ---------- QUEM ESTÁ USANDO O SISTEMA ----------
-   Vem da tela de login. Sem sessão, mostra "GI" e o botão Sair só leva de
+   Vem da tela de login. Sem sessão, mostra "GM" e o botão Sair só leva de
    volta para a loja — porque hoje o login ainda não bloqueia o acesso direto
    (está escrito em login.html: sem servidor, não há como bloquear de verdade). */
 (function(){
@@ -1424,10 +1424,10 @@ function pintaKpiEstoque(){
   const valorAp = ap.reduce((s,a)=>s+a.custo,0);
   const valorAc = estoque.reduce((s,i)=>s+i.qtd*i.custo,0);
   $("#kpiEstoque").innerHTML =
-    kpi("Motos em estoque", ap.length,"cada uma cadastrada individualmente","") +
-    kpi("Acessórios e motinhas", estoque.reduce((s,i)=>s+i.qtd,0),`${estoque.length} tipos diferentes`,"") +
+    kpi("Veículos em estoque", ap.length,"cada um cadastrado individualmente","") +
+    kpi("Acessórios", estoque.reduce((s,i)=>s+i.qtd,0),`${estoque.length} tipos diferentes`,"") +
     kpi("Dinheiro parado", brl(valorAp+valorAc),"a preço de custo","") +
-    kpi("Lucro se vender tudo", brl(ap.reduce((s,a)=>s+(a.venda-a.custo),0)),"só nas motos","");
+    kpi("Lucro se vender tudo", brl(ap.reduce((s,a)=>s+(a.venda-a.custo),0)),"só nos veículos","");
 }
 pintaKpiEstoque();
 
@@ -1583,7 +1583,7 @@ $("#filtroApar").onclick = e => {
 };
 
 let filtroEstAtual="Todos";
-const cats=["Todos","Motinha elétrica","Acessório","Acabou"];
+const cats=["Todos","Acessório","Acabou"];
 function pintaFiltroEst(){
   $("#filtroEst").innerHTML=cats.map(c=>
     `<button class="chip ${c===filtroEstAtual?"on":""}" data-e="${c}">${c}</button>`).join("");
@@ -1645,17 +1645,16 @@ function rosca(dados, sufixo){
 function pintaRoscas(){
   const custoAp = emEstoque().reduce((s,a)=>s+a.custo,0);
   const porCat=[
-    {n:"Motos",            v:custoAp,                                                                    c:"var(--f1)"},
-    {n:"Motinha elétrica", v:estoque.filter(e=>e.cat==="Motinha elétrica").reduce((s,e)=>s+e.qtd*e.custo,0), c:"var(--f4)"},
+    {n:"Veículos",         v:custoAp,                                                                    c:"var(--f1)"},
     {n:"Acessório",        v:estoque.filter(e=>e.cat==="Acessório").reduce((s,e)=>s+e.qtd*e.custo,0),        c:"var(--f6)"}
   ].map(d=>({...d, rot:brl(d.v)})).filter(d=>d.v>0);
   $("#vizRosca").innerHTML=rosca(porCat,"EM CUSTO");
 
   const porCond=COND.map((c,i)=>{
     const v=emEstoque().filter(a=>a.cond===c).length;
-    return {n:c, v, rot:`${v} ${v===1?"moto":"motos"}`, c:["var(--f1)","var(--f3)","var(--f4)","var(--f6)"][i]};
+    return {n:c, v, rot:`${v} ${v===1?"veículo":"veículos"}`, c:["var(--f1)","var(--f3)","var(--f4)","var(--f6)"][i]};
   }).filter(d=>d.v>0);
-  $("#vizCondicao").innerHTML=rosca(porCond,"APARELHOS");
+  $("#vizCondicao").innerHTML=rosca(porCond,"VEÍCULOS");
 }
 pintaRoscas();
 
@@ -1758,7 +1757,7 @@ const ETAPAS_OS=[
   {n:"Pronto",           d:"Consertado, esperando o cliente buscar",  cor:"var(--f6)"}
 ];
 const DEFEITOS=["Não liga","Bateria não segura carga","Não carrega na tomada","Motor sem força","Freio falhando","Pneu furado",
-  "Alto-falante mudo","Botão power travado","Face ID não funciona","Troca de conector","Vidro traseiro trincado"];
+  "Farol não acende","Acelerador falhando","Controlador queimado","Conector do carregador solto","Carenagem trincada"];
 const TECNICOS=["Gêmeo 1","Gêmeo 2","Bancada externa"];
 const ordens = Array.from({length:19},(_,i)=>{
   const et = Math.floor(rnd()*6);
@@ -1847,13 +1846,13 @@ function abrirNota(tipo,dado){
     itens = linhaNota(`Serviço técnico — ${dado.def}`,`${dado.apar} · Chassi ${dado.imei}`,brlc(dado.orc));
     total = dado.orc;
     rodape = `<p style="margin-top:14px">Garantia do serviço: <b>${dado.garantia}</b>, contados da retirada.
-      A garantia cobre apenas o serviço descrito acima e não cobre danos por queda, líquido ou mau uso.</p>
+      A garantia cobre apenas o serviço descrito acima e não cobre danos por queda, alagamento ou mau uso.</p>
       <p style="margin-top:8px">Técnico responsável: <b>${dado.tec}</b> · Entrada em ${dado.entrada}</p>`;
   } else {
     itens = linhaNota(dado.apar,`Chassi ${dado.imei} · ${dado.forma}`,brlc(dado.valor));
     total = dado.valor;
     rodape = `<p style="margin-top:14px">Vendedor: <b>${dado.vend}</b> · Forma de pagamento: <b>${dado.forma}</b></p>
-      <p style="margin-top:8px">Aparelho conferido e testado no ato da entrega.
+      <p style="margin-top:8px">Veículo conferido e testado no ato da entrega.
       Garantia de <b>90 dias</b> da loja para seminovas e a <b>garantia de fábrica</b> nas zero km.</p>`;
   }
   $("#modal").innerHTML = `
@@ -2061,7 +2060,7 @@ function wizEntrada(){
     <div class="passo">
       <div class="passo-n"><i>1</i><b>Qual moto?</b><small>digite "tank", "t1", "retro"…</small></div>
       <div class="autoc">
-        <input id="wModelo" placeholder="Buscar modelo do iPhone…" autocomplete="off">
+        <input id="wModelo" placeholder="Buscar modelo…" autocomplete="off">
         <div class="autoc-lista" id="wLista"></div>
       </div>
     </div>
@@ -2340,37 +2339,37 @@ document.addEventListener("click",e=>{
    ============================================================ */
 const MODAIS={
   item:{t:"Cadastrar item novo",d:"Para quando chega um produto que a loja ainda não tinha na lista.",
-    c:[["Categoria","select",["iPhone","Motinha elétrica","Acessório","Outro"]],
-       ["Nome do produto","text","Ex.: iPhone 18 Pro Max"],
-       ["Armazenamento / variação","text","256GB · Titânio Natural"],
+    c:[["Categoria","select",["Moto elétrica","Triciclo elétrico","Moto a combustão","Carro","Acessório","Outro"]],
+       ["Nome do produto","text","Ex.: TANK AG11 ou capacete fechado"],
+       ["Cor / versão","text","Ex.: Branca · bateria 60V"],
        ["Condição","select",["Zero km","Seminovo","Vitrine","Usado"]],
        ["Custo (o que você pagou)","text","R$ 0,00"],
        ["Preço de venda","text","R$ 0,00"],
        ["Quantidade inicial","text","0"]]},
   entrada:{t:"Dar entrada em moto",d:"Moto comprada de fornecedor, de cliente ou recebida em troca.",
-    c:[["Produto","select",["iPhone 15 Pro Max","iPhone 14","iPhone 13","Outro (cadastrar)"]],
+    c:[["Produto","select",["TANK AG11","T1","M6","T3 RETRÔ","AG08","DF17","TCN BASKET","MM3","Outro (cadastrar)"]],
        ["Chassi","text","9C2xxxxxxxxxxx"],["Placa (só emplacado)","text","ABC1D23"],
        ["Condição","select",["Zero km","Seminovo","Vitrine","Usado"]],
        ["Origem","select",["Fornecedor","Troca de cliente","Compra avulsa"]],
        ["Valor pago","text","R$ 0,00"],["Data","text","12/08/2026"]]},
-  saida:{t:"Registrar saída (venda)",d:"Aparelho que sai da loja — vendido, trocado ou devolvido.",
-    c:[["Aparelho (por IMEI)","text","Buscar no estoque…"],
+  saida:{t:"Registrar saída (venda)",d:"Veículo que sai da loja — vendido, trocado ou devolvido.",
+    c:[["Veículo (por chassi ou placa)","text","Buscar no estoque…"],
        ["Cliente","select",["Cliente cadastrado…","Novo cliente"]],
        ["Valor da venda","text","R$ 0,00"],
        ["Forma de pagamento","select",["Pix","Cartão 12x","Cartão 6x","Carnê da loja","Dinheiro","Entrada + Pix"]],
        ["Entrou moto na troca?","select",["Não","Sim — cadastrar entrada"]],
        ["Vendedor","select",["Você","Gêmeo 1","Gêmeo 2","Balcão"]]]},
   cliente:{t:"Novo cliente",d:"Também dá para importar direto do Kommo depois que a integração estiver ligada.",
-    c:[["Nome completo","text","Nome do cliente"],["WhatsApp","text","(83) 9xxxx-xxxx"],
+    c:[["Nome completo","text","Nome do cliente"],["WhatsApp","text","(81) 9xxxx-xxxx"],
        ["CPF","text","opcional"],["Como chegou","select",["WhatsApp","Instagram","Indicação","Passou na loja"]],
        ["Situação","select",["Novo lead","Negociando","Cliente ativo"]]]},
-  os:{t:"Nova ordem de serviço",d:"Aparelho que o cliente deixou para conserto.",
+  os:{t:"Nova ordem de serviço",d:"Veículo que o cliente deixou para conserto.",
     c:[["Cliente","select",["Cliente cadastrado…","Novo cliente"]],
        ["WhatsApp","text","(81) 9xxxx-xxxx"],
-       ["Aparelho","text","Ex.: iPhone 12 · Preto"],
-       ["IMEI","text","35xxxxxxxxxxxxx"],
-       ["Defeito relatado pelo cliente","text","Ex.: tela quebrada, não carrega"],
-       ["Tem senha? Qual?","text","para testar depois do conserto"],
+       ["Veículo","text","Ex.: TANK AG11 · Branca"],
+       ["Chassi","text","9C2xxxxxxxxxxx"],
+       ["Defeito relatado pelo cliente","text","Ex.: não liga, bateria não segura carga"],
+       ["Deixou chave e controle do alarme?","text","para testar depois do conserto"],
        ["Orçamento previsto","text","R$ 0,00"],
        ["Técnico","select",["Gêmeo 1","Gêmeo 2","Bancada externa"]],
        ["Garantia do serviço","select",["90 dias","30 dias","Sem garantia"]]]},
@@ -2382,7 +2381,7 @@ const MODAIS={
        ["Prazo estimado","select",["Mesmo dia","1 a 2 dias","3 a 5 dias","Depende da peça"]]]},
   negocio:{t:"Novo negócio no funil",d:"Uma oportunidade de venda que começou agora.",
     c:[["Cliente","select",["Cliente cadastrado…","Novo cliente"]],
-       ["Aparelho de interesse","select",["iPhone 16 Pro Max","iPhone 15","iPhone 14 Pro","Outro"]],
+       ["Veículo de interesse","select",["TANK AG11","T1","M6","T3 RETRÔ","AG08","DF17","TCN BASKET","MM3","Moto a combustão","Carro","Outro"]],
        ["Valor previsto","text","R$ 0,00"],
        ["Etapa","select",["Chegou no WhatsApp","Qualificado","Proposta enviada","Negociando troca"]]]}
 };

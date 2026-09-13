@@ -1,2 +1,26 @@
 codebase/
 .git/
+
+# ---- O que NAO sobe para a Vercel ----
+# O site so usa: index.html, vitrine.html, login.html, os .js da raiz, api/,
+# as fotos em .webp e o video da loja. O resto e material de trabalho: sem
+# isto, cada deploy mandava ~130 MB (fotos da Apple, recortes do Behance) e
+# deixava as notas internas abertas em /CLAUDE.md para qualquer um ler.
+
+# notas do projeto e scripts
+CLAUDE.md
+README.md
+*.py
+
+# rascunhos, testes e arquivo morto (tudo que comeca com _, em qualquer pasta,
+# incluindo fotos/_apple, fotos/_nao-usadas e _catalogo.json)
+_*
+
+# material do sistema antigo de celular e apresentacao em PowerPoint
+apresentacao/
+video/iphone-*.mp4
+
+# originais pesados: o site usa o .webp
+fotos/**/*.png
+fotos/**/*.jpg
+fotos/**/*.jpeg

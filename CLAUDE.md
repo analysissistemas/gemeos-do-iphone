@@ -185,7 +185,15 @@ O rodapé da vitrine avisa isso ao cliente, em vez de fingir que o estoque é re
 - **Cache do navegador.** Os scripts são chamados com `?v=N` em `vitrine.html`.
   **Suba esse número sempre que mexer em `estoque.js`, `cores-motos.js` ou
   `fotos-disponiveis.js`** — sem isso o navegador serve a versão velha e parece
-  que a mudança não funcionou. Já enganou várias vezes. Hoje está em `v=6`.
+  que a mudança não funcionou. Já enganou várias vezes. Hoje está em `v=12`.
+- **`estoque.js` é público.** A vitrine carrega ele, então tudo que está lá
+  dentro dá para ler no código-fonte do cliente. **Nunca pôr custo, lucro ou
+  margem nele** — até 13/09/2026 ele gerava um `custo` de exemplo que nenhuma
+  tela usava e ficava exposto. Custo vive só na cópia de dados do `index.html`.
+  Se tirar um `_rnd()` de lá, o sorteio muda e a vitrine mostra outro estoque.
+- **`.vercelignore` decide o que sobe para a Vercel.** Notas, scripts, pastas
+  com `_`, fotos da Apple e os PNG/JPG originais ficam de fora. Arquivo novo
+  que o site precise e que caia numa dessas regras não vai aparecer no ar.
 - **`sem_acento` em Python ≠ `semAcento` em JavaScript.** O `isalnum()` do
   Python aceita "ª" como letra e o JavaScript não. Se as duas regras
   discordarem, a foto existe na pasta e o site procura por outro nome — sem

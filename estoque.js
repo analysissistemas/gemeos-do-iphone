@@ -389,7 +389,12 @@ function _gerarVeiculos(catalogo, categoria){
         renavam: eletrico ? null : `${_ent(10000000000,99999999999)}`,
         ficha:info.ficha, video:info.video || null,
         reserva:!!info.reserva, disponivelEm:info.disponivelEm || null,
-        custo:Math.round(sugerido*(0.70+_rnd()*0.10)),
+        /* SEM custo aqui: este arquivo é carregado pela vitrine, e quem abre o
+           código-fonte do cliente não pode achar custo nem margem. A área da
+           equipe tem a cópia própria dela, com custo. O _rnd() continua sendo
+           chamado de propósito: tirar a chamada muda o sorteio de tudo que vem
+           depois, e a vitrine passaria a mostrar outro estoque. */
+        ...(_rnd(), {}),
         venda:sugerido,
         entrada:`${String(_ent(1,28)).padStart(2,"0")}/08/2026`,
         vendido:false,
@@ -411,7 +416,7 @@ function _gerarQuantidade(catalogo, categoria){
       arm:info.var[0], cor:info.cor[0],
       cond:"Zero km", km:null, avarias:[], chassi:"", ficha:null, video:null,
       reserva:false, disponivelEm:null,
-      qtd:_ent(0,14), custo:Math.round(info.base*0.60), venda:info.base,
+      qtd:_ent(0,14), venda:info.base,
       entrada:"01/08/2026", vendido:false, naVitrine:true, porQuantidade:true
     });
   });
