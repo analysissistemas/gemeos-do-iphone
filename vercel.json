@@ -1,3 +1,10 @@
 {
-  "cleanUrls": true
+  "redirects": [
+    { "source": "/", "destination": "/vitrine", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/vitrine", "destination": "/vitrine.html" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/sistema", "destination": "/index.html" }
+  ]
 }

@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gêmeos Motors — Motos elétricas, motos e carros em Goiana e Carpina</title>
 <meta name="description" content="Moto elétrica sem CNH, sem emplacamento e sem IPVA, carregada na tomada de casa. Também compra, venda e repasse de moto e carro. Goiana e Carpina, Pernambuco. Até 18x.">
+<!-- Ícone da aba e da tela inicial do celular -->
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" href="social/icone-180.png" sizes="180x180">
+<link rel="apple-touch-icon" href="social/icone-180.png">
+<meta name="theme-color" content="#0b0b0a">
+<!-- Prévia do link: é o que aparece quando o site é mandado no WhatsApp ou no
+     Instagram. A imagem PRECISA de endereço completo (https://...) — caminho
+     relativo o WhatsApp ignora. Se o site mudar de endereço, troque aqui. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Gêmeos Motors">
+<meta property="og:title" content="Gêmeos Motors — Moto elétrica sem CNH em Goiana e Carpina">
+<meta property="og:description" content="Sem CNH, sem emplacamento e sem IPVA. Veja as motos, a ficha técnica e o preço, e chame no WhatsApp.">
+<meta property="og:url" content="https://gemeos-do-iphone.vercel.app/vitrine">
+<meta property="og:image" content="https://gemeos-do-iphone.vercel.app/social/compartilhar.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo da Gêmeos Motors sobre foto das motos elétricas da loja">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 /* ============================================================
    VITRINE — a parte do CLIENTE.
@@ -379,7 +398,12 @@ a{color:inherit;text-decoration:none}
   .hero-fundo video{object-position:center 28%;transform:scale(1.35);transform-origin:center top}
 }
 @media(max-width:560px){
-  .hero-fundo video{transform:scale(1.7);transform-origin:center bottom}
+  /* O corte sozinho não tirou o letreiro do vídeo: no celular ele cai bem
+     atrás do título e do parágrafo. Mais escuro e levemente desfocado, o
+     vídeo continua mostrando as motos e a rua, mas as letras dele deixam de
+     brigar com as do site. */
+  .hero-fundo video{transform:scale(1.7);transform-origin:center bottom;
+    filter:brightness(.42) contrast(1.05) saturate(1.1) blur(3px)}
   .escolha-video{bottom:14px;padding:6px 8px;flex-wrap:wrap;justify-content:center;
     max-width:calc(100% - 28px)}
   .escolha-video span{display:none}
@@ -595,11 +619,11 @@ a{color:inherit;text-decoration:none}
 <!-- O ?v= força o navegador a buscar a versão nova em vez de usar a guardada.
      Suba o número sempre que mexer nestes arquivos, senão você (e o cliente)
      continuam vendo a versão antiga sem entender por quê. -->
-<script src="cores-motos.js?v=12"></script>
-<script src="fotos-disponiveis.js?v=12"></script>
+<script src="cores-motos.js?v=13"></script>
+<script src="fotos-disponiveis.js?v=13"></script>
 <!-- antes do estoque.js: é daqui que sai fotoDoProduto -->
-<script src="foto-produto.js?v=12"></script>
-<script src="estoque.js?v=12"></script>
+<script src="foto-produto.js?v=13"></script>
+<script src="estoque.js?v=13"></script>
 <script>
 /* ============================================================
    Número que recebe as mensagens do site.
@@ -682,6 +706,11 @@ function fotoDupla(a){
   const propria = fotoManual(a.id);
   if(propria) return `<img src="${propria}" alt="${a.modelo}" loading="lazy" data-tipo="${a.tipo || ""}">`;
   const mapeada = fotoDe(a.modelo, e.cor);
+  /* Com a lista de fotos carregada, fotoDe já conferiu os nomes por convenção.
+     Se ela disse que não tem, não tem: vai direto para o contorno. Sem isso
+     cada carro e moto a combustão tentava 9 arquivos inexistentes — mais de
+     100 pedidos falhando a cada abertura da página, no 4G do cliente. */
+  if(!mapeada && typeof FOTOS_EXISTENTES !== "undefined") return molde(a.tipo).outerHTML;
   /* ordem: o mapa explícito, depois os nomes por convenção (png e jpg,
      com cor e sem cor). O que não existir dispara onerror e passa ao próximo. */
   const fila = (mapeada ? [mapeada] : []).concat(fotosPorNome(a.modelo, e.cor));
@@ -711,11 +740,15 @@ const MOLDES = {
   carro: `<circle cx="32" cy="60" r="10"/><circle cx="88" cy="60" r="10"/>
           <path d="M12 60V46l12-16h44l16 16 16 3v11"/>
           <path d="M12 60h10M42 60h36M98 60h10"/>
-          <path d="M38 30v16M24 46h76"/>`
+          <path d="M38 30v16M24 46h76"/>`,
+  /* acessório não é veículo: desenho de moto num card de capacete ou de alarme
+     parece anúncio trocado. Uma caixa neutra serve para qualquer item. */
+  acessorio: `<path d="M60 14 96 30v30L60 76 24 60V30Z"/>
+              <path d="M24 30l36 16 36-16M60 46v30"/>`
 };
 function molde(tipo){
   const d = document.createElement("div");
-  const desenho = MOLDES[tipo === "Carro" ? "carro" : "moto"];
+  const desenho = MOLDES[tipo === "Carro" ? "carro" : tipo === "Acessório" ? "acessorio" : "moto"];
   d.innerHTML = `<svg viewBox="0 0 120 80" width="132" height="88" fill="none" aria-hidden="true"
       stroke="#c9cabf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
     ${desenho}</svg>`;
@@ -733,9 +766,11 @@ function card(a){
   /* elétrica e a de gasolina não têm a mesma conversa: uma se vende por não
      precisar de CNH, a outra por ano, placa em dia e quilometragem honesta */
   const eletrico = a.eletrico !== false;
-  /* Veículo emplacado não é "zero km ou seminovo": é seminovo ou usado.
-     Oferecer "Zero km" num repasse seria oferecer o que a loja não tem. */
-  const opcoesCond = eletrico ? ["Seminovo","Zero km"] : ["Seminovo","Usado"];
+  /* Sem botão de condição no card. Cada card é UMA moto, com chassi e
+     quilometragem próprios: a condição é um fato dela, não uma escolha do
+     cliente. O botão existia e o preço não acompanhava — trocar uma seminova
+     de R$ 8.260 para "Zero km" mantinha R$ 8.260 e o WhatsApp chegava pedindo
+     "zero km, sem uso" por esse valor. A condição fica no selo da foto. */
   return `<article class="prod" data-id="${a.id}">
     <div class="prod-foto">
       <span class="selo ${zero?"lac":"semi"}">${
@@ -760,11 +795,6 @@ function card(a){
           style="background:${corHex(c)}" data-cor="${c}" title="${c}" aria-label="${c}"></button>`).join("")}
       </div>` : ""}
 
-      ${a.porQuantidade || a.reserva ? "" : `<div class="opcoes">
-        ${opcoesCond.map(c=>`<button class="op ${c===e.cond?"on":""}"
-          data-cond="${c}">${condRotulo(c, a.genero)}</button>`).join("")}
-      </div>`}
-
       <div class="checks">
         ${eletrico && pedacos.length ? `<span class="check">${CHECK} Sem CNH</span>
                <span class="check">${CHECK} Sem IPVA</span>` : ""}
@@ -777,7 +807,9 @@ function card(a){
 
       <div class="prod-preco">
         <div class="preco">${brl(p)}</div>
-        <div class="parc">ou 18x de ${brlc(p/18)}</div>
+        <!-- "18x de R$ 3,89" num item de R$ 70 parece piada: abaixo de mil reais
+             fica a forma de pagamento, sem a conta da parcela -->
+        <div class="parc">${p >= 1000 ? `ou 18x de ${brlc(p/18)}` : "no Pix, dinheiro ou cartão"}</div>
         <button class="btn-consultar" data-consultar="${a.id}">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
           ${a.reserva ? "Reservar agora"

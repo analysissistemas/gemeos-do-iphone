@@ -65,6 +65,9 @@ específico é alta; tratar como intocável por padrão evita esse ciclo.
 
 > A trava foi liberada **uma vez**, em 08/09/2026, com autorização expressa do
 > dono, para a virada de celular para moto. Voltou a valer depois disso.
+> Liberada de novo em 13/09/2026, com autorização expressa, para quatro
+> correções nomeadas: tirar o botão de condição do card, pular fotos que não
+> existem, prévia do link/ícone e detalhes de card e topo. Voltou a valer.
 
 ## O dono
 
@@ -133,6 +136,13 @@ para tirar o aviso da tela; o alerta técnico continua escrito em `login.html`.
 - **Veículo de repasse não é "zero km" nem "de vitrine"**: ele chega usado. O
   cadastro de um Gol oferece só Seminovo e Usado — oferecer Zero km seria
   oferecer o que a loja não tem.
+- **O card não tem botão de condição** (Zero km / Seminova / Usado). Cada
+  card é uma moto só, e a condição é um fato dela. O botão existia e o preço
+  não acompanhava: uma seminova de R$ 8.260 virava "Zero km" pelo mesmo valor,
+  e o WhatsApp chegava pedindo "zero km, sem uso" por R$ 8.260. A condição
+  fica no selo da foto. Não reintroduzir sem recalcular preço e mensagem.
+- **Abaixo de R$ 1.000 o card não mostra a parcela** ("18x de R$ 3,89" num
+  item de R$ 70); mostra "no Pix, dinheiro ou cartão".
 - **A quilometragem faz o papel que a saúde da bateria fazia no celular**: é o
   desgaste que o cliente pergunta antes de fechar, e o que puxa o preço.
 - **Preço vem do cadastro**, nunca escrito no site. `estoque.js` é a fonte
@@ -185,12 +195,22 @@ O rodapé da vitrine avisa isso ao cliente, em vez de fingir que o estoque é re
 - **Cache do navegador.** Os scripts são chamados com `?v=N` em `vitrine.html`.
   **Suba esse número sempre que mexer em `estoque.js`, `cores-motos.js` ou
   `fotos-disponiveis.js`** — sem isso o navegador serve a versão velha e parece
-  que a mudança não funcionou. Já enganou várias vezes. Hoje está em `v=12`.
+  que a mudança não funcionou. Já enganou várias vezes. Hoje está em `v=13`.
 - **`estoque.js` é público.** A vitrine carrega ele, então tudo que está lá
   dentro dá para ler no código-fonte do cliente. **Nunca pôr custo, lucro ou
   margem nele** — até 13/09/2026 ele gerava um `custo` de exemplo que nenhuma
   tela usava e ficava exposto. Custo vive só na cópia de dados do `index.html`.
   Se tirar um `_rnd()` de lá, o sorteio muda e a vitrine mostra outro estoque.
+- **O endereço principal abre a loja, não o sistema.** `vercel.json` manda
+  `/` para `/vitrine`; a equipe entra pelo botão Sistema, por `/login` ou
+  direto em `/sistema` (ou `/index.html`). Por isso **não** existe mais
+  `cleanUrls`: com ele, `/index.html` virava `/`, que virava `/vitrine`, e a
+  equipe nunca chegava ao sistema.
+- **Prévia do link no WhatsApp usa endereço completo.** As tags `og:` do
+  `vitrine.html` apontam para `https://gemeos-do-iphone.vercel.app/...`. Se o
+  site mudar de endereço (domínio próprio, repositório renomeado), troque lá,
+  senão o link compartilhado chega sem imagem. A imagem é
+  `social/compartilhar.jpg`; o ícone, `favicon.ico` e `social/icone-180.png`.
 - **`.vercelignore` decide o que sobe para a Vercel.** Notas, scripts, pastas
   com `_`, fotos da Apple e os PNG/JPG originais ficam de fora. Arquivo novo
   que o site precise e que caia numa dessas regras não vai aparecer no ar.
