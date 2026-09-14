@@ -46,6 +46,22 @@ git clone -b vitrine-html https://github.com/analysissistemas/gemeos-do-iphone
 
 Sem o `-b`, vem o sistema do Leo.
 
+### No ar (Vercel)
+
+| | |
+|---|---|
+| Endereço | **https://gemeos-motors.vercel.app** (abre a loja; equipe em `/login`) |
+| Conta Vercel | `analysissistemas-3246`, projeto `gemeos-motors` |
+| Como publicar | na pasta do projeto: `vercel deploy --prod` (a pasta já está ligada) |
+
+Publicado em 13/09/2026. **Não é ligado ao GitHub**: dar `git push` não
+atualiza o site, é preciso rodar o comando acima.
+
+O site antigo do celular, `gemeos-do-iphone.vercel.app`, **continua no ar** e
+está numa conta da Vercel que não abre neste computador (não é a
+`analysissistemas-3246`, nem a do Chrome daqui). Para tirá-lo do ar ou pôr
+o Motors no lugar dele, precisa de quem tem essa conta.
+
 ## Trava: `vitrine.html` não se mexe sem autorização explícita
 
 **Nunca editar `vitrine.html` por conta própria** — nem para "melhorar", nem
@@ -207,7 +223,7 @@ O rodapé da vitrine avisa isso ao cliente, em vez de fingir que o estoque é re
   `cleanUrls`: com ele, `/index.html` virava `/`, que virava `/vitrine`, e a
   equipe nunca chegava ao sistema.
 - **Prévia do link no WhatsApp usa endereço completo.** As tags `og:` do
-  `vitrine.html` apontam para `https://gemeos-do-iphone.vercel.app/...`. Se o
+  `vitrine.html` apontam para `https://gemeos-motors.vercel.app/...`. Se o
   site mudar de endereço (domínio próprio, repositório renomeado), troque lá,
   senão o link compartilhado chega sem imagem. A imagem é
   `social/compartilhar.jpg`; o ícone, `favicon.ico` e `social/icone-180.png`.
