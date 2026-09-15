@@ -1,0 +1,56 @@
+/* ============================================================
+   MENSAGERIA — contrato entre o sistema e qualquer provedor
+   ------------------------------------------------------------
+   A tela e o serviço só conhecem estes tipos. O provedor (hoje o
+   simulado, amanhã a Cloud API da Meta) só traduz de e para eles.
+
+        MessagingService (lib/mensageria/servico.ts)
+                │
+                ├── ProvedorSimulado   ← ativo agora (MOCK)
+                │
+                └── ProvedorWhatsAppCloud  ← pronto, desligado até ter credencial
+
+   Trocar de provedor = mudar MENSAGERIA_PROVEDOR. Nenhuma tela muda.
+   ============================================================ */
+
+export type TipoMensagem = "texto" | "imagem" | "video" | "documento" | "audio" | "localizacao" | "contato" | "sistema";
+export type DirecaoMensagem = "incoming" | "outgoing" | "system";
+export type StatusMensagem = "pending" | "sent" | "delivered" | "read" | "failed" | "received";
+
+export type Midia = { url: string; nome?: string | null; mime?: string | null; tamanho?: number | null };
+
+/** Mensagem que chegou do cliente, já traduzida do formato do provedor. */
+export type MensagemEntrante = {
+  canal: "whatsapp";
+  provedor: string;
+  telefone: string; // com DDI, só dígitos
+  nomeContato?: string | null;
+  externoId?: string | null;
+  tipo: TipoMensagem;
+  conteudo?: string | null;
+  midia?: Midia | null;
+  metadados?: Record<string, unknown>;
+  demo?: boolean;
+};
+
+export type PedidoEnvio = {
+  telefone: string;
+  tipo: TipoMensagem;
+  conteudo?: string | null;
+  midia?: Midia | null;
+  respostaAExternoId?: string | null;
+};
+
+export type ResultadoEnvio = { externoId: string | null; status: "sent" | "failed"; erro?: string };
+
+/** Mudança de status vinda do provedor (entregue, lida, falhou). */
+export type AtualizacaoStatus = { externoId: string; status: "delivered" | "read" | "failed"; erro?: string };
+
+export interface ProvedorMensagens {
+  readonly id: "mock" | "whatsapp_cloud";
+  readonly nome: string;
+  /** true = ambiente de demonstração: a tela mostra "WhatsApp — Simulado". */
+  readonly simulado: boolean;
+  configurado(): boolean;
+  enviar(pedido: PedidoEnvio): Promise<ResultadoEnvio>;
+}

@@ -20,7 +20,7 @@ Depois: nada. Ele ja grava o .webp que o site usa.
 import os, glob
 from PIL import Image, ImageDraw, ImageFilter
 
-PASTA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fotos", "motos")
+PASTA = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "public"), "fotos", "motos")
 LARGURA_MAX = 800
 QUALIDADE = 88
 TOLERANCIA = 78          # conferido moto a moto: em 38 e 60 sobrava a poca de

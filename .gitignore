@@ -24,27 +24,42 @@ _msg.txt
 # ---- fotos: so o .webp vai pro GitHub ----
 # Os PNG/JPG originais sao pesados e da para baixar de novo do site da loja
 # (baixar_fotos_motos.py). O .webp e o que o site usa e pesa ~1,2 MB no total.
-fotos/*.png
-fotos/*.jpg
-fotos/*.jpeg
-fotos/motos/*.png
-fotos/motos/*.jpg
-fotos/motos/*.jpeg
-fotos/loja/*.png
-fotos/loja/*.jpg
-fotos/loja/*.jpeg
-fotos/_baixa-resolucao/
-fotos/_nao-usadas/
+public/fotos/*.png
+public/fotos/*.jpg
+public/fotos/*.jpeg
+public/fotos/motos/*.png
+public/fotos/motos/*.jpg
+public/fotos/motos/*.jpeg
+public/fotos/loja/*.png
+public/fotos/loja/*.jpg
+public/fotos/loja/*.jpeg
+public/fotos/_baixa-resolucao/
+public/fotos/_nao-usadas/
 # arquivo morto do sistema antigo de celular. Continua no GitHub, na branch
 # celulares-apple e no repositorio proprio — aqui so ocupa espaco.
-fotos/_apple/
+public/fotos/_apple/
 
 # videos do sistema antigo de celular
-video/iphone-air-hero.mp4
-video/iphone-17-pro-hero.mp4
+public/video/iphone-air-hero.mp4
+public/video/iphone-17-pro-hero.mp4
 .vercel
 
 # credenciais — nunca commitar (repositorio e publico no GitHub)
 .env
 .env.*
 !.env.example
+
+# ---- app Next.js ----
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+# skills instaladas pela integracao da Neon (ferramenta local, nao do sistema)
+.agents/
+.claude/
+skills-lock.json
+# saidas de teste locais
+/test-results/
+
+# relatório dos testes de ponta a ponta (Playwright)
+playwright-report/

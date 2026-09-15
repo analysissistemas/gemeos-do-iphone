@@ -1,10 +1,5 @@
 {
-  "redirects": [
-    { "source": "/", "destination": "/vitrine", "permanent": false }
-  ],
-  "rewrites": [
-    { "source": "/vitrine", "destination": "/vitrine.html" },
-    { "source": "/login", "destination": "/login.html" },
-    { "source": "/sistema", "destination": "/index.html" }
-  ]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "regions": ["gru1"]
 }

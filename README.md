@@ -1,145 +1,112 @@
-# Gêmeos Motors — Sistema da loja
+# Gêmeos Motors — loja e sistema da equipe
 
-Sistema de gestão da **Gêmeos Motors** (Goiana e Carpina, Pernambuco):
-venda de **motos e triciclos elétricos**, **compra, venda e repasse de moto a
-combustão e de carro**, acessórios e assistência técnica própria.
+Sistema da **Gêmeos Motors** (Goiana e Carpina, Pernambuco): venda de **motos
+e triciclos elétricos**, **compra, venda e repasse de moto a combustão e de
+carro**, acessórios e assistência técnica própria.
 
-> **Antes era a Gêmeos Motors.** Em 08/09/2026 os donos passaram o sistema
+**No ar:** https://gemeos-motors.vercel.app — abre a loja; a equipe entra em
+`/login`.
+
+> **Antes era a Gêmeos do iPhone.** Em 08/09/2026 os donos passaram o sistema
 > para a loja de moto elétrica. O sistema de celular está guardado inteiro na
 > branch `celulares-apple` — nada foi perdido.
 
-> **Estado atual: protótipo visual.** Todas as telas existem e funcionam de
-> navegar. Na linha **elétrica**, os modelos, preços e ficha técnica são
-> **reais** (vieram do site gemeosmotors.com.br). Já os modelos de **carro e
-> moto a combustão são exemplo** — a loja faz esse repasse, mas não publica
-> catálogo, então o preço sai do cadastro. Estoque, clientes e caixa são
-> **simulados** —
-> inventados pelo próprio arquivo quando você abre. Nada está conectado ao
-> Kommo, ao WhatsApp nem a um banco de dados ainda. Serve para você ver o
-> sistema de pé e decidir o que muda antes de valer a pena programar o
-> funcionamento de verdade.
+## Os dois lados
 
-## Continuar em outro computador
-
-O projeto vive na conta **analysissistemas**, na branch **`vitrine-html`**.
-Atenção: a branch `main` é OUTRO sistema, feito em Next.js pelo Leo — não
-misture as duas.
-
-**1. Baixar o projeto**
-
-Se o computador tiver Git:
-
-```
-git clone -b vitrine-html https://github.com/analysissistemas/gemeos-do-iphone
-```
-
-Se não tiver, dá para baixar sem instalar nada: abra
-`github.com/analysissistemas/gemeos-do-iphone/tree/vitrine-html`,
-clique no botão verde **Code** → **Download ZIP** e descompacte.
-
-**2. Abrir**
-
-Dois cliques em **`vitrine.html`** (a loja) ou **`index.html`** (o sistema).
-Abre direto no navegador — não precisa instalar nem ligar servidor nenhum.
-
-Acessos de teste: usuário `admin`, `gemeo1` ou `gemeo2`, senha `gemeos123`.
-
-**3. Só se for mexer nos scripts**
-
-Os arquivos `.py` (baixar as fotos das motos, otimizar, gerar Excel e a apresentação)
-precisam de **Python**. Instale de python.org marcando *Add Python to PATH*,
-e depois:
-
-```
-python -m pip install pillow openpyxl python-pptx pymupdf
-```
-
-O site em si NÃO precisa de Python — só os scripts de apoio.
-
-### O que não vem junto, e por quê
-
-| Não vem | Motivo | Como recuperar |
+| Parte | Quem usa | Onde |
 |---|---|---|
-| `fotos/*.png` e `*.jpg` | Pesam 70 MB; o site usa os `.webp`, que pesam 1,5 MB | `python baixar_fotos_apple.py` |
-| `video/iphone-air-hero.mp4` | Vídeo que não foi escolhido | Está no histórico, se precisar |
+| **Loja (vitrine)** | Cliente | `/vitrine` — `public/vitrine.html` |
+| **Sistema da equipe** | Admin, vendedor, técnico | `/sistema` — pastas `app/`, `components/`, `lib/` |
 
-**As 17 fotos `.webp` e o vídeo da loja VÊM junto** — o site funciona
-completo assim que você abrir, sem baixar mais nada.
+A vitrine continua sendo uma página pronta, que lê o estoque de exemplo de
+`public/estoque.js`. O sistema da equipe é de verdade: login, banco de dados,
+permissões por perfil e histórico de tudo que cada pessoa fez.
 
-## Como abrir
-
-Dê dois cliques em **`vitrine.html`** (loja do cliente) ou **`index.html`**
-(sistema da equipe). Abre no navegador, não precisa instalar nada.
-
-## Como mandar para alguém
-
-O `index.html` chama a logo de um arquivo separado — se você mandar só ele,
-a logo chega quebrada. Para gerar uma versão de **arquivo único**:
-
-```
-python gerar_arquivo_unico.py
-```
-
-Ele cria `Gemeos Motors - Sistema.html` na sua Área de Trabalho, com a logo
-embutida dentro do próprio arquivo. Esse dá para mandar por WhatsApp ou e-mail
-que abre em qualquer celular ou computador.
-
-## O que tem em cada tela
+## O que o sistema faz
 
 | Tela | Para quê |
 |---|---|
-| **Visão Geral** | Resumo do dia: receita, aparelhos vendidos, o que está travado |
-| **Funil de Vendas** | Cada negócio, da primeira mensagem no WhatsApp até a venda fechada |
-| **Clientes (CRM)** | Quem já comprou, quem está negociando, quem tem parcela atrasada |
-| **Estoque** | As 8 motos elétricas, o triciclo, motos a combustão, carros e acessórios; filtro por tipo e por condição |
-| **Entradas e Saídas** | Todo veículo que entra ou sai, com placa ou chassi e forma de pagamento |
-| **Assistência Técnica** | Ordem de serviço: da bancada até a entrega, com orçamento e garantia |
-| **Financeiro** | Recebido, a receber, atrasado, e as parcelas em aberto |
+| **Visão geral** | Números do período (hoje, 7 dias, 30 dias, mês ou datas escolhidas), funil, perdas por motivo e o que pede atenção |
+| **Atendimento (Conversas)** | Conversas do WhatsApp em três colunas: lista, chat e dados do cliente/negócio. **Hoje o WhatsApp é simulado** (ver abaixo) |
+| **Funil de vendas** | Quadro colorido por etapa; arrastar muda a etapa e fica gravado. Fechar e perder a venda abrem o fluxo próprio |
+| **Follow-ups** | Retornos agendados: atrasados, hoje e próximos dias |
+| **Clientes** | Cadastro completo, edição e ficha 360° (negócios, vendas, conversas, OS, histórico de alterações). Não deixa cadastrar o mesmo telefone duas vezes |
+| **Estoque** | Cada veículo é uma peça única (chassi, km, condição). Custo só o admin vê |
+| **Vendas** | Passo a passo de 10 etapas, documento em PDF com código único, assinatura pelo link ou no papel, finalização |
+| **Assistência / garantia** | Ordem de serviço do recebimento à entrega, com quem recebeu, quem atendeu e quem finalizou; peças, diagnóstico, PDF |
+| **Financeiro** | Entradas das vendas finalizadas e das OS entregues, por forma de pagamento (só admin). **Sem parcelas e sem contas a receber** — a loja não trabalha com isso |
+| **Histórico do sistema** | Quem fez o quê e quando (só admin) |
+| **Usuários / Configurações** | Perfis de acesso, dados da empresa que saem nos PDFs, respostas rápidas do chat |
 
-Os botões **Nota** (em Entradas e Saídas e na Assistência) abrem um
-comprovante pronto para imprimir ou salvar em PDF.
+### Venda perdida e IA
 
-## Decisões de visual já tomadas
+Ao perder uma venda, o consultor informa motivo e observações e a IA lê o
+histórico para diagnosticar a perda. **A IA só usa o que está registrado** —
+quando falta informação, ela diz que falta. Enquanto o cartão não for cadastrado
+no AI Gateway da Vercel, a tela avisa isso com clareza e o negócio é encerrado
+do mesmo jeito.
 
-- **Preto e branco**, seguindo a identidade da loja. A única cor que entra é
-  sinal de estado (verde disponível, amarelo acabando, vermelho acabou) e
-  sempre acompanhada de texto — nunca cor sozinha, para funcionar também para
-  quem não distingue cores.
-- **Dois temas, claro e escuro**, com o botão ☀/☾ na barra de cima. A escolha
-  fica gravada no navegador. Cada tema tem a **sua** paleta, medida contra a
-  **sua** superfície (`validar_cores.py` para o escuro, `_tema_claro.py` para
-  o claro) — o claro não é o escuro invertido no olho. No claro a rampa perdeu
-  o degrau mais claro, que só dava 1,68:1 no branco.
-  - **Marcas de gráfico usam classe CSS, nunca cor escrita no SVG**
-    (`.mk-f`, `.mk-s`, `.mk-stop`…). Se alguém escrever `fill="#f5f5f7"` direto
-    numa barra, ela vira branca no branco e some. É a regra mais fácil de
-    quebrar sem perceber aqui.
-- **Referências:** a identidade da própria loja (amarelo e preto da logo) e o
-  site da Apple (tipografia grande, respiro, preto absoluto,
-  parallax) e dois painéis do Pinterest escolhidos pelo dono — um dashboard
-  claro com mini-gráficos nos indicadores, e o visual de vidro fosco do
-  Apple Vision Pro (painéis translúcidos com profundidade).
-- **A logo** foi extraída do material de redes sociais da loja
-  (`logo-gemeos.png`, branca com fundo transparente). Por ser branca, **nunca
-  use essa logo sobre fundo claro** — ela some. Na nota impressa ela vai dentro
-  de um quadrado preto por isso.
-- **Contraste conferido por cálculo**, não no olho: `validar_cores.py` mede
-  todas as cores contra o fundo. Rode ele de novo se trocar alguma cor.
+### Assinatura
 
-## Arquivos
+O cliente abre o link no celular, confere o documento, confirma nome e CPF
+(precisa ser o do cadastro) e assina com o dedo. Fica registrado data, hora,
+IP e o código do documento. **Não é assinatura digital ICP-Brasil** — é um
+registro de aceite eletrônico. Existe também a opção de assinar no papel.
 
-| Arquivo | O que é |
+### WhatsApp simulado
+
+O atendimento foi feito como um sistema próprio (não é o Chatwoot embutido).
+Por enquanto **nenhuma mensagem sai para o WhatsApp de verdade**: a tela mostra
+"WhatsApp — Simulado" e tem um botão para simular a mensagem de um cliente.
+Tudo o resto funciona de verdade: identificar o cliente pelo telefone, não lidas,
+responder, notas internas, transferir, follow-up, criar negócio e mudar etapa
+de dentro do chat. A ligação com a API oficial da Meta já está estruturada
+(`lib/mensageria/`, `/api/webhooks/whatsapp`) e só precisa das credenciais.
+
+## Para quem vai programar
+
+```
+npm install
+npx vercel env pull .env.local     # banco e segredos do projeto na Vercel
+npm run dev                         # http://localhost:3000
+```
+
+| Comando | O que faz |
 |---|---|
-| `index.html` | O sistema inteiro — telas, estilo e dados simulados em um arquivo só |
-| `logo-gemeos.png` | Logo da loja, branca, fundo transparente |
-| `gerar_arquivo_unico.py` | Gera a versão de arquivo único para enviar |
-| `validar_cores.py` | Confere se as cores têm contraste suficiente |
+| `npm run build` | Compila como vai para o ar |
+| `npm run lint` / `npm run typecheck` | Confere o código |
+| `npm run db:generate` / `npm run db:migrate` | Cria e aplica mudanças no banco (Drizzle) |
+| `npm run db:seed` | Dados iniciais (usuário admin, lojas, modelos). Não apaga nada |
+| `npm run test:e2e` | Testes de ponta a ponta no Chrome (ver abaixo) |
+| `npm run test:limpar` | Apaga só o que os testes criaram (marca "E2E") |
 
-## O que falta decidir
+**Tecnologia:** Next.js 16 (App Router), React 19, Tailwind 4, Drizzle ORM com
+Postgres (Neon, pela Vercel), login próprio com sessão assinada, PDFs com
+`@react-pdf/renderer`, IA pelo AI SDK + AI Gateway da Vercel.
 
-1. **Onde o sistema vai rodar** — só na loja, ou acessível de fora também?
-2. **Nota fiscal de verdade (NF-e)** — o que existe hoje é um comprovante
-   interno da loja. Emitir NF-e válida na SEFAZ exige certificado digital e é
-   um projeto à parte; precisa confirmar se a loja emite nota fiscal.
-3. **Kommo** — precisa da chave de API para puxar contatos e funil.
-4. **Quem usa o sistema** — quantas pessoas, e quem pode ver o quê.
+### Testes de ponta a ponta
+
+Rodam no Chrome instalado, contra o site e o banco configurados:
+
+```
+npm run dev -- -p 3100
+E2E_ADMIN_SENHA=... npm run test:e2e
+# ou contra o site no ar:
+E2E_URL=https://gemeos-motors.vercel.app E2E_ADMIN_SENHA=... npm run test:e2e
+```
+
+Cobrem o dia de trabalho inteiro: login, usuários, cliente, estoque, funil,
+venda perdida, venda fechada com pagamentos, PDF, assinatura pelo link,
+finalização, OS, conversas, permissões de vendedor e técnico, histórico,
+celular e a vitrine. Tudo que criam leva a marca "E2E" e é apagado no fim.
+
+### Publicar
+
+Na pasta do projeto: `vercel deploy --prod`. O `git push` **não** atualiza o
+site.
+
+### Scripts de fotos (Python)
+
+`baixar_fotos_motos.py`, `otimizar_fotos.py` e `gerar_lista_fotos.py` cuidam
+das fotos em `public/fotos/`. Precisam de Python e `pip install pillow`. O
+site em si não precisa de Python.

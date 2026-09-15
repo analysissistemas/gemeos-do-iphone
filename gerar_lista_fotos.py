@@ -1,5 +1,5 @@
 import os, json
-pasta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fotos")
+pasta = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "public"), "fotos")
 
 # Percorre fotos/ e as subpastas (motos/, loja/), porque cada linha da loja tem
 # a sua. O nome guardado e relativo a fotos/ — "motos/t1.webp" — que e

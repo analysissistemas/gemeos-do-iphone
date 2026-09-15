@@ -18,7 +18,7 @@ Se a loja trocar de site, so a funcao achar_bundle() muda.
 import os, re, json, unicodedata, urllib.request
 
 SITE = "https://gemeosmotors.com.br"
-DESTINO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fotos", "motos")
+DESTINO = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "public"), "fotos", "motos")
 UA = {"User-Agent": "Mozilla/5.0"}
 
 

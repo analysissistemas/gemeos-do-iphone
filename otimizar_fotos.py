@@ -16,7 +16,7 @@ Depois: python gerar_lista_fotos.py
 import os
 from PIL import Image
 
-PASTA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fotos")
+PASTA = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "public"), "fotos")
 LARGURA_MAX = 800          # o dobro do tamanho na tela, para telas retina
 QUALIDADE = 82             # acima disso o ganho de tamanho não compensa
 

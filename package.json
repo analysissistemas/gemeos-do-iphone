@@ -1,0 +1,56 @@
+{
+  "name": "gemeos-motors",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Gêmeos Motors — vitrine para o cliente e sistema de gestão da loja (CRM, funil, vendas, assistência).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node --env-file=.env.local scripts/migrar.mjs",
+    "db:seed": "node --env-file=.env.local scripts/semear.mjs",
+    "test:e2e": "playwright test",
+    "test:limpar": "node --env-file=.env.local scripts/limpar-e2e.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@neondatabase/serverless": "^1.1.0",
+    "@radix-ui/react-dialog": "^1.1.23",
+    "@react-pdf/renderer": "^4.9.0",
+    "@vercel/functions": "^3.9.7",
+    "ai": "^7.0.100",
+    "drizzle-orm": "^0.45.2",
+    "jose": "^6.2.12",
+    "lucide-react": "^1.46.0",
+    "next": "^16.3.5",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1",
+    "sonner": "^2.0.8",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.13.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "esbuild@0.18.20": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true
+  }
+}
